@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -19,6 +20,7 @@ public class launcher extends SubsystemBase {
   CANSparkMax rightLauncherSparkMax =  new CANSparkMax(0, MotorType.kBrushless);
   CANSparkMax leftIndexSparkmax = new CANSparkMax(0, MotorType.kBrushless);
   CANSparkMax rightIndexSparkMax = new CANSparkMax(0, MotorType.kBrushless);
+  SparkPIDController pidController;
   public launcher() {
     rightIndexSparkMax.setIdleMode(IdleMode.kCoast);
     rightIndexSparkMax.setInverted(true);
@@ -32,6 +34,9 @@ public class launcher extends SubsystemBase {
     leftLauncherSparkMax.setIdleMode(IdleMode.kCoast);
     leftLauncherSparkMax.follow(rightLauncherSparkMax, true);
     
+    pidController = leftLauncherSparkMax.getPIDController();
+    pidController =rightLauncherSparkMax.getPIDController();
+
     
   }
  
