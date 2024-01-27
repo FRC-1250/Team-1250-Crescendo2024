@@ -45,10 +45,13 @@ public class launcher extends SubsystemBase {
     pidController.setD(0);
     pidController.setFF(0.1);
 
+    
+
     for (int i = 0; i < irArray.length; i++) {
       irArray[i] = new DigitalInput(i);
     }
   }
+
 
   boolean pollIrArraySensor(int index) {
     if (index < irArray.length && index > -1) {
@@ -57,6 +60,14 @@ public class launcher extends SubsystemBase {
       return false;
     }
   }
+
+public void setDutyout(double percent){
+  rightIndexSparkMax.set(percent);
+}
+
+public void launch(double percent) {
+  rightLauncherSparkMax.set(percent);
+}
 
   @Override
   public void periodic() {
