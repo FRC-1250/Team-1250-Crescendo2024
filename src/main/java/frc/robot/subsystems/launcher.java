@@ -40,6 +40,11 @@ public class launcher extends SubsystemBase {
     pidController = leftLauncherSparkMax.getPIDController();
     pidController = rightLauncherSparkMax.getPIDController();
 
+    pidController.setP(.1);
+    pidController.setI(.1);
+    pidController.setD(0);
+    pidController.setFF(0.1);
+
     for (int i = 0; i < irArray.length; i++) {
       irArray[i] = new DigitalInput(i);
     }
