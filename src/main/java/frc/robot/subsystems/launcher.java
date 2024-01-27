@@ -11,16 +11,19 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.CAN;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class launcher extends SubsystemBase {
   /** Creates a new shooter. */
-   CANSparkMax leftLauncherSparkMax = new CANSparkMax(0, MotorType.kBrushless);
-  CANSparkMax rightLauncherSparkMax =  new CANSparkMax(0, MotorType.kBrushless);
+  CANSparkMax leftLauncherSparkMax = new CANSparkMax(0, MotorType.kBrushless);
+  CANSparkMax rightLauncherSparkMax = new CANSparkMax(0, MotorType.kBrushless);
   CANSparkMax leftIndexSparkmax = new CANSparkMax(0, MotorType.kBrushless);
   CANSparkMax rightIndexSparkMax = new CANSparkMax(0, MotorType.kBrushless);
+  DigitalInput[] irArray = new DigitalInput[6];
   SparkPIDController pidController;
+
   public launcher() {
     rightIndexSparkMax.setIdleMode(IdleMode.kCoast);
     rightIndexSparkMax.setInverted(true);
@@ -33,13 +36,23 @@ public class launcher extends SubsystemBase {
     rightLauncherSparkMax.setSmartCurrentLimit(40);
     leftLauncherSparkMax.setIdleMode(IdleMode.kCoast);
     leftLauncherSparkMax.follow(rightLauncherSparkMax, true);
-    
-    pidController = leftLauncherSparkMax.getPIDController();
-    pidController =rightLauncherSparkMax.getPIDController();
 
-    
+    pidController = leftLauncherSparkMax.getPIDController();
+    pidController = rightLauncherSparkMax.getPIDController();
+
+    for (int i = 0; i < irArray.length; i++) {
+      irArray[i] = new DigitalInput(i);
+    }
   }
- 
+
+  boolean pollIrArraySensor(int index) {
+    if (index < irArray.length && index > -1) {
+      return irArray[index].get();
+    } else {
+      return false;
+    }
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
