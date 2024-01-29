@@ -30,7 +30,6 @@ public class launcher extends SubsystemBase {
     rightIndexSparkMax.setIdleMode(IdleMode.kCoast);
     rightIndexSparkMax.setInverted(true);
     rightIndexSparkMax.setSmartCurrentLimit(40);
-    rightIndexSparkMax.setSecondaryCurrentLimit(40);
 
     leftIndexSparkmax.follow(rightIndexSparkMax, true);
     leftIndexSparkmax.setIdleMode(IdleMode.kCoast);
@@ -39,13 +38,11 @@ public class launcher extends SubsystemBase {
     rightLauncherSparkMax.setIdleMode(IdleMode.kCoast);
     rightLauncherSparkMax.setInverted(true);
     rightLauncherSparkMax.setSmartCurrentLimit(40);
-    rightLauncherSparkMax.setSecondaryCurrentLimit(40);
 
     leftLauncherSparkMax.setIdleMode(IdleMode.kCoast);
     leftLauncherSparkMax.follow(rightLauncherSparkMax, true);
     leftLauncherSparkMax.setSmartCurrentLimit(40);
 
-    pidController = leftLauncherSparkMax.getPIDController();
     pidController = rightLauncherSparkMax.getPIDController();
 
     pidController.setP(.1);
