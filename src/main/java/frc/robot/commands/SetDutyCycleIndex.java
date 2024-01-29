@@ -5,11 +5,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.launcher;
 
 public class SetDutyCycleIndex extends Command {
   /** Creates a new SetDutyCycleIndex. */
-  public SetDutyCycleIndex() {
+  private final launcher indexer;
+  private double percentOut;
+
+  public SetDutyCycleIndex(launcher indexer, double percentOut) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.indexer = indexer;
+    this.percentOut = percentOut;
   }
 
   // Called when the command is initially scheduled.
@@ -18,7 +24,9 @@ public class SetDutyCycleIndex extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+indexer.setDutyoutIndex(percentOut);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

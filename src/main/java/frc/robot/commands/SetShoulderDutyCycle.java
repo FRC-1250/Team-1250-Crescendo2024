@@ -5,11 +5,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Shoulder;
 
 public class SetShoulderDutyCycle extends Command {
   /** Creates a new SetShoulderDutyCycle. */
-  public SetShoulderDutyCycle() {
+  private final Shoulder shoulder;
+  private double percentOut;
+  public SetShoulderDutyCycle(Shoulder shoulder, double percentOut) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.shoulder = shoulder;
+    this.percentOut = percentOut;
   }
 
   // Called when the command is initially scheduled.
@@ -18,7 +23,9 @@ public class SetShoulderDutyCycle extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    shoulder.setDutyCycle(percentOut);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
