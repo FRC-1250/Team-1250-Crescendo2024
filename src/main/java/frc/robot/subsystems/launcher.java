@@ -17,12 +17,17 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class launcher extends SubsystemBase {
+  private int LSHOOTER = 20;
+  private int RSHOOTER = 21;
+  private int LINDEX = 22;
+  private int RINDEX = 23;
+
   private final int maxRPM = 5700;
   /** Creates a new shooter. */
-  CANSparkMax leftLauncherSparkMax = new CANSparkMax(0, MotorType.kBrushless);
-  CANSparkMax rightLauncherSparkMax = new CANSparkMax(0, MotorType.kBrushless);
-  CANSparkMax leftIndexSparkmax = new CANSparkMax(0, MotorType.kBrushless);
-  CANSparkMax rightIndexSparkMax = new CANSparkMax(0, MotorType.kBrushless);
+  CANSparkMax leftLauncherSparkMax = new CANSparkMax(20, MotorType.kBrushless);
+  CANSparkMax rightLauncherSparkMax = new CANSparkMax(21, MotorType.kBrushless);
+  CANSparkMax leftIndexSparkmax = new CANSparkMax(22, MotorType.kBrushless);
+  CANSparkMax rightIndexSparkMax = new CANSparkMax(23, MotorType.kBrushless);
   DigitalInput[] irArray = new DigitalInput[6];
   SparkPIDController pidController;
 

@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
 
-  private final int UPPER_ROLLER_CAN_ID = 0;
-  private final int LOWER_ROLLER_CAN_ID = 0;
+  private final int UPPER_ROLLER_CAN_ID = 40;
+  private final int LOWER_ROLLER_CAN_ID = 41;
   private final CANSparkMax upperRoller;
   private final CANSparkMax lowerRoller;
 
