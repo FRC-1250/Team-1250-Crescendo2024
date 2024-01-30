@@ -32,18 +32,22 @@ public class launcher extends SubsystemBase {
   SparkPIDController pidController;
 
   public launcher() {
+    rightIndexSparkMax.restoreFactoryDefaults();
     rightIndexSparkMax.setIdleMode(IdleMode.kCoast);
     rightIndexSparkMax.setInverted(true);
     rightIndexSparkMax.setSmartCurrentLimit(40);
 
+    leftIndexSparkmax.restoreFactoryDefaults();
     leftIndexSparkmax.follow(rightIndexSparkMax, true);
     leftIndexSparkmax.setIdleMode(IdleMode.kCoast);
     leftIndexSparkmax.setSmartCurrentLimit(40);
 
+    rightLauncherSparkMax.restoreFactoryDefaults();
     rightLauncherSparkMax.setIdleMode(IdleMode.kCoast);
     rightLauncherSparkMax.setInverted(true);
     rightLauncherSparkMax.setSmartCurrentLimit(40);
 
+    leftLauncherSparkMax.restoreFactoryDefaults();
     leftLauncherSparkMax.setIdleMode(IdleMode.kCoast);
     leftLauncherSparkMax.follow(rightLauncherSparkMax, true);
     leftLauncherSparkMax.setSmartCurrentLimit(40);
