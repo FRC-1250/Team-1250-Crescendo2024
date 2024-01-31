@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -42,7 +44,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    triangleButton.onTrue(new SetIntakeDutyCycle(intake, 0.5));
+    triangleButton.onTrue(new SetIntakeDutyCycle(intake, -0.5));
     circleButton.onTrue(new SetIntakeDutyCycle(intake, 0));
     l1Button.whileTrue(new SetShoulderDutyCycle(shoulder, .2));
     l2Button.whileTrue(new SetShoulderDutyCycle(shoulder, -.2));
