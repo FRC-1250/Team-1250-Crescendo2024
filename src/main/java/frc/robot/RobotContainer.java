@@ -44,14 +44,14 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    triangleButton.onTrue(new SetIntakeDutyCycle(intake, -0.5));
-    circleButton.onTrue(new SetIntakeDutyCycle(intake, 0));
+    triangleButton.whileTrue(new SetIntakeDutyCycle(intake, -0.5));
+    //circleButton.onTrue(new SetIntakeDutyCycle(intake, 0));
     l1Button.whileTrue(new SetShoulderDutyCycle(shoulder, .2));
     l2Button.whileTrue(new SetShoulderDutyCycle(shoulder, -.2));
-    r1Button.onTrue(new SetDutyCycleLauncher(launcher, .5));
-    r2Button.onTrue(new SetDutyCycleLauncher(launcher, 0));
-    crossButton.onTrue(new SetDutyCycleIndex(launcher, 0));
-    squareButton.onTrue(new SetDutyCycleIndex(launcher, 0.5));
+    r1Button.whileTrue(new SetDutyCycleLauncher(launcher, 1));
+    //r2Button.onTrue(new SetDutyCycleLauncher(launcher, 0));
+    crossButton.whileTrue(new SetDutyCycleIndex(launcher, 1));
+    //squareButton.onTrue(new SetDutyCycleIndex(launcher, 0));
   }
 
   public Command getAutonomousCommand() {
