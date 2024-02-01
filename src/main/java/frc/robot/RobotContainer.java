@@ -16,12 +16,14 @@ import frc.robot.commands.SetIntakeDutyCycle;
 import frc.robot.commands.SetShoulderDutyCycle;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shoulder;
+import frc.robot.subsystems.indexer;
 import frc.robot.subsystems.launcher;
 
 public class RobotContainer {
   private final Intake intake = new Intake();
   private final Shoulder shoulder = new Shoulder();
   private final launcher launcher = new launcher();
+  private final indexer indexer = new indexer();
   
   private final PS4Controller operatorPS4Controller = new PS4Controller(1);
   Trigger touchpad = new Trigger(operatorPS4Controller::getTouchpad);
@@ -50,7 +52,7 @@ public class RobotContainer {
     l2Button.whileTrue(new SetShoulderDutyCycle(shoulder, -.2));
     r1Button.whileTrue(new SetDutyCycleLauncher(launcher, 1));
     //r2Button.onTrue(new SetDutyCycleLauncher(launcher, 0));
-    crossButton.whileTrue(new SetDutyCycleIndex(launcher, 1));
+    crossButton.whileTrue(new SetDutyCycleIndex(indexer, 1));
     //squareButton.onTrue(new SetDutyCycleIndex(launcher, 0));
   }
 

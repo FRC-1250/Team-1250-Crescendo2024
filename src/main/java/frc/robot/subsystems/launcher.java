@@ -26,22 +26,11 @@ public class launcher extends SubsystemBase {
   /** Creates a new shooter. */
   CANSparkMax leftLauncherSparkMax = new CANSparkMax(20, MotorType.kBrushless);
   CANSparkMax rightLauncherSparkMax = new CANSparkMax(21, MotorType.kBrushless);
-  CANSparkMax leftIndexSparkmax = new CANSparkMax(22, MotorType.kBrushless);
-  CANSparkMax rightIndexSparkMax = new CANSparkMax(23, MotorType.kBrushless);
   DigitalInput[] irArray = new DigitalInput[6];
   SparkPIDController pidController;
 
   public launcher() {
-    rightIndexSparkMax.restoreFactoryDefaults();
-    rightIndexSparkMax.setIdleMode(IdleMode.kCoast);
-    rightIndexSparkMax.setInverted(true);
-    rightIndexSparkMax.setSmartCurrentLimit(40);
-
-    leftIndexSparkmax.restoreFactoryDefaults();
-    leftIndexSparkmax.follow(rightIndexSparkMax, true);
-    leftIndexSparkmax.setIdleMode(IdleMode.kCoast);
-    leftIndexSparkmax.setSmartCurrentLimit(40);
-
+   
     rightLauncherSparkMax.restoreFactoryDefaults();
     rightLauncherSparkMax.setIdleMode(IdleMode.kCoast);
     rightLauncherSparkMax.setInverted(true);
@@ -75,9 +64,8 @@ public class launcher extends SubsystemBase {
     }
   }
 
-public void setDutyoutIndex(double percent){
-  rightIndexSparkMax.set(percent);
-}
+
+
 
 public void SetDutyOutlaunch(double percent) {
   rightLauncherSparkMax.set(percent);
