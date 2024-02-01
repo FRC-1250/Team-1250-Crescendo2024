@@ -15,6 +15,7 @@ public class SetShoulderDutyCycle extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shoulder = shoulder;
     this.percentOut = percentOut;
+    addRequirements(shoulder);
   }
 
   // Called when the command is initially scheduled.

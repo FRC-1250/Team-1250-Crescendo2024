@@ -17,11 +17,11 @@ public class Intake extends SubsystemBase {
   private final CANSparkMax lowerRoller;
 
   public Intake() {
-    upperRoller = new CANSparkMax(UPPER_ROLLER_CAN_ID, MotorType.kBrushed);
+    upperRoller = new CANSparkMax(UPPER_ROLLER_CAN_ID, MotorType.kBrushless);
     upperRoller.restoreFactoryDefaults();
     upperRoller.setSmartCurrentLimit(40);
 
-    lowerRoller = new CANSparkMax(LOWER_ROLLER_CAN_ID, MotorType.kBrushed);
+    lowerRoller = new CANSparkMax(LOWER_ROLLER_CAN_ID, MotorType.kBrushless);
     lowerRoller.restoreFactoryDefaults();
     lowerRoller.setSmartCurrentLimit(40);
 

@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.SetDutyCycleIndex;
-import frc.robot.commands.SetDutyCycleLauncher;
+import frc.robot.commands.SetIndexDutyCycle;
+import frc.robot.commands.SetLauncherDutyCycle;
 import frc.robot.commands.SetIntakeDutyCycle;
 import frc.robot.commands.SetShoulderDutyCycle;
 import frc.robot.subsystems.Intake;
@@ -46,14 +46,14 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    triangleButton.whileTrue(new SetIntakeDutyCycle(intake, -0.5));
-    //circleButton.onTrue(new SetIntakeDutyCycle(intake, 0));
+    triangleButton.onTrue(new SetIntakeDutyCycle(intake, -0.5));
+    circleButton.onTrue(new SetIntakeDutyCycle(intake, 0));
     l1Button.whileTrue(new SetShoulderDutyCycle(shoulder, .2));
     l2Button.whileTrue(new SetShoulderDutyCycle(shoulder, -.2));
-    r1Button.whileTrue(new SetDutyCycleLauncher(launcher, 1));
-    //r2Button.onTrue(new SetDutyCycleLauncher(launcher, 0));
-    crossButton.whileTrue(new SetDutyCycleIndex(indexer, 1));
-    //squareButton.onTrue(new SetDutyCycleIndex(launcher, 0));
+    r1Button.onTrue(new SetLauncherDutyCycle(launcher, 1));
+    r2Button.onTrue(new SetLauncherDutyCycle(launcher, 0));
+    crossButton.onTrue(new SetIndexDutyCycle(indexer, 1));
+    squareButton.onTrue(new SetIndexDutyCycle(indexer, 0));
   }
 
   public Command getAutonomousCommand() {
