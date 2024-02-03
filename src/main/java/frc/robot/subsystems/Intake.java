@@ -5,24 +5,33 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
 
-  private final int UPPER_ROLLER_CAN_ID = 0;
-  private final int LOWER_ROLLER_CAN_ID = 0;
+  private final int UPPER_ROLLER_CAN_ID = 40;
+  private final int LOWER_ROLLER_CAN_ID = 41;
   private final CANSparkMax upperRoller;
   private final CANSparkMax lowerRoller;
 
   public Intake() {
-    upperRoller = new CANSparkMax(UPPER_ROLLER_CAN_ID, MotorType.kBrushed);
-    upperRoller.setSmartCurrentLimit(40);
+    if (RobotBase.isReal()) {
+      upperRoller = new CANSparkMax(UPPER_ROLLER_CAN_ID, MotorType.kBrushed);
+      upperRoller.restoreFactoryDefaults();
+      upperRoller.setSmartCurrentLimit(40);
 
-    lowerRoller = new CANSparkMax(LOWER_ROLLER_CAN_ID, MotorType.kBrushed);
-    lowerRoller.setSmartCurrentLimit(40);
-
+      lowerRoller = new CANSparkMax(LOWER_ROLLER_CAN_ID, MotorType.kBrushed);
+      lowerRoller.restoreFactoryDefaults();
+      lowerRoller.setSmartCurrentLimit(40);
+    } else {
+      // Don't add anything here!
+      upperRoller = new CANSparkMax(UPPER_ROLLER_CAN_ID, MotorType.kBrushless);
+      lowerRoller = new CANSparkMax(LOWER_ROLLER_CAN_ID, MotorType.kBrushless);
+    }
   }
 
   public void setDutyCycleUpperRoller(double percentOut) {

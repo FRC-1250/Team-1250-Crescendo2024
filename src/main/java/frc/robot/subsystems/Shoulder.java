@@ -33,8 +33,8 @@ public class Shoulder extends SubsystemBase {
     }
   }
 
-  private final int LEFT_ROTATOR_CAN_ID = 11;
-  private final int RIGHT_ROTATOR_CAN_ID = 12;
+  private final int LEFT_ROTATOR_CAN_ID = 30;
+  private final int RIGHT_ROTATOR_CAN_ID = 31;
   private final int ALLOWABLE_CLOSED_LOOP_ERROR = 8192;
 
   // Offset value to normalize the encoder position to 0 when at home
@@ -52,10 +52,10 @@ public class Shoulder extends SubsystemBase {
     rightRotator.setIdleMode(IdleMode.kBrake);
     rightRotator.setClosedLoopRampRate(0.5);
     rightRotator.setOpenLoopRampRate(0.5);
-    rightRotator.setSoftLimit(SoftLimitDirection.kForward, Position.LIMIT.value);
-    rightRotator.setSoftLimit(SoftLimitDirection.kReverse, Position.HOME.value);
-    rightRotator.enableSoftLimit(SoftLimitDirection.kForward, true);
-    rightRotator.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    //rightRotator.setSoftLimit(SoftLimitDirection.kForward, Position.LIMIT.value);
+    //rightRotator.setSoftLimit(SoftLimitDirection.kReverse, Position.HOME.value);
+    //rightRotator.enableSoftLimit(SoftLimitDirection.kForward, true);
+    //rightRotator.enableSoftLimit(SoftLimitDirection.kReverse, true);
     rightRotator.setInverted(false);
 
     leftRotator = new CANSparkMax(LEFT_ROTATOR_CAN_ID, MotorType.kBrushless);

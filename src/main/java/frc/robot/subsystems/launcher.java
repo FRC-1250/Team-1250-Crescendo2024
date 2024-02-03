@@ -17,28 +17,26 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class launcher extends SubsystemBase {
+  private int LSHOOTER = 20;
+  private int RSHOOTER = 21;
+  private int LINDEX = 22;
+  private int RINDEX = 23;
+
   private final int maxRPM = 5700;
   /** Creates a new shooter. */
-  CANSparkMax leftLauncherSparkMax = new CANSparkMax(0, MotorType.kBrushless);
-  CANSparkMax rightLauncherSparkMax = new CANSparkMax(0, MotorType.kBrushless);
-  CANSparkMax leftIndexSparkmax = new CANSparkMax(0, MotorType.kBrushless);
-  CANSparkMax rightIndexSparkMax = new CANSparkMax(0, MotorType.kBrushless);
+  CANSparkMax leftLauncherSparkMax = new CANSparkMax(20, MotorType.kBrushless);
+  CANSparkMax rightLauncherSparkMax = new CANSparkMax(21, MotorType.kBrushless);
   DigitalInput[] irArray = new DigitalInput[6];
   SparkPIDController pidController;
 
   public launcher() {
-    rightIndexSparkMax.setIdleMode(IdleMode.kCoast);
-    rightIndexSparkMax.setInverted(true);
-    rightIndexSparkMax.setSmartCurrentLimit(40);
-
-    leftIndexSparkmax.follow(rightIndexSparkMax, true);
-    leftIndexSparkmax.setIdleMode(IdleMode.kCoast);
-    leftIndexSparkmax.setSmartCurrentLimit(40);
-
+   
+    rightLauncherSparkMax.restoreFactoryDefaults();
     rightLauncherSparkMax.setIdleMode(IdleMode.kCoast);
     rightLauncherSparkMax.setInverted(true);
     rightLauncherSparkMax.setSmartCurrentLimit(40);
 
+    leftLauncherSparkMax.restoreFactoryDefaults();
     leftLauncherSparkMax.setIdleMode(IdleMode.kCoast);
     leftLauncherSparkMax.follow(rightLauncherSparkMax, true);
     leftLauncherSparkMax.setSmartCurrentLimit(40);
@@ -66,9 +64,8 @@ public class launcher extends SubsystemBase {
     }
   }
 
-public void setDutyoutIndex(double percent){
-  rightIndexSparkMax.set(percent);
-}
+
+
 
 public void SetDutyOutlaunch(double percent) {
   rightLauncherSparkMax.set(percent);
