@@ -26,7 +26,7 @@ public class launcher extends SubsystemBase {
   /** Creates a new shooter. */
   CANSparkMax leftLauncherSparkMax = new CANSparkMax(20, MotorType.kBrushless);
   CANSparkMax rightLauncherSparkMax = new CANSparkMax(21, MotorType.kBrushless);
-  DigitalInput[] irArray = new DigitalInput[6];
+  
   SparkPIDController pidController;
 
   public launcher() {
@@ -48,21 +48,12 @@ public class launcher extends SubsystemBase {
     pidController.setD(0);
     pidController.setFF(0.1);
     
-    
-
-    for (int i = 0; i < irArray.length; i++) {
-      irArray[i] = new DigitalInput(i);
-    }
   }
 
 
-  boolean pollIrArraySensor(int index) {
-    if (index < irArray.length && index > -1) {
-      return irArray[index].get();
-    } else {
-      return false;
-    }
-  }
+
+
+ 
 
 
 
