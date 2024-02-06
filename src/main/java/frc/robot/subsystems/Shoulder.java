@@ -77,6 +77,8 @@ public class Shoulder extends SubsystemBase {
 
     rightRotatorInternalEncoder = rightRotator.getEncoder();
     rightRotatorInternalEncoder.setInverted(false);
+    //Assume the shoulder is at home on startup
+    rightRotatorInternalEncoder.setPosition(0);
 
     rightRotatorPIDController = rightRotator.getPIDController();
     rightRotatorPIDController.setFeedbackDevice(rightRotatorInternalEncoder);
