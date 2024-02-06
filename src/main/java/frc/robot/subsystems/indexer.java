@@ -8,15 +8,20 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class indexer extends SubsystemBase {
-  
+  DigitalInput[] irArray = new DigitalInput[4];
   CANSparkMax leftIndexSparkmax = new CANSparkMax(22, MotorType.kBrushless);
   CANSparkMax rightIndexSparkMax = new CANSparkMax(23, MotorType.kBrushless);
+
   /** Creates a new indexer. */
   public indexer() {
-     rightIndexSparkMax.restoreFactoryDefaults();
+    for (int i = 0; i < irArray.length; i++) {
+      irArray[i] = new DigitalInput(i);
+    }
+    rightIndexSparkMax.restoreFactoryDefaults();
     rightIndexSparkMax.setIdleMode(IdleMode.kCoast);
     rightIndexSparkMax.setInverted(true);
     rightIndexSparkMax.setSmartCurrentLimit(40);
@@ -26,13 +31,49 @@ public class indexer extends SubsystemBase {
     leftIndexSparkmax.setIdleMode(IdleMode.kCoast);
     leftIndexSparkmax.setSmartCurrentLimit(40);
 
-
-
   }
 
-  public void setDutyoutIndex(double percent){
+  public void setDutyoutIndex(double percent) {
     rightIndexSparkMax.set(percent);
   }
+
+  boolean pollIrArraySensor(int index) {
+    if (index < irArray.length && index > -1) {
+      // The IR sensors being used return "true" when not tripped. Flip the result for
+      // standard usage. i.e. when sensor is tripped, it returns true
+      return !irArray[index].get();
+    } else {
+      return false;
+    }
+  }
+
+  public void centernote() {
+    boolean intakeside = pollIrArraySensor(0);
+    boolean indexerclose = pollIrArraySensor(1);
+    boolean indexerfar = pollIrArraySensor(2);
+    boolean shooterside = pollIrArraySensor(3);
+
+    if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == false) {
+      setDutyoutIndex(0.15);
+    } else if (intakeside == true && indexerclose == false && indexerfar == false && shooterside == false) {
+      setDutyoutIndex(.05);
+    } else if (intakeside == true && indexerclose == true && indexerfar == false && shooterside == false) {
+      setDutyoutIndex(.05);
+    } else if (intakeside == true && indexerclose == true && indexerfar == true && shooterside == false) {
+      setDutyoutIndex(.05);
+    } else if (intakeside == false && indexerclose == false && indexerfar == true && shooterside == false) {
+      setDutyoutIndex(-.05);
+    }else if (intakeside == false && indexerclose == true && indexerfar == true && shooterside == false) {
+      setDutyoutIndex(0);
+    } else if (intakeside == false && indexerclose == true && indexerfar == true && shooterside == true) {
+      setDutyoutIndex(-0.05);
+    } else if (intakeside == false && indexerclose == false && indexerfar == true && shooterside == true) {
+      setDutyoutIndex(-0.05);
+    } else if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == true) {
+      setDutyoutIndex(-0.1);
+    }
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
