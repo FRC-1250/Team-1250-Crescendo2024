@@ -39,7 +39,9 @@ public class indexer extends SubsystemBase {
 
   boolean pollIrArraySensor(int index) {
     if (index < irArray.length && index > -1) {
-      return irArray[index].get();
+      // The IR sensors being used return "true" when not tripped. Flip the result for
+      // standard usage. i.e. when sensor is tripped, it returns true
+      return !irArray[index].get();
     } else {
       return false;
     }
@@ -51,29 +53,24 @@ public class indexer extends SubsystemBase {
     boolean indexerfar = pollIrArraySensor(2);
     boolean shooterside = pollIrArraySensor(3);
 
-    if (intakeside == false & indexerclose == false & indexerfar == false & shooterside == false){
-      setDutyoutIndex(1);
-    }
-    else if (intakeside == true & indexerclose == false & indexerfar == false & shooterside == false){
-      setDutyoutIndex(.75);
-    }
-    else if(intakeside == true & indexerclose == true & indexerfar == false & shooterside == false){
-      setDutyoutIndex(.45);
-    }
-    else if(intakeside == true & indexerclose == true & indexerfar == true & shooterside == false){
-      setDutyoutIndex(.10);
-    }
-    else if (intakeside == false & indexerclose == true & indexerfar == true & shooterside == false){
+    if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == false) {
+      setDutyoutIndex(0.15);
+    } else if (intakeside == true && indexerclose == false && indexerfar == false && shooterside == false) {
+      setDutyoutIndex(.05);
+    } else if (intakeside == true && indexerclose == true && indexerfar == false && shooterside == false) {
+      setDutyoutIndex(.05);
+    } else if (intakeside == true && indexerclose == true && indexerfar == true && shooterside == false) {
+      setDutyoutIndex(.05);
+    } else if (intakeside == false && indexerclose == false && indexerfar == true && shooterside == false) {
+      setDutyoutIndex(-.05);
+    }else if (intakeside == false && indexerclose == true && indexerfar == true && shooterside == false) {
       setDutyoutIndex(0);
-    }
-    else if (intakeside == false & indexerclose == true & indexerfar == true & shooterside == true){
+    } else if (intakeside == false && indexerclose == true && indexerfar == true && shooterside == true) {
+      setDutyoutIndex(-0.05);
+    } else if (intakeside == false && indexerclose == false && indexerfar == true && shooterside == true) {
+      setDutyoutIndex(-0.05);
+    } else if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == true) {
       setDutyoutIndex(-0.1);
-    }
-    else if ( intakeside == false & indexerclose == false & indexerfar == true & shooterside == true){
-      setDutyoutIndex(-.45);
-    }
-    else if (intakeside == false & indexerclose == false & indexerfar == false & shooterside == true){
-      setDutyoutIndex(-.75);
     }
   }
 

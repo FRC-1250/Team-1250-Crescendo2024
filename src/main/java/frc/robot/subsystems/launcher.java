@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class launcher extends SubsystemBase {
@@ -22,7 +23,7 @@ public class launcher extends SubsystemBase {
   private int LINDEX = 22;
   private int RINDEX = 23;
 
-  private final int maxRPM = 5700;
+  public final int maxRPM = 5700;
   /** Creates a new shooter. */
   CANSparkMax leftLauncherSparkMax = new CANSparkMax(20, MotorType.kBrushless);
   CANSparkMax rightLauncherSparkMax = new CANSparkMax(21, MotorType.kBrushless);
@@ -62,11 +63,15 @@ public void SetDutyOutlaunch(double percent) {
   rightLauncherSparkMax.set(percent);
 }
 
+public double returnRPM() {
+ return rightLauncherSparkMax.getEncoder().getVelocity();
+}
 public void SetLauncherVelocity(double setpoint) {
     pidController.setReference(setpoint, ControlType.kVelocity);
 }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Launcher RPM", rightLauncherSparkMax.getEncoder().getVelocity());
   }
 }
