@@ -6,15 +6,12 @@ package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
-import com.revrobotics.SparkMaxAlternateEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -48,7 +45,6 @@ public class Shoulder extends SubsystemBase {
   private final CANSparkMax rightRotator;
   private final SparkPIDController rightRotatorPIDController;
   private final AbsoluteEncoder rightRotatorThroughBoreEncoder;
-  private final RelativeEncoder rightRotatorInternalEncoder;
 
   public Shoulder() {
     rightRotator = new CANSparkMax(RIGHT_ROTATOR_CAN_ID, MotorType.kBrushless);
@@ -75,13 +71,8 @@ public class Shoulder extends SubsystemBase {
     rightRotatorThroughBoreEncoder.setInverted(false);
     rightRotatorThroughBoreEncoder.setZeroOffset(ENCODER_OFFSET);
 
-    rightRotatorInternalEncoder = rightRotator.getEncoder();
-    rightRotatorInternalEncoder.setInverted(false);
-    //Assume the shoulder is at home on startup
-    rightRotatorInternalEncoder.setPosition(0);
-
     rightRotatorPIDController = rightRotator.getPIDController();
-    rightRotatorPIDController.setFeedbackDevice(rightRotatorInternalEncoder);
+    rightRotatorPIDController.setFeedbackDevice(rightRotatorThroughBoreEncoder);
     rightRotatorPIDController.setP(0.1);
     rightRotatorPIDController.setI(0);
     rightRotatorPIDController.setD(1);
@@ -105,16 +96,12 @@ public class Shoulder extends SubsystemBase {
     return rightRotatorThroughBoreEncoder.getPosition();
   }
 
-  public void resetInternalEncoder() {
-    rightRotatorInternalEncoder.setPosition(0);
-  }
-
   public boolean isAtSetPoint(double targetPosition) {
     return Math.abs(targetPosition - getPosition()) < ALLOWABLE_CLOSED_LOOP_ERROR;
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Shoulder position", rightRotatorInternalEncoder.getPosition());
+    SmartDashboard.putNumber("Shoulder position", rightRotatorThroughBoreEncoder.getPosition());
   }
 }
