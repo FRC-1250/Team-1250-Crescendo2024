@@ -37,15 +37,15 @@ public class IntakeCenterNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-  if (indexer.iscentered() == true) {
-    intake.setDutyCycleLowerRoller(0);
-    intake.setDutyCycleUpperRoller(0);
-  }
+  intake.setDutyCycleLowerRoller(0);
+  intake.setDutyCycleUpperRoller(0);
+  indexer.setDutyoutIndex(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+      if (indexer.iscentered() == true) {}
     return false;
   }
 }
