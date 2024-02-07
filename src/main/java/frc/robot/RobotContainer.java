@@ -23,6 +23,7 @@ import frc.robot.commands.SetShoulderDutyCycle;
 import frc.robot.commands.SetShoulderPosition;
 import frc.robot.commands.CenterNote;
 import frc.robot.commands.FireNote;
+import frc.robot.commands.IntakeCenterNote;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.indexer;
@@ -71,8 +72,9 @@ private final CommandPS4Controller commandPS4Controller = new CommandPS4Controll
     // reset the field-centric heading on left bumper press
     drivXboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, -0.5));
-    drivXboxController.b().onTrue(new SetIntakeDutyCycle(intake, 0));
+    //drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, -0.5));
+    //drivXboxController.b().onTrue(new SetIntakeDutyCycle(intake, 0));
+    drivXboxController.b().onTrue(new IntakeCenterNote(intake, indexer, -.5));
     drivXboxController.x().whileTrue(new CenterNote(indexer));
    // drivXboxController.a().onTrue(new SetIndexDutyCycle(indexer, 0));
     drivXboxController.rightBumper().whileTrue(new FireNote(indexer, launcher));
