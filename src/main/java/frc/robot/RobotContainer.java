@@ -20,6 +20,7 @@ import frc.robot.commands.SetIndexDutyCycle;
 import frc.robot.commands.SetLauncherDutyCycle;
 import frc.robot.commands.SetIntakeDutyCycle;
 import frc.robot.commands.SetShoulderDutyCycle;
+import frc.robot.commands.SetShoulderPosition;
 import frc.robot.commands.CenterNote;
 import frc.robot.commands.FireNote;
 import frc.robot.subsystems.Intake;
@@ -78,6 +79,8 @@ private final CommandPS4Controller commandPS4Controller = new CommandPS4Controll
     //drivXboxController.rightTrigger().onTrue(new SetLauncherDutyCycle(launcher, 0));
     drivXboxController.leftBumper().whileTrue(new SetShoulderDutyCycle(shoulder, 0.2));
     drivXboxController.leftTrigger().whileTrue(new SetShoulderDutyCycle(shoulder, -0.2));
+    //drivXboxController.leftBumper().onTrue(new SetShoulderPosition(shoulder, 0.082f));
+    //drivXboxController.leftTrigger().onTrue(new SetShoulderPosition(shoulder, 0.2497f));
 
   }
 

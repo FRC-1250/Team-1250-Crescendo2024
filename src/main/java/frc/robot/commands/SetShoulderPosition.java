@@ -32,6 +32,10 @@ public class SetShoulderPosition extends Command {
     shoulder.setPosition(targetPosition);
   }
 
+  public void end(boolean interrupted) {
+    shoulder.setDutyCycle(0);
+  }
+
   @Override
   public boolean isFinished() {
     return RobotHelper.isWithinRangeOfTarget(shoulder.getPosition(), targetPosition, 0.025);

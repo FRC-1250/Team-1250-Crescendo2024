@@ -39,7 +39,7 @@ public class Shoulder extends SubsystemBase {
   private final int ALLOWABLE_CLOSED_LOOP_ERROR = 8192;
 
   // Offset value to normalize the encoder position to 0 when at home
-  private final int ENCODER_OFFSET = 0;
+  private final double ENCODER_OFFSET = 0.9736;
 
   private final CANSparkMax leftRotator;
   private final CANSparkMax rightRotator;
@@ -68,14 +68,14 @@ public class Shoulder extends SubsystemBase {
     leftRotator.follow(rightRotator, true);
 
     rightRotatorThroughBoreEncoder = rightRotator.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-    rightRotatorThroughBoreEncoder.setInverted(false);
+    rightRotatorThroughBoreEncoder.setInverted(true);
     rightRotatorThroughBoreEncoder.setZeroOffset(ENCODER_OFFSET);
 
     rightRotatorPIDController = rightRotator.getPIDController();
     rightRotatorPIDController.setFeedbackDevice(rightRotatorThroughBoreEncoder);
-    rightRotatorPIDController.setP(0.1);
+    rightRotatorPIDController.setP(10);
     rightRotatorPIDController.setI(0);
-    rightRotatorPIDController.setD(1);
+    rightRotatorPIDController.setD(0);
     rightRotatorPIDController.setFF(0);
     rightRotatorPIDController.setOutputRange(-1, 1);
   }
@@ -102,6 +102,7 @@ public class Shoulder extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putData(this);
     SmartDashboard.putNumber("Shoulder position", rightRotatorThroughBoreEncoder.getPosition());
   }
 }
