@@ -11,6 +11,7 @@ import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 
 import frc.robot.subsystems.Limelight;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -40,7 +41,80 @@ public class targetlock implements SwerveRequest {
   private Alliance alliance;
   private Limelight limelight;
   private double angle;
+
   /** Creates a new targetlock. */
+  /**
+   * Sets the velocity in the X direction, in m/s.
+   * X is defined as forward according to WPILib convention,
+   * so this determines how fast to travel forward.
+   *
+   * @param velocityX Velocity in the X direction, in m/s
+   * @return this request
+   */
+  public targetlock withVelocityX(double velocityX) {
+    this.VelocityX = velocityX;
+    return this;
+  }
+
+  /**
+   * Sets the velocity in the Y direction, in m/s.
+   * Y is defined as to the left according to WPILib convention,
+   * so this determines how fast to travel to the left.
+   *
+   * @param velocityY Velocity in the Y direction, in m/s
+   * @return this request
+   */
+  public targetlock withVelocityY(double velocityY) {
+    this.VelocityY = velocityY;
+    return this;
+  }
+
+  /**
+   * Sets the allowable deadband of the request.
+   *
+   * @param deadband Allowable deadband of the request
+   * @return this request
+   */
+  public targetlock withDeadband(double deadband) {
+    this.Deadband = deadband;
+    return this;
+  }
+
+  /**
+   * Sets the rotational deadband of the request.
+   *
+   * @param rotationalDeadband Rotational deadband of the request
+   * @return this request
+   */
+  public targetlock withRotationalDeadband(double rotationalDeadband) {
+    this.RotationalDeadband = rotationalDeadband;
+    return this;
+  }
+
+  /**
+   * Sets the type of control request to use for the drive motor.
+   *
+   * @param driveRequestType The type of control request to use for the drive
+   *                         motor
+   * @return this request
+   */
+  public targetlock withDriveRequestType(SwerveModule.DriveRequestType driveRequestType) {
+    this.DriveRequestType = driveRequestType;
+    return this;
+  }
+
+  /**
+   * Sets the type of control request to use for the steer motor.
+   *
+   * @param steerRequestType The type of control request to use for the steer
+   *                         motor
+   * @return this request
+   */
+  public targetlock withSteerRequestType(SwerveModule.SteerRequestType steerRequestType) {
+    this.SteerRequestType = steerRequestType;
+    return this;
+  }
+
   public targetlock() {
     Limelight limelight;
     int currentag;
@@ -50,15 +124,14 @@ public class targetlock implements SwerveRequest {
 
   @Override
   public StatusCode apply(SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
-    // TODO Auto-generated method 
-        fid = limelight.getfid();
-  if (alliance == Alliance.Blue) {
+    // TODO Auto-generated method
+    fid = limelight.getfid();
+    if (alliance == Alliance.Blue) {
       if (fid == 1 || fid == 2) {
         angle = 135;
       } else if (fid == 6) {
         angle = -90;
-      }
-      else if (fid == 7 || fid == 8){
+      } else if (fid == 7 || fid == 8) {
         angle = 0;
       }
     } else if (alliance == Alliance.Red) {
@@ -66,32 +139,33 @@ public class targetlock implements SwerveRequest {
         angle = 180;
       } else if (fid == 5) {
         angle = 90;
-      } else if (fid == 9 || fid == 10){
+      } else if (fid == 9 || fid == 10) {
         angle = 135;
       }
-  }
+    }
 
-  double rotationRate = headingController.calculate(parameters.currentPose.getRotation().getRadians(),
-                  Math.toRadians(angle), parameters.timestamp);
-                  double toApplyX = VelocityX;
-                  double toApplyY = VelocityY;
-                  double toApplyOmega = rotationRate;
-                  if (Math.sqrt(toApplyX * toApplyX + toApplyY * toApplyY) < Deadband) {
-                      toApplyX = 0;
-                      toApplyY = 0;
-                  }
-                  if (Math.abs(toApplyOmega) < RotationalDeadband) {
-                      toApplyOmega = 0;
-                  }
-      
-                  ChassisSpeeds speeds = ChassisSpeeds.discretize(ChassisSpeeds.fromFieldRelativeSpeeds(toApplyX, toApplyY, toApplyOmega,
-                          parameters.currentPose.getRotation()), parameters.updatePeriod);
-      
-                  var states = parameters.kinematics.toSwerveModuleStates(speeds, new Translation2d());
-      
-                  for (int i = 0; i < modulesToApply.length; ++i) {
-                      modulesToApply[i].apply(states[i], DriveRequestType, SteerRequestType);
-                  }
+    double rotationRate = headingController.calculate(parameters.currentPose.getRotation().getRadians(),
+        Math.toRadians(angle), parameters.timestamp);
+    double toApplyX = VelocityX;
+    double toApplyY = VelocityY;
+    double toApplyOmega = rotationRate;
+    if (Math.sqrt(toApplyX * toApplyX + toApplyY * toApplyY) < Deadband) {
+      toApplyX = 0;
+      toApplyY = 0;
+    }
+    if (Math.abs(toApplyOmega) < RotationalDeadband) {
+      toApplyOmega = 0;
+    }
+
+    ChassisSpeeds speeds = ChassisSpeeds
+        .discretize(ChassisSpeeds.fromFieldRelativeSpeeds(toApplyX, toApplyY, toApplyOmega,
+            parameters.currentPose.getRotation()), parameters.updatePeriod);
+
+    var states = parameters.kinematics.toSwerveModuleStates(speeds, new Translation2d());
+
+    for (int i = 0; i < modulesToApply.length; ++i) {
+      modulesToApply[i].apply(states[i], DriveRequestType, SteerRequestType);
+    }
     return StatusCode.OK;
-}
+  }
 }
