@@ -72,7 +72,7 @@ private final CommandPS4Controller commandPS4Controller = new CommandPS4Controll
     // reset the field-centric heading on left bumper press
     drivXboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    drivXboxController.rightBumper().onTrue(new IntakeCenterNote(intake, indexer, -.5));
+    drivXboxController.rightBumper().onTrue(new IntakeCenterNote(intake, shoulder, indexer, -.5));
     drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher));
     drivXboxController.leftBumper().onTrue(new SetShoulderPosition(shoulder, 0.082f));
     drivXboxController.leftTrigger().onTrue(new SetShoulderPosition(shoulder, 0.2497f));
