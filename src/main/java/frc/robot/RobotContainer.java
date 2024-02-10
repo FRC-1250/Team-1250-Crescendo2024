@@ -46,7 +46,7 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(TunerConstants.MaxSpeed);
 
   private final CommandXboxController drivXboxController = new CommandXboxController(0);
-private final CommandPS4Controller commandPS4Controller = new CommandPS4Controller(1);
+  // final CommandPS4Controller commandPS4Controller = new CommandPS4Controller(1);
 
   public RobotContainer() {
     configureBindings();
