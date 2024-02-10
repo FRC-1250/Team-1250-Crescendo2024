@@ -8,11 +8,17 @@ import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PS4Controller;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -34,7 +40,8 @@ public class RobotContainer {
   private final launcher launcher = new launcher();
   private final indexer indexer = new indexer();
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
-  
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(TunerConstants.MaxSpeed * 0.1).withRotationalDeadband(TunerConstants.MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
@@ -47,6 +54,7 @@ public class RobotContainer {
 private final CommandPS4Controller commandPS4Controller = new CommandPS4Controller(1);
 
   public RobotContainer() {
+    configureAutoCommands();
     configureBindings();
   }
 
@@ -78,10 +86,40 @@ private final CommandPS4Controller commandPS4Controller = new CommandPS4Controll
     //drivXboxController.rightTrigger().onTrue(new SetLauncherDutyCycle(launcher, 0));
     drivXboxController.leftBumper().whileTrue(new SetShoulderDutyCycle(shoulder, 0.2));
     drivXboxController.leftTrigger().whileTrue(new SetShoulderDutyCycle(shoulder, -0.2));
+    drivetrain.registerTelemetry(logger::telemeterize);
+  }
 
+  public Command getAutoPath(String pathName) {
+    return new PathPlannerAuto(pathName);
+  }
+  
+  public Command getPath(String pathName) {
+    // Load the path you want to follow using its name in the GUI
+    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+
+    // Create a path following command using AutoBuilder. This will also trigger
+    // event markers.
+    return AutoBuilder.followPath(path);
+  }
+
+  private void configureAutoCommands() {
+    /*
+     * Do nothing as default is a human safety condition, this should always be the
+     * default
+     */
+    autoChooser.setDefaultOption("Do nothing", new WaitCommand(15));
+    try {
+      autoChooser.addOption("SpeakerTop", getPath("SpeakerTop"));
+      autoChooser.addOption("SpeakerMiddle", getPath("SpeakerMiddle"));
+      autoChooser.addOption("SpeakerBottom", getPath("SpeakerBottom"));
+    } catch (Exception e) {
+      System.out.println(String.format("%s", e.getCause()));
+    }
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.getSelected();
   }
 }
