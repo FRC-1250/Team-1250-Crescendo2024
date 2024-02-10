@@ -72,17 +72,14 @@ private final CommandPS4Controller commandPS4Controller = new CommandPS4Controll
     // reset the field-centric heading on left bumper press
     drivXboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    //drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, -0.5));
-    //drivXboxController.b().onTrue(new SetIntakeDutyCycle(intake, 0));
-    drivXboxController.b().onTrue(new IntakeCenterNote(intake, indexer, -.5));
-    drivXboxController.x().whileTrue(new CenterNote(indexer));
-   // drivXboxController.a().onTrue(new SetIndexDutyCycle(indexer, 0));
-    drivXboxController.rightBumper().whileTrue(new FireNote(indexer, launcher));
-    //drivXboxController.rightTrigger().onTrue(new SetLauncherDutyCycle(launcher, 0));
-    drivXboxController.leftBumper().whileTrue(new SetShoulderDutyCycle(shoulder, 0.2));
-    drivXboxController.leftTrigger().whileTrue(new SetShoulderDutyCycle(shoulder, -0.2));
-    //drivXboxController.leftBumper().onTrue(new SetShoulderPosition(shoulder, 0.082f));
-    //drivXboxController.leftTrigger().onTrue(new SetShoulderPosition(shoulder, 0.2497f));
+    drivXboxController.rightBumper().onTrue(new IntakeCenterNote(intake, indexer, -.5));
+    drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher));
+    drivXboxController.leftBumper().onTrue(new SetShoulderPosition(shoulder, 0.082f));
+    drivXboxController.leftTrigger().onTrue(new SetShoulderPosition(shoulder, 0.2497f));
+    drivXboxController.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.5));
+    drivXboxController.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.5));
+    
+
 
   }
 
