@@ -45,7 +45,6 @@ public class IntakeCenterNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-      if (indexer.iscentered() == true) {}
-    return false;
+  return indexer.iscentered();
   }
 }
