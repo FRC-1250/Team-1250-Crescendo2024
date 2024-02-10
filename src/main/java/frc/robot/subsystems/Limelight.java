@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.LimelightJsonDump;
 
 public class Limelight extends SubsystemBase {
 
@@ -23,7 +22,6 @@ public class Limelight extends SubsystemBase {
   /**
    * Json dump processing
    */
-  private LimelightJsonDump limelightJsonDump = new LimelightJsonDump();
   private ObjectMapper objectMapper = new ObjectMapper();
   private String json = "";
 
@@ -68,9 +66,6 @@ public class Limelight extends SubsystemBase {
     return json;
   }
 
-  public LimelightJsonDump getLimelightJsonDump() {
-    return limelightJsonDump;
-  }
 
   /*
    * Camera Pose in target space as computed by this fiducial (x,y,z,rx,ry,rz)
@@ -124,23 +119,6 @@ public class Limelight extends SubsystemBase {
 
   public boolean isTargetSeen() {
     return tv == 1;
-  }
-
-  /*
-   * Consider moving the reading of network table data to a separate thread.
-   * Writing should be left on the main thread to prevent the need to implement
-   * thread safe writing. Use try catch so that we don't crash the main thread.
-   */
-  private void processLimeLightJsonDump() {
-    json = table.getEntry("json").getString("");
-
-    try {
-      limelightJsonDump = objectMapper.readValue(json, LimelightJsonDump.class);
-    } catch (JsonMappingException e) {
-      e.printStackTrace();
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
   }
 
   @Override
