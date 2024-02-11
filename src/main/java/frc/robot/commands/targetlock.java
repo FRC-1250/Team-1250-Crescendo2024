@@ -69,6 +69,17 @@ public class TargetLock implements SwerveRequest {
   }
 
   /**
+   * Sets the rotational deadband of the request.
+   *
+   * @param rotationalDeadband Rotational deadband of the request
+   * @return this request
+   */
+  public TargetLock withRotationalDeadband(double rotationalDeadband) {
+    this.RotationalDeadband = rotationalDeadband;
+    return this;
+  }
+
+  /**
    * Sets the type of control request to use for the drive motor.
    *
    * @param driveRequestType The type of control request to use for the drive
