@@ -110,7 +110,7 @@ private final CommandPS4Controller commandPS4Controller = new CommandPS4Controll
     autoChooser.setDefaultOption("Do nothing", new WaitCommand(15));
     try {
       autoChooser.addOption("SpeakerTop", getPath("SpeakerTop"));
-      autoChooser.addOption("SpeakerMiddle", getPath("SpeakerMiddle"));
+      autoChooser.addOption("SpeakerMiddle", getAutoPath("SpeakerMiddle"));
       autoChooser.addOption("SpeakerBottom", getPath("SpeakerBottom"));
     } catch (Exception e) {
       System.out.println(String.format("%s", e.getCause()));

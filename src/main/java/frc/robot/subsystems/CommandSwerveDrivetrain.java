@@ -15,6 +15,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.TunerConstants;
@@ -64,8 +65,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 this::getCurrentRobotChassisSpeeds,
                 (speeds) -> this.setControl(autoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the
                                                                              // robot
-                new HolonomicPathFollowerConfig(new PIDConstants(10, 0, 0),
-                        new PIDConstants(10, 0, 0),
+                new HolonomicPathFollowerConfig(new PIDConstants(5.5, 0, 0),
+                        new PIDConstants(4, 0, 0),
                         TunerConstants.kSpeedAt12VoltsMps,
                         driveBaseRadius,
                         new ReplanningConfig()),
@@ -90,5 +91,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             updateSimState(deltaTime, RobotController.getBatteryVoltage());
         });
         m_simNotifier.startPeriodic(kSimLoopPeriod);
+    }
+
+    @Override
+    public void periodic() {
+         SmartDashboard.putNumber("Heading", getPigeon2().getAngle());
+         SmartDashboard.putNumber("Pose X", this.m_odometry.getEstimatedPosition().getX());
+         SmartDashboard.putNumber("Pose Y", this.m_odometry.getEstimatedPosition().getY());
+         SmartDashboard.putNumber("Pose H", this.m_odometry.getEstimatedPosition().getRotation().getDegrees());
     }
 }
