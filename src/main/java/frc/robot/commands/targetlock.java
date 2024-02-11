@@ -24,7 +24,7 @@ public class TargetLock implements SwerveRequest {
   public double RotationalDeadband = 0;
   public SwerveModule.DriveRequestType DriveRequestType = SwerveModule.DriveRequestType.OpenLoopVoltage;
   public SwerveModule.SteerRequestType SteerRequestType = SwerveModule.SteerRequestType.MotionMagic;
-  public PhoenixPIDController headingController;
+  public PhoenixPIDController headingController = new PhoenixPIDController(4, 0, 0);
   private long fid;
   private Optional<Alliance> alliance;
   private final Limelight limelight;
