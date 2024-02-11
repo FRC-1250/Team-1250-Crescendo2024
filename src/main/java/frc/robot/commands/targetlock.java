@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.Optional;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -12,6 +14,7 @@ import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import frc.robot.subsystems.Limelight;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class TargetLock implements SwerveRequest {
@@ -23,8 +26,8 @@ public class TargetLock implements SwerveRequest {
   public SwerveModule.SteerRequestType SteerRequestType = SwerveModule.SteerRequestType.MotionMagic;
   public PhoenixPIDController headingController;
   private long fid;
-  private Alliance alliance;
-  private Limelight limelight;
+  private Optional<Alliance> alliance;
+  private final Limelight limelight;
   private double angle;
 
   /** Creates a new targetlock. */
@@ -89,31 +92,31 @@ public class TargetLock implements SwerveRequest {
     return this;
   }
 
-  public TargetLock() {
-    Limelight limelight;
-    int currentag;
-    int lasttag;
-    // Use addRequirements() here to declare subsystem dependencies.
+  public TargetLock(Limelight limelight) {
+    this.limelight = limelight;
+    this.alliance = DriverStation.getAlliance();
   }
 
   @Override
   public StatusCode apply(SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
     fid = limelight.getfid();
-    if (alliance == Alliance.Blue) {
-      if (fid == 1 || fid == 2) {
-        angle = 135;
-      } else if (fid == 6) {
-        angle = -90;
-      } else if (fid == 7 || fid == 8) {
-        angle = 0;
-      }
-    } else if (alliance == Alliance.Red) {
-      if (fid == 3 || fid == 4) {
-        angle = 180;
-      } else if (fid == 5) {
-        angle = 90;
-      } else if (fid == 9 || fid == 10) {
-        angle = 135;
+    if (alliance.isPresent()) {
+      if (alliance.get() == Alliance.Blue) {
+        if (fid == 1 || fid == 2) {
+          angle = 135;
+        } else if (fid == 6) {
+          angle = -90;
+        } else if (fid == 7 || fid == 8) {
+          angle = 0;
+        }
+      } else if (alliance.get() == Alliance.Red) {
+        if (fid == 3 || fid == 4) {
+          angle = 180;
+        } else if (fid == 5) {
+          angle = 90;
+        } else if (fid == 9 || fid == 10) {
+          angle = 135;
+        }
       }
     }
 
