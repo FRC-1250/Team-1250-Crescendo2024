@@ -10,33 +10,18 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 
 import frc.robot.subsystems.Limelight;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.Command;
 
-public class targetlock implements SwerveRequest {
+public class TargetLock implements SwerveRequest {
   public double VelocityX = 0;
   public double VelocityY = 0;
-  public double RotationalRate = 0;
   public double Deadband = 0;
   public double RotationalDeadband = 0;
   public SwerveModule.DriveRequestType DriveRequestType = SwerveModule.DriveRequestType.OpenLoopVoltage;
   public SwerveModule.SteerRequestType SteerRequestType = SwerveModule.SteerRequestType.MotionMagic;
-  protected SwerveModuleState[] m_lastAppliedState = null;
   public PhoenixPIDController headingController;
-
-  private double kP = -0.15;
-  private double KProt = 0.01;
-  private double xCorrect = 0;
-  private double yCorrect = 0;
-  private double rotCorrect = 0;
-  private double tx;
-  private double ty;
-  private Object drivetrain;
   private long fid;
   private Alliance alliance;
   private Limelight limelight;
@@ -51,7 +36,7 @@ public class targetlock implements SwerveRequest {
    * @param velocityX Velocity in the X direction, in m/s
    * @return this request
    */
-  public targetlock withVelocityX(double velocityX) {
+  public TargetLock withVelocityX(double velocityX) {
     this.VelocityX = velocityX;
     return this;
   }
@@ -64,7 +49,7 @@ public class targetlock implements SwerveRequest {
    * @param velocityY Velocity in the Y direction, in m/s
    * @return this request
    */
-  public targetlock withVelocityY(double velocityY) {
+  public TargetLock withVelocityY(double velocityY) {
     this.VelocityY = velocityY;
     return this;
   }
@@ -75,19 +60,8 @@ public class targetlock implements SwerveRequest {
    * @param deadband Allowable deadband of the request
    * @return this request
    */
-  public targetlock withDeadband(double deadband) {
+  public TargetLock withDeadband(double deadband) {
     this.Deadband = deadband;
-    return this;
-  }
-
-  /**
-   * Sets the rotational deadband of the request.
-   *
-   * @param rotationalDeadband Rotational deadband of the request
-   * @return this request
-   */
-  public targetlock withRotationalDeadband(double rotationalDeadband) {
-    this.RotationalDeadband = rotationalDeadband;
     return this;
   }
 
@@ -98,7 +72,7 @@ public class targetlock implements SwerveRequest {
    *                         motor
    * @return this request
    */
-  public targetlock withDriveRequestType(SwerveModule.DriveRequestType driveRequestType) {
+  public TargetLock withDriveRequestType(SwerveModule.DriveRequestType driveRequestType) {
     this.DriveRequestType = driveRequestType;
     return this;
   }
@@ -110,12 +84,12 @@ public class targetlock implements SwerveRequest {
    *                         motor
    * @return this request
    */
-  public targetlock withSteerRequestType(SwerveModule.SteerRequestType steerRequestType) {
+  public TargetLock withSteerRequestType(SwerveModule.SteerRequestType steerRequestType) {
     this.SteerRequestType = steerRequestType;
     return this;
   }
 
-  public targetlock() {
+  public TargetLock() {
     Limelight limelight;
     int currentag;
     int lasttag;
@@ -124,7 +98,6 @@ public class targetlock implements SwerveRequest {
 
   @Override
   public StatusCode apply(SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
-    // TODO Auto-generated method
     fid = limelight.getfid();
     if (alliance == Alliance.Blue) {
       if (fid == 1 || fid == 2) {
