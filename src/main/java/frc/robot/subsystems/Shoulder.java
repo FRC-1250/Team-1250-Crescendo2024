@@ -4,15 +4,16 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxAlternateEncoder;
+import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shoulder extends SubsystemBase {
@@ -38,12 +39,12 @@ public class Shoulder extends SubsystemBase {
   private final int ALLOWABLE_CLOSED_LOOP_ERROR = 8192;
 
   // Offset value to normalize the encoder position to 0 when at home
-  private final int ENCODER_OFFSET = 0;
+  private final double ENCODER_OFFSET = 0.9736;
 
   private final CANSparkMax leftRotator;
   private final CANSparkMax rightRotator;
-  private final SparkPIDController sparkPIDController;
-  private final RelativeEncoder throughBoreEncoder;
+  private final SparkPIDController rightRotatorPIDController;
+  private final AbsoluteEncoder rightRotatorThroughBoreEncoder;
 
   public Shoulder() {
     rightRotator = new CANSparkMax(RIGHT_ROTATOR_CAN_ID, MotorType.kBrushless);
@@ -52,10 +53,10 @@ public class Shoulder extends SubsystemBase {
     rightRotator.setIdleMode(IdleMode.kBrake);
     rightRotator.setClosedLoopRampRate(0.5);
     rightRotator.setOpenLoopRampRate(0.5);
-    //rightRotator.setSoftLimit(SoftLimitDirection.kForward, Position.LIMIT.value);
-    //rightRotator.setSoftLimit(SoftLimitDirection.kReverse, Position.HOME.value);
-    //rightRotator.enableSoftLimit(SoftLimitDirection.kForward, true);
-    //rightRotator.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    rightRotator.setSoftLimit(SoftLimitDirection.kForward, Position.LIMIT.value);
+    rightRotator.setSoftLimit(SoftLimitDirection.kReverse, Position.HOME.value);
+    rightRotator.enableSoftLimit(SoftLimitDirection.kForward, false);
+    rightRotator.enableSoftLimit(SoftLimitDirection.kReverse, false);
     rightRotator.setInverted(false);
 
     leftRotator = new CANSparkMax(LEFT_ROTATOR_CAN_ID, MotorType.kBrushless);
@@ -66,20 +67,21 @@ public class Shoulder extends SubsystemBase {
     leftRotator.setOpenLoopRampRate(0.5);
     leftRotator.follow(rightRotator, true);
 
-    throughBoreEncoder = rightRotator.getAlternateEncoder(SparkMaxAlternateEncoder.Type.kQuadrature, 8192);
-    throughBoreEncoder.setInverted(false);
+    rightRotatorThroughBoreEncoder = rightRotator.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
+    rightRotatorThroughBoreEncoder.setInverted(true);
+    rightRotatorThroughBoreEncoder.setZeroOffset(ENCODER_OFFSET);
 
-    sparkPIDController = rightRotator.getPIDController();
-    sparkPIDController.setFeedbackDevice(throughBoreEncoder);
-    sparkPIDController.setP(0.1);
-    sparkPIDController.setI(0);
-    sparkPIDController.setD(1);
-    sparkPIDController.setFF(0);
-    sparkPIDController.setOutputRange(-1, 1);
+    rightRotatorPIDController = rightRotator.getPIDController();
+    rightRotatorPIDController.setFeedbackDevice(rightRotatorThroughBoreEncoder);
+    rightRotatorPIDController.setP(10);
+    rightRotatorPIDController.setI(0);
+    rightRotatorPIDController.setD(0);
+    rightRotatorPIDController.setFF(0);
+    rightRotatorPIDController.setOutputRange(-1, 1);
   }
 
   public void setPosition(double targetPosition) {
-    sparkPIDController.setReference(targetPosition, ControlType.kPosition);
+    rightRotatorPIDController.setReference(targetPosition, ControlType.kPosition);
   }
 
   public void setDutyCycle(double percentOut) {
@@ -91,11 +93,7 @@ public class Shoulder extends SubsystemBase {
   }
 
   public double getPosition() {
-    return throughBoreEncoder.getPosition() + ENCODER_OFFSET;
-  }
-
-  public void resetPosition() {
-    throughBoreEncoder.setPosition(0);
+    return rightRotatorThroughBoreEncoder.getPosition();
   }
 
   public boolean isAtSetPoint(double targetPosition) {
@@ -104,5 +102,7 @@ public class Shoulder extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putData(this);
+    SmartDashboard.putNumber("Shoulder position", rightRotatorThroughBoreEncoder.getPosition());
   }
 }

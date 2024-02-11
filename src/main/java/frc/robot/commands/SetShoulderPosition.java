@@ -7,19 +7,20 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.Shoulder.Position;
+import frc.robot.util.RobotHelper;
 
 public class SetShoulderPosition extends Command {
   private final Shoulder shoulder;
-  private final float position;
+  private final float targetPosition;
 
-  public SetShoulderPosition(Shoulder shoulder, float position) {
+  public SetShoulderPosition(Shoulder shoulder, float targerPosition) {
     addRequirements(shoulder);
     this.shoulder = shoulder;
-    this.position = position;
+    this.targetPosition = targerPosition;
   }
 
-  public SetShoulderPosition(Shoulder shoulder, Position position) {
-    this(shoulder, position.value);
+  public SetShoulderPosition(Shoulder shoulder, Position targetPosition) {
+    this(shoulder, targetPosition.value);
   }
 
   @Override
@@ -28,11 +29,15 @@ public class SetShoulderPosition extends Command {
 
   @Override
   public void execute() {
-    shoulder.setPosition(position);
+    shoulder.setPosition(targetPosition);
+  }
+
+  public void end(boolean interrupted) {
+    shoulder.setDutyCycle(0);
   }
 
   @Override
   public boolean isFinished() {
-    return shoulder.isAtSetPoint(position);
+    return RobotHelper.isWithinRangeOfTarget(shoulder.getPosition(), targetPosition, 0.025);
   }
 }
