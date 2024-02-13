@@ -12,9 +12,11 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class indexer extends SubsystemBase {
+  private int LINDEX = 22;
+  private int RINDEX = 23;
   DigitalInput[] irArray = new DigitalInput[4];
-  CANSparkMax leftIndexSparkmax = new CANSparkMax(22, MotorType.kBrushless);
-  CANSparkMax rightIndexSparkMax = new CANSparkMax(23, MotorType.kBrushless);
+  CANSparkMax leftIndexSparkmax = new CANSparkMax(LINDEX, MotorType.kBrushless);
+  CANSparkMax rightIndexSparkMax = new CANSparkMax(RINDEX, MotorType.kBrushless);
 
   /** Creates a new indexer. */
   public indexer() {

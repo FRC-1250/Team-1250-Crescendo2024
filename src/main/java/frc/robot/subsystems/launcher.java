@@ -4,29 +4,23 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.CAN;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class launcher extends SubsystemBase {
   private int LSHOOTER = 20;
   private int RSHOOTER = 21;
-  private int LINDEX = 22;
-  private int RINDEX = 23;
 
   public final int maxRPM = 5700;
   /** Creates a new shooter. */
-  CANSparkMax leftLauncherSparkMax = new CANSparkMax(20, MotorType.kBrushless);
-  CANSparkMax rightLauncherSparkMax = new CANSparkMax(21, MotorType.kBrushless);
+  CANSparkMax leftLauncherSparkMax = new CANSparkMax(LSHOOTER, MotorType.kBrushless);
+  CANSparkMax rightLauncherSparkMax = new CANSparkMax(RSHOOTER, MotorType.kBrushless);
   
   SparkPIDController pidController;
 

@@ -4,32 +4,19 @@
 
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.SetIndexDutyCycle;
-import frc.robot.commands.SetLauncherDutyCycle;
-import frc.robot.commands.SetIntakeDutyCycle;
 import frc.robot.commands.SetShoulderDutyCycle;
 import frc.robot.commands.SetShoulderPosition;
 import frc.robot.commands.TargetLock;
-import frc.robot.commands.CenterNote;
 import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
 import frc.robot.subsystems.Intake;
@@ -72,15 +59,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    //triangleButton.onTrue(new SetIntakeDutyCycle(intake, -0.5));
-    //circleButton.onTrue(new SetIntakeDutyCycle(intake, 0));
-    //l1Button.whileTrue(new SetShoulderDutyCycle(shoulder, .2));
-    //l2Button.whileTrue(new SetShoulderDutyCycle(shoulder, -.2));
-    //r1Button.onTrue(new SetLauncherDutyCycle(launcher, 1));
-    //r2Button.onTrue(new SetLauncherDutyCycle(launcher, 0));
-    //crossButton.onTrue(new SetIndexDutyCycle(indexer, 1));
-    //squareButton.onTrue(new SetIndexDutyCycle(indexer, 0));
-
     // Drive forward with -y, left with -x, rotate counter clockwise with -x
     drivetrain.setDefaultCommand(drivetrain.applyRequest(
         () -> drive
@@ -109,15 +87,6 @@ public class RobotContainer {
   public Command getAutoPath(String pathName) {
     return new PathPlannerAuto(pathName);
   }
-  
-  public Command getPath(String pathName) {
-    // Load the path you want to follow using its name in the GUI
-    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-
-    // Create a path following command using AutoBuilder. This will also trigger
-    // event markers.
-    return AutoBuilder.followPath(path);
-  }
 
   private void configureAutoCommands() {
     /*
@@ -126,9 +95,7 @@ public class RobotContainer {
      */
     autoChooser.setDefaultOption("Do nothing", new WaitCommand(15));
     try {
-      autoChooser.addOption("SpeakerTop", getPath("SpeakerTop"));
       autoChooser.addOption("SpeakerMiddle", getAutoPath("SpeakerMiddle"));
-      autoChooser.addOption("SpeakerBottom", getPath("SpeakerBottom"));
     } catch (Exception e) {
       System.out.println(String.format("%s", e.getCause()));
     }
