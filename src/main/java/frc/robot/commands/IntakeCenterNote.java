@@ -7,17 +7,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.indexer;
+import frc.robot.subsystems.Shoulder.Position;
+import frc.robot.util.RobotHelper;
+import frc.robot.subsystems.Shoulder;
 
 public class IntakeCenterNote extends Command {
   /** Creates a new CenterFireNote. */
   private final indexer indexer;
   private final Intake intake;
   private double percentOut;
-  public IntakeCenterNote(Intake intake, indexer indexer, Double percentOut) {
+  private final Shoulder shoulder;
+  public IntakeCenterNote(Intake intake, Shoulder shoulder, indexer indexer, Double percentOut) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.indexer = indexer;
     this.percentOut = percentOut;
+    this.shoulder = shoulder;
 
 
   }
@@ -29,9 +34,13 @@ public class IntakeCenterNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (RobotHelper.isWithinRangeOfTarget(shoulder.getPosition(), Position.HOME.value, .025)) {
     intake.setDutyCycleUpperRoller(percentOut);
     intake.setDutyCycleLowerRoller(percentOut);
     indexer.centernote();
+    } else {
+      shoulder.setPosition(0.0);
+    }
   }
 
   // Called once the command ends or is interrupted.

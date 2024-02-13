@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -27,10 +28,12 @@ import frc.robot.commands.SetLauncherDutyCycle;
 import frc.robot.commands.SetIntakeDutyCycle;
 import frc.robot.commands.SetShoulderDutyCycle;
 import frc.robot.commands.SetShoulderPosition;
+import frc.robot.commands.TargetLock;
 import frc.robot.commands.CenterNote;
 import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.indexer;
 import frc.robot.subsystems.launcher;
@@ -43,17 +46,25 @@ public class RobotContainer {
   private final indexer indexer = new indexer();
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-
+  private final Limelight limelight = new Limelight();
+   
+  // Field centric driving in closed loop with 10% deadband
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(TunerConstants.MaxSpeed * 0.1).withRotationalDeadband(TunerConstants.MaxAngularRate * 0.1) // Add a 10% deadband
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
-                                                               // driving in open loop
-  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+      .withDeadband(TunerConstants.MaxSpeed * 0.1)
+      .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.1)
+      .withDriveRequestType(DriveRequestType.Velocity)
+      .withSteerRequestType(SteerRequestType.MotionMagic);
+
+  // Field centric driving in closed loop with target locking and 10% deadband
+  private final TargetLock targetLock = new TargetLock(limelight)
+      .withDeadband(TunerConstants.MaxSpeed * 0.1)
+      .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.025)
+      .withDriveRequestType(DriveRequestType.Velocity)
+      .withSteerRequestType(SteerRequestType.MotionMagic);
   private final Telemetry logger = new Telemetry(TunerConstants.MaxSpeed);
 
   private final CommandXboxController drivXboxController = new CommandXboxController(0);
-private final CommandPS4Controller commandPS4Controller = new CommandPS4Controller(1);
+  // final CommandPS4Controller commandPS4Controller = new CommandPS4Controller(1);
 
   public RobotContainer() {
     configureAutoCommands();
@@ -70,27 +81,28 @@ private final CommandPS4Controller commandPS4Controller = new CommandPS4Controll
     //crossButton.onTrue(new SetIndexDutyCycle(indexer, 1));
     //squareButton.onTrue(new SetIndexDutyCycle(indexer, 0));
 
-    drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed) // Drive forward with
-                                                                                           // negative Y (forward)
-            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate) // Drive counterclockwise with negative X (left)
-        ));
+    // Drive forward with -y, left with -x, rotate counter clockwise with -x
+    drivetrain.setDefaultCommand(drivetrain.applyRequest(
+        () -> drive
+            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
+            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed)
+            .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate)));
+
+    drivXboxController.x().whileTrue(drivetrain.applyRequest(
+        () -> targetLock
+            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
+            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed)));
 
     // reset the field-centric heading on left bumper press
     drivXboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    //drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, -0.5));
-    //drivXboxController.b().onTrue(new SetIntakeDutyCycle(intake, 0));
-    drivXboxController.b().onTrue(new IntakeCenterNote(intake, indexer, -.5));
-    drivXboxController.x().whileTrue(new CenterNote(indexer));
-   // drivXboxController.a().onTrue(new SetIndexDutyCycle(indexer, 0));
-    drivXboxController.rightBumper().whileTrue(new FireNote(indexer, launcher));
-    //drivXboxController.rightTrigger().onTrue(new SetLauncherDutyCycle(launcher, 0));
-    drivXboxController.leftBumper().whileTrue(new SetShoulderDutyCycle(shoulder, 0.2));
-    drivXboxController.leftTrigger().whileTrue(new SetShoulderDutyCycle(shoulder, -0.2));
-    //drivXboxController.leftBumper().onTrue(new SetShoulderPosition(shoulder, 0.082f));
-    //drivXboxController.leftTrigger().onTrue(new SetShoulderPosition(shoulder, 0.2497f));
+    drivXboxController.rightBumper().onTrue(new IntakeCenterNote(intake, shoulder, indexer, -.5));
+    drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher));
+    drivXboxController.a().onTrue(new SetShoulderPosition(shoulder, 0.01f));
+    drivXboxController.leftBumper().onTrue(new SetShoulderPosition(shoulder, 0.082f));
+    drivXboxController.leftTrigger().onTrue(new SetShoulderPosition(shoulder, 0.2497f));
+    drivXboxController.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.5));
+    drivXboxController.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.5));
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
