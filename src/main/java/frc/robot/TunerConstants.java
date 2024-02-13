@@ -12,24 +12,22 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class TunerConstants {
     // Both sets of gains need to be tuned to your individual robot.
-        // 6 meters per second desired top speed
-    public static final double MaxSpeed = 6; 
+    //https://www.swervedrivespecialties.com/products/mk4-swerve-module, L2
+    public static final double MaxSpeed = 5.0292; 
+    // 3/4 of a rotation per second max angular velocity
     public static final double MaxAngularRate = 1.5 * Math.PI; 
     
-    // 3/4 of a rotation per second max angular velocity
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
-
-
     private static final Slot0Configs steerGains = new Slot0Configs()
-        .withKP(100).withKI(0).withKD(0.2)
+        .withKP(10).withKI(0).withKD(0.2)
         .withKS(0).withKV(1.5).withKA(0);
 
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
 
     private static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(3).withKI(0).withKD(0)
+        .withKP(1).withKI(0).withKD(0)
         .withKS(0).withKV(0).withKA(0);
 
     // The closed-loop output type to use for the steer motors;
