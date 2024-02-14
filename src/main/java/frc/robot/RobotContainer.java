@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.SetShoulderDutyCycle;
 import frc.robot.commands.SetShoulderPosition;
-import frc.robot.commands.TargetLock;
+import frc.robot.commands.targetlock;
 import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
 import frc.robot.subsystems.Intake;
@@ -43,7 +43,7 @@ public class RobotContainer {
       .withSteerRequestType(SteerRequestType.MotionMagic);
 
   // Field centric driving in closed loop with target locking and 10% deadband
-  private final TargetLock targetLock = new TargetLock(limelight)
+  private final targetlock targetLock = new targetlock(limelight)
       .withDeadband(TunerConstants.MaxSpeed * 0.1)
       .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.025)
       .withDriveRequestType(DriveRequestType.Velocity)
