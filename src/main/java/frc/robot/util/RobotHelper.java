@@ -14,6 +14,7 @@ public class RobotHelper {
      * The lowerBound is calculated as: lowerValue = targetValue - (targetValue *
      * acceptancePercent)
      */
+    @Deprecated
     public static boolean isWithinRangeOfTarget(double currentValue, double targetValue, double acceptancePercent) {
         var upperValue = targetValue + (targetValue * acceptancePercent);
         var lowerValue = targetValue - (targetValue * acceptancePercent);

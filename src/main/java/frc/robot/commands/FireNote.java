@@ -4,14 +4,15 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.indexer;
 import frc.robot.subsystems.launcher;
-import frc.robot.util.RobotHelper;
 
 public class FireNote extends Command {
   private final launcher launcher;
   private final indexer indexer;
+  private final int TARGET_RPM = 5000;
   /** Creates a new FireNote. */
   public FireNote(indexer indexer, launcher launcher) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -26,8 +27,8 @@ public class FireNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    launcher.SetLauncherVelocity(5000);
-    if (RobotHelper.isWithinRangeOfTarget(launcher.returnRPM(), 5000, 0.025)) {
+    launcher.SetLauncherVelocity(TARGET_RPM);
+    if (MathUtil.isNear(TARGET_RPM, launcher.returnRPM(), 100)) {
       indexer.setDutyoutIndex(1);
     }
   }
