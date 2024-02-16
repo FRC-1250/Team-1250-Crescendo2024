@@ -49,7 +49,7 @@ public class Shoulder extends SubsystemBase {
   public Shoulder() {
     rightRotator = new CANSparkMax(RIGHT_ROTATOR_CAN_ID, MotorType.kBrushless);
     rightRotator.restoreFactoryDefaults();
-    rightRotator.setSmartCurrentLimit(60);
+    rightRotator.setSmartCurrentLimit(25);
     rightRotator.setIdleMode(IdleMode.kBrake);
     rightRotator.setClosedLoopRampRate(0.5);
     rightRotator.setOpenLoopRampRate(0.5);
@@ -61,7 +61,7 @@ public class Shoulder extends SubsystemBase {
 
     leftRotator = new CANSparkMax(LEFT_ROTATOR_CAN_ID, MotorType.kBrushless);
     leftRotator.restoreFactoryDefaults();
-    leftRotator.setSmartCurrentLimit(60);
+    leftRotator.setSmartCurrentLimit(25);
     leftRotator.setIdleMode(IdleMode.kBrake);
     leftRotator.setClosedLoopRampRate(0.5);
     leftRotator.setOpenLoopRampRate(0.5);
