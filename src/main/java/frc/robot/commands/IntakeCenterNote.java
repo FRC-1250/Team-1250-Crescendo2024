@@ -34,13 +34,12 @@ public class IntakeCenterNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (MathUtil.isNear(Position.HOME.value, shoulder.getPosition(), 0.02, 0, 1)) {
+    if (MathUtil.isNear(Position.HOME.value, shoulder.getPosition(), 0.005, 0, 1)) {
     intake.setDutyCycleUpperRoller(percentOut);
     intake.setDutyCycleLowerRoller(percentOut);
     indexer.centernote();
-    } else {
-      shoulder.setPosition(0.0);
     }
+      shoulder.setPosition(Position.HOME.value);
   }
 
   // Called once the command ends or is interrupted.

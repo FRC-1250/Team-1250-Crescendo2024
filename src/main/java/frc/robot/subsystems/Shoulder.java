@@ -19,12 +19,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Shoulder extends SubsystemBase {
 
   public enum Position {
-    LIMIT(100),
-    AMP(80),
-    PREP_CLIMB(60),
-    CLIMB(40),
-    SPEAKER(10),
-    HOME(0);
+    LIMIT(.316f),
+    AMP(.281f),
+    HORIZONTAL(0.195f),
+    SPEAKER_PODIUM(.078f),
+    SPEAKER(.033f),
+    HOME(0.5f);
 
     // Default value is rotations
     public final float value;
@@ -39,7 +39,7 @@ public class Shoulder extends SubsystemBase {
   private final int ALLOWABLE_CLOSED_LOOP_ERROR = 8192;
 
   // Offset value to normalize the encoder position to 0 when at home
-  private final double ENCODER_OFFSET = 0.9736;
+  private final double ENCODER_OFFSET = 0.03;
 
   private final CANSparkMax leftRotator;
   private final CANSparkMax rightRotator;

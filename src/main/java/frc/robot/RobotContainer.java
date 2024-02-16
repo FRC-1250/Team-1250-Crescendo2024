@@ -25,6 +25,7 @@ import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.indexer;
 import frc.robot.subsystems.launcher;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Shoulder.Position; 
 
 public class RobotContainer {
   private final Intake intake = new Intake();
@@ -74,11 +75,11 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     drivXboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    drivXboxController.rightBumper().onTrue(new IntakeCenterNote(intake, shoulder, indexer, -.5));
+    drivXboxController.rightBumper().onTrue(new IntakeCenterNote(intake, shoulder, indexer, 1.0));
     drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher));
-    drivXboxController.a().onTrue(new SetShoulderPosition(shoulder, 0.01f));
-    drivXboxController.leftBumper().onTrue(new SetShoulderPosition(shoulder, 0.082f));
-    drivXboxController.leftTrigger().onTrue(new SetShoulderPosition(shoulder, 0.2497f));
+    drivXboxController.a().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));
+    drivXboxController.leftBumper().onTrue(new SetShoulderPosition(shoulder, Position.SPEAKER.value));
+    drivXboxController.leftTrigger().onTrue(new SetShoulderPosition(shoulder, Position.AMP.value));
     drivXboxController.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.5));
     drivXboxController.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.5));
     drivetrain.registerTelemetry(logger::telemeterize);

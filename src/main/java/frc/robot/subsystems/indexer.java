@@ -24,13 +24,13 @@ public class indexer extends SubsystemBase {
       irArray[i] = new DigitalInput(i);
     }
     rightIndexSparkMax.restoreFactoryDefaults();
-    rightIndexSparkMax.setIdleMode(IdleMode.kCoast);
+    rightIndexSparkMax.setIdleMode(IdleMode.kBrake);
     rightIndexSparkMax.setInverted(true);
     rightIndexSparkMax.setSmartCurrentLimit(40);
 
     leftIndexSparkmax.restoreFactoryDefaults();
     leftIndexSparkmax.follow(rightIndexSparkMax, true);
-    leftIndexSparkmax.setIdleMode(IdleMode.kCoast);
+    leftIndexSparkmax.setIdleMode(IdleMode.kBrake);
     leftIndexSparkmax.setSmartCurrentLimit(40);
 
   }
@@ -56,23 +56,23 @@ public class indexer extends SubsystemBase {
     boolean shooterside = pollIrArraySensor(3);
 
     if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == false) {
-      setDutyoutIndex(0.15);
+      setDutyoutIndex(0.3);
     } else if (intakeside == true && indexerclose == false && indexerfar == false && shooterside == false) {
-      setDutyoutIndex(.05);
+      setDutyoutIndex(.1);
     } else if (intakeside == true && indexerclose == true && indexerfar == false && shooterside == false) {
-      setDutyoutIndex(.05);
+      setDutyoutIndex(.1);
     } else if (intakeside == true && indexerclose == true && indexerfar == true && shooterside == false) {
-      setDutyoutIndex(.05);
+      setDutyoutIndex(.1);
      } else if (intakeside == false && indexerclose == true && indexerfar == false && shooterside == false) {
-      setDutyoutIndex(.05);
+      setDutyoutIndex(.1);
     } else if (intakeside == false && indexerclose == false && indexerfar == true && shooterside == false) {
-      setDutyoutIndex(-.05);
+      setDutyoutIndex(-.1);
     }else if (intakeside == false && indexerclose == true && indexerfar == true && shooterside == false) {
       setDutyoutIndex(0);
     } else if (intakeside == false && indexerclose == true && indexerfar == true && shooterside == true) {
-      setDutyoutIndex(-0.05);
+      setDutyoutIndex(-0.1);
     } else if (intakeside == false && indexerclose == false && indexerfar == true && shooterside == true) {
-      setDutyoutIndex(-0.05);
+      setDutyoutIndex(-0.1);
     } else if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == true) {
       setDutyoutIndex(-0.1);
     }

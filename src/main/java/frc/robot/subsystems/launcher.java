@@ -26,22 +26,22 @@ public class launcher extends SubsystemBase {
 
   public launcher() {
     rightLauncherSparkMax.restoreFactoryDefaults();
-    rightLauncherSparkMax.setIdleMode(IdleMode.kCoast);
+    rightLauncherSparkMax.setIdleMode(IdleMode.kBrake);
     rightLauncherSparkMax.setInverted(true);
-    rightLauncherSparkMax.setSmartCurrentLimit(40);
-    rightLauncherPIDController.setP(.1);
+    rightLauncherSparkMax.setSmartCurrentLimit(60);
+    rightLauncherPIDController.setP(2e-4);
     rightLauncherPIDController.setI(0);
     rightLauncherPIDController.setD(0);
-    rightLauncherPIDController.setFF(0);
+    rightLauncherPIDController.setFF(0.00018);
 
     leftLauncherSparkMax.restoreFactoryDefaults();
-    leftLauncherSparkMax.setIdleMode(IdleMode.kCoast);
+    leftLauncherSparkMax.setIdleMode(IdleMode.kBrake);
     leftLauncherSparkMax.setInverted(false);
-    leftLauncherSparkMax.setSmartCurrentLimit(40);
-    leftLauncerPIDController.setP(.1);
+    leftLauncherSparkMax.setSmartCurrentLimit(60);
+    leftLauncerPIDController.setP(2e-4);
     leftLauncerPIDController.setI(0);
     leftLauncerPIDController.setD(0);
-    leftLauncerPIDController.setFF(0);  
+    leftLauncerPIDController.setFF(0.00018);  
   }
 
 public void SetDutyOutlaunch(double percent) {
