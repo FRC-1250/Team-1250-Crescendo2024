@@ -1,3 +1,4 @@
+package frc.robot.util;
 public class DistanceToAngle {
     //Name: distAngle
     //Parameters: inDistance

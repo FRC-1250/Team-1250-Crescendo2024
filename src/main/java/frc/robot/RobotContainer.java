@@ -40,8 +40,7 @@ public class RobotContainer {
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(TunerConstants.MaxSpeed * 0.1)
       .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.1)
-      .withDriveRequestType(DriveRequestType.Velocity)
-      .withSteerRequestType(SteerRequestType.MotionMagic);
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   // Field centric driving in closed loop with target locking and 10% deadband
   private final targetlock targetLock = new targetlock(limelight)
