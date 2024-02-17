@@ -20,12 +20,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Shoulder extends SubsystemBase {
 
   public enum Position {
-    LIMIT(125),
-    AMP(120),
-    HORIZONTAL(90),
-    SPEAKER_PODIUM(40),
-    SPEAKER(70),
-    HOME(30);
+    LIMIT(.347f),
+    AMP(.33f),
+    HORIZONTAL(.25f),
+    SPEAKER_PODIUM(.111f),
+    SPEAKER(.083f),
+    HOME(.083f),
+    PID(.194f);
 
     // Default value is rotations
     public final float value;
@@ -40,15 +41,10 @@ public class Shoulder extends SubsystemBase {
 
   // Closed loop tolerance in degrees
   // TODO: Use isAtSetPoint after determining new home of ABS sensor and changing rotations to degrees
-  private final int CLOSED_LOOP_TOLERANCE = 2;
-
-  // Encoder conversion factor to change rotation into degrees
-  // TODO: Enable on setPositionConversionFactor when we are ready
-  private final double ENCODER_POSITION_CONVERSION_FACTOR = 360;
-
+  private final double CLOSED_LOOP_TOLERANCE = 0.02;
 
   // Offset value to normalize the encoder position to 0 when at home
-  private final double ENCODER_OFFSET = 0.134 * 360;
+  private final double ENCODER_OFFSET = 0.134;
 
   private final CANSparkMax leftRotator;
   private final CANSparkMax rightRotator;
@@ -78,12 +74,12 @@ public class Shoulder extends SubsystemBase {
 
     rightRotatorThroughBoreEncoder = rightRotator.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     rightRotatorThroughBoreEncoder.setInverted(true);
-    rightRotatorThroughBoreEncoder.setPositionConversionFactor(ENCODER_POSITION_CONVERSION_FACTOR);
+    //rightRotatorThroughBoreEncoder.setPositionConversionFactor(ENCODER_POSITION_CONVERSION_FACTOR);
     rightRotatorThroughBoreEncoder.setZeroOffset(ENCODER_OFFSET);
 
     rightRotatorPIDController = rightRotator.getPIDController();
     rightRotatorPIDController.setFeedbackDevice(rightRotatorThroughBoreEncoder);
-    rightRotatorPIDController.setP(7.5/36);
+    rightRotatorPIDController.setP(10);
     rightRotatorPIDController.setI(0);
     rightRotatorPIDController.setD(0);
     rightRotatorPIDController.setFF(0);
