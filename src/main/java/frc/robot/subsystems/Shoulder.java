@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -36,7 +37,15 @@ public class Shoulder extends SubsystemBase {
 
   private final int LEFT_ROTATOR_CAN_ID = 30;
   private final int RIGHT_ROTATOR_CAN_ID = 31;
-  private final int ALLOWABLE_CLOSED_LOOP_ERROR = 8192;
+
+  // Closed loop tolerance in degrees
+  // TODO: Use isAtSetPoint after determining new home of ABS sensor and changing rotations to degrees
+  private final int CLOSED_LOOP_TOLERANCE = 2;
+
+  // Encoder conversion factor to change rotation into degrees
+  // TODO: Enable on setPositionConversionFactor when we are ready
+  private final double ENCODER_POSITION_CONVERSION_FACTOR = 360;
+
 
   // Offset value to normalize the encoder position to 0 when at home
   private final double ENCODER_OFFSET = 0.5;
@@ -97,12 +106,13 @@ public class Shoulder extends SubsystemBase {
   }
 
   public boolean isAtSetPoint(double targetPosition) {
-    return Math.abs(targetPosition - getPosition()) < ALLOWABLE_CLOSED_LOOP_ERROR;
+    return MathUtil.isNear(targetPosition, getPosition(), CLOSED_LOOP_TOLERANCE);
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putData(this);
     SmartDashboard.putNumber("Shoulder position", rightRotatorThroughBoreEncoder.getPosition());
+    SmartDashboard.putNumber("Shoulder position, degrees", rightRotatorThroughBoreEncoder.getPosition() * 360);
   }
 }
