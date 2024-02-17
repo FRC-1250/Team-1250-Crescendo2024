@@ -25,7 +25,7 @@ public class Shoulder extends SubsystemBase {
     HORIZONTAL(.25f),
     SPEAKER_PODIUM(.111f),
     SPEAKER(.083f),
-    HOME(.083f),
+    HOME(.066f),
     PID(.194f);
 
     // Default value is rotations
