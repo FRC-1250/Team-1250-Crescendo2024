@@ -47,8 +47,7 @@ public class RobotContainer {
   private final targetlock targetLock = new targetlock(limelight)
       .withDeadband(TunerConstants.MaxSpeed * 0.1)
       .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.025)
-      .withDriveRequestType(DriveRequestType.Velocity)
-      .withSteerRequestType(SteerRequestType.MotionMagic);
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private final Telemetry logger = new Telemetry(TunerConstants.MaxSpeed);
 
   private final CommandXboxController drivXboxController = new CommandXboxController(0);

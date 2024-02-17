@@ -38,6 +38,6 @@ public class SetShoulderPosition extends Command {
 
   @Override
   public boolean isFinished() {
-    return MathUtil.isNear(targetPosition, shoulder.getPosition(), 0.02, 0, 1);
+    return shoulder.isAtSetPoint(targetPosition);
   }
 }

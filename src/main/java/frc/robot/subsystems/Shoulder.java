@@ -20,12 +20,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Shoulder extends SubsystemBase {
 
   public enum Position {
-    LIMIT(.816f),
-    AMP(.781f),
-    HORIZONTAL(0.695f),
-    SPEAKER_PODIUM(.578f),
-    SPEAKER(.533f),
-    HOME(0.5f);
+    LIMIT(125),
+    AMP(120),
+    HORIZONTAL(90),
+    SPEAKER_PODIUM(40),
+    SPEAKER(70),
+    HOME(30);
 
     // Default value is rotations
     public final float value;
@@ -48,7 +48,7 @@ public class Shoulder extends SubsystemBase {
 
 
   // Offset value to normalize the encoder position to 0 when at home
-  private final double ENCODER_OFFSET = 0.5;
+  private final double ENCODER_OFFSET = 0.134 * 360;
 
   private final CANSparkMax leftRotator;
   private final CANSparkMax rightRotator;
@@ -78,11 +78,12 @@ public class Shoulder extends SubsystemBase {
 
     rightRotatorThroughBoreEncoder = rightRotator.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     rightRotatorThroughBoreEncoder.setInverted(true);
+    rightRotatorThroughBoreEncoder.setPositionConversionFactor(ENCODER_POSITION_CONVERSION_FACTOR);
     rightRotatorThroughBoreEncoder.setZeroOffset(ENCODER_OFFSET);
 
     rightRotatorPIDController = rightRotator.getPIDController();
     rightRotatorPIDController.setFeedbackDevice(rightRotatorThroughBoreEncoder);
-    rightRotatorPIDController.setP(10);
+    rightRotatorPIDController.setP(7.5/36);
     rightRotatorPIDController.setI(0);
     rightRotatorPIDController.setD(0);
     rightRotatorPIDController.setFF(0);
@@ -114,5 +115,6 @@ public class Shoulder extends SubsystemBase {
     SmartDashboard.putData(this);
     SmartDashboard.putNumber("Shoulder position", rightRotatorThroughBoreEncoder.getPosition());
     SmartDashboard.putNumber("Shoulder position, degrees", rightRotatorThroughBoreEncoder.getPosition() * 360);
+    SmartDashboard.putNumber("Shoulder speed", rightRotator.get());
   }
 }
