@@ -63,7 +63,6 @@ public void SetLauncherVelocity(double setpoint) {
 }
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     SmartDashboard.putNumber("Right launcher RPM", getRightLauncherRPM());
     SmartDashboard.putNumber("Left launcher RPM", getLeftLauncherRPM());
   }

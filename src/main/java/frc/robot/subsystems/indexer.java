@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class indexer extends SubsystemBase {
@@ -88,8 +89,11 @@ public boolean iscentered() {
     return (intakeside == false && indexerclose == true && indexerfar == true && shooterside == false);
      
 }
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+  
+@Override
+public void periodic() {
+  SmartDashboard.putNumber("Right index duty cycle", leftIndexSparkmax.get());
+  SmartDashboard.putNumber("Left index duty cycle", rightIndexSparkMax.get());
+  SmartDashboard.putBoolean("Note centered", iscentered());
+}
 }

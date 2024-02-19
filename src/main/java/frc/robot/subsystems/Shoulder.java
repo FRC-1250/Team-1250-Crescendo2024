@@ -109,8 +109,8 @@ public class Shoulder extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putData(this);
-    SmartDashboard.putNumber("Shoulder position", rightRotatorThroughBoreEncoder.getPosition());
-    SmartDashboard.putNumber("Shoulder position, degrees", rightRotatorThroughBoreEncoder.getPosition() * 360);
-    SmartDashboard.putNumber("Shoulder speed", rightRotator.get());
+    SmartDashboard.putNumber("Shoulder position, abs", rightRotatorThroughBoreEncoder.getPosition());
+    SmartDashboard.putNumber("Shoulder position, abs degrees", rightRotatorThroughBoreEncoder.getPosition() * 360);
+    SmartDashboard.putNumber("Shoulder velocity, abs", rightRotatorThroughBoreEncoder.getVelocity());
   }
 }

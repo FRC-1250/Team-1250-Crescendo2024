@@ -53,6 +53,10 @@ public class RobotContainer {
   // final CommandPS4Controller commandPS4Controller = new CommandPS4Controller(1);
 
   public RobotContainer() {
+    SmartDashboard.putData(intake);
+    SmartDashboard.putData(shoulder);
+    SmartDashboard.putData(launcher);
+    SmartDashboard.putData(indexer);
     configureAutoCommands();
     configureBindings();
   }
