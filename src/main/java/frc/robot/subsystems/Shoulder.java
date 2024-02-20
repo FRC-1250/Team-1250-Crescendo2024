@@ -20,12 +20,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Shoulder extends SubsystemBase {
 
   public enum Position {
-    LIMIT(.347f),
-    AMP(.33f),
+    LIMIT(.365f),
+    AMP(.358f),
     HORIZONTAL(.25f),
     SPEAKER_PODIUM(.111f),
     SPEAKER(.105f),
-    HOME(.066f),
+    HOME(.062f),
     PID(.194f);
 
     // Default value is rotations

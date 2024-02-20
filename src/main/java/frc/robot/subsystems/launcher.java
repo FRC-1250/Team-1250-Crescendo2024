@@ -32,7 +32,7 @@ public class launcher extends SubsystemBase {
     rightLauncherPIDController.setP(1.5e-4);
     rightLauncherPIDController.setI(0);
     rightLauncherPIDController.setD(0);
-    rightLauncherPIDController.setFF(0.00018);
+    rightLauncherPIDController.setFF(0.00017);
 
     leftLauncherSparkMax.restoreFactoryDefaults();
     leftLauncherSparkMax.setIdleMode(IdleMode.kBrake);
@@ -41,7 +41,7 @@ public class launcher extends SubsystemBase {
     leftLauncerPIDController.setP(1.5e-4);
     leftLauncerPIDController.setI(0);
     leftLauncerPIDController.setD(0);
-    leftLauncerPIDController.setFF(0.00018);  
+    leftLauncerPIDController.setFF(0.00017);  
   }
 
 public void SetDutyOutlaunch(double percent) {
