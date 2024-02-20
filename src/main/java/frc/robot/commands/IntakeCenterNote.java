@@ -4,11 +4,11 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.indexer;
 import frc.robot.subsystems.Shoulder.Position;
-import frc.robot.util.RobotHelper;
 import frc.robot.subsystems.Shoulder;
 
 public class IntakeCenterNote extends Command {
@@ -23,6 +23,7 @@ public class IntakeCenterNote extends Command {
     this.indexer = indexer;
     this.percentOut = percentOut;
     this.shoulder = shoulder;
+    addRequirements(intake, indexer, shoulder);
 
 
   }
@@ -34,13 +35,12 @@ public class IntakeCenterNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (RobotHelper.isWithinRangeOfTarget(shoulder.getPosition(), Position.HOME.value, .025)) {
+    if (MathUtil.isNear(Position.HOME.value, shoulder.getPosition(), 0.005, 0, 1)) {
     intake.setDutyCycleUpperRoller(percentOut);
     intake.setDutyCycleLowerRoller(percentOut);
     indexer.centernote();
-    } else {
-      shoulder.setPosition(0.0);
     }
+      shoulder.setPosition(Position.HOME.value);
   }
 
   // Called once the command ends or is interrupted.

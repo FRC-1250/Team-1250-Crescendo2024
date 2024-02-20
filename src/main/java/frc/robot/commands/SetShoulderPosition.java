@@ -4,10 +4,10 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.Shoulder.Position;
-import frc.robot.util.RobotHelper;
 
 public class SetShoulderPosition extends Command {
   private final Shoulder shoulder;
@@ -38,6 +38,6 @@ public class SetShoulderPosition extends Command {
 
   @Override
   public boolean isFinished() {
-    return RobotHelper.isWithinRangeOfTarget(shoulder.getPosition(), targetPosition, 0.025);
+    return shoulder.isAtSetPoint(targetPosition);
   }
 }

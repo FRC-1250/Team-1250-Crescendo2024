@@ -4,10 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,7 +18,6 @@ public class Limelight extends SubsystemBase {
   /**
    * Json dump processing
    */
-  private ObjectMapper objectMapper = new ObjectMapper();
   private String json = "";
 
   public Limelight() {

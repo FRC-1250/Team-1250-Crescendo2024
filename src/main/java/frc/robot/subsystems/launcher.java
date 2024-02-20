@@ -4,74 +4,66 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.CAN;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class launcher extends SubsystemBase {
   private int LSHOOTER = 20;
   private int RSHOOTER = 21;
-  private int LINDEX = 22;
-  private int RINDEX = 23;
-
   public final int maxRPM = 5700;
   /** Creates a new shooter. */
-  CANSparkMax leftLauncherSparkMax = new CANSparkMax(20, MotorType.kBrushless);
-  CANSparkMax rightLauncherSparkMax = new CANSparkMax(21, MotorType.kBrushless);
+  CANSparkMax leftLauncherSparkMax = new CANSparkMax(LSHOOTER, MotorType.kBrushless);
+  CANSparkMax rightLauncherSparkMax = new CANSparkMax(RSHOOTER, MotorType.kBrushless);
   
-  SparkPIDController pidController;
+  SparkPIDController rightLauncherPIDController = rightLauncherSparkMax.getPIDController();
+  SparkPIDController leftLauncerPIDController = leftLauncherSparkMax.getPIDController();
 
   public launcher() {
-   
     rightLauncherSparkMax.restoreFactoryDefaults();
-    rightLauncherSparkMax.setIdleMode(IdleMode.kCoast);
+    rightLauncherSparkMax.setIdleMode(IdleMode.kBrake);
     rightLauncherSparkMax.setInverted(true);
-    rightLauncherSparkMax.setSmartCurrentLimit(40);
+    rightLauncherSparkMax.setSmartCurrentLimit(60);
+    rightLauncherPIDController.setP(1.5e-4);
+    rightLauncherPIDController.setI(0);
+    rightLauncherPIDController.setD(0);
+    rightLauncherPIDController.setFF(0.00017);
 
     leftLauncherSparkMax.restoreFactoryDefaults();
-    leftLauncherSparkMax.setIdleMode(IdleMode.kCoast);
-    leftLauncherSparkMax.follow(rightLauncherSparkMax, true);
-    leftLauncherSparkMax.setSmartCurrentLimit(40);
-
-    pidController = rightLauncherSparkMax.getPIDController();
-
-    pidController.setP(.1);
-    pidController.setI(.1);
-    pidController.setD(0);
-    pidController.setFF(0.1);
-    
+    leftLauncherSparkMax.setIdleMode(IdleMode.kBrake);
+    leftLauncherSparkMax.setInverted(false);
+    leftLauncherSparkMax.setSmartCurrentLimit(60);
+    leftLauncerPIDController.setP(1.5e-4);
+    leftLauncerPIDController.setI(0);
+    leftLauncerPIDController.setD(0);
+    leftLauncerPIDController.setFF(0.00017);  
   }
-
-
-
-
- 
-
-
-
 
 public void SetDutyOutlaunch(double percent) {
   rightLauncherSparkMax.set(percent);
+  leftLauncherSparkMax.set(percent);
 }
 
-public double returnRPM() {
+public double getRightLauncherRPM() {
  return rightLauncherSparkMax.getEncoder().getVelocity();
 }
+
+public double getLeftLauncherRPM() {
+ return leftLauncherSparkMax.getEncoder().getVelocity();
+}
+
 public void SetLauncherVelocity(double setpoint) {
-    pidController.setReference(setpoint, ControlType.kVelocity);
+    rightLauncherPIDController.setReference(setpoint, ControlType.kVelocity);
+    leftLauncerPIDController.setReference(setpoint, ControlType.kVelocity);
 }
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Launcher RPM", rightLauncherSparkMax.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Right launcher RPM", getRightLauncherRPM());
+    SmartDashboard.putNumber("Left launcher RPM", getLeftLauncherRPM());
   }
 }

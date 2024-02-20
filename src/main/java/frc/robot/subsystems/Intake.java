@@ -5,10 +5,11 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
@@ -19,19 +20,17 @@ public class Intake extends SubsystemBase {
   private final CANSparkMax lowerRoller;
 
   public Intake() {
-    if (RobotBase.isReal()) {
-      upperRoller = new CANSparkMax(UPPER_ROLLER_CAN_ID, MotorType.kBrushed);
-      upperRoller.restoreFactoryDefaults();
-      upperRoller.setSmartCurrentLimit(40);
+    upperRoller = new CANSparkMax(UPPER_ROLLER_CAN_ID, MotorType.kBrushless);
+    upperRoller.restoreFactoryDefaults();
+    upperRoller.setSmartCurrentLimit(40);
+    upperRoller.setIdleMode(IdleMode.kCoast);
+    upperRoller.setOpenLoopRampRate(0.1);
 
-      lowerRoller = new CANSparkMax(LOWER_ROLLER_CAN_ID, MotorType.kBrushed);
-      lowerRoller.restoreFactoryDefaults();
-      lowerRoller.setSmartCurrentLimit(40);
-    } else {
-      // Don't add anything here!
-      upperRoller = new CANSparkMax(UPPER_ROLLER_CAN_ID, MotorType.kBrushless);
-      lowerRoller = new CANSparkMax(LOWER_ROLLER_CAN_ID, MotorType.kBrushless);
-    }
+    lowerRoller = new CANSparkMax(LOWER_ROLLER_CAN_ID, MotorType.kBrushless);
+    lowerRoller.restoreFactoryDefaults();
+    lowerRoller.setSmartCurrentLimit(40);
+    lowerRoller.setIdleMode(IdleMode.kCoast);
+    lowerRoller.setOpenLoopRampRate(0.1);
   }
 
   public void setDutyCycleUpperRoller(double percentOut) {
@@ -44,6 +43,7 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Intake upper duty cycle", upperRoller.get());
+    SmartDashboard.putNumber("Intake lower duty cycle", lowerRoller.get());
   }
 }
