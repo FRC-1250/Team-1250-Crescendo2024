@@ -23,6 +23,7 @@ public class IntakeCenterNote extends Command {
     this.indexer = indexer;
     this.percentOut = percentOut;
     this.shoulder = shoulder;
+    addRequirements(intake, indexer, shoulder);
 
 
   }

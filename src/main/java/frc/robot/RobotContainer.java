@@ -19,6 +19,7 @@ import frc.robot.commands.SetShoulderPosition;
 import frc.robot.commands.targetlock;
 import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
+import frc.robot.commands.SetIntakeDutyCycle;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shoulder;
@@ -84,6 +85,7 @@ public class RobotContainer {
     drivXboxController.leftTrigger().onTrue(new SetShoulderPosition(shoulder, Position.AMP.value));
     drivXboxController.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.5));
     drivXboxController.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.5));
+    drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, 0));
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 

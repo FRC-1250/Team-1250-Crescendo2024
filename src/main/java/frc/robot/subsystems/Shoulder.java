@@ -24,8 +24,8 @@ public class Shoulder extends SubsystemBase {
     AMP(.33f),
     HORIZONTAL(.25f),
     SPEAKER_PODIUM(.111f),
-    SPEAKER(.083f),
-    HOME(.068f),
+    SPEAKER(.105f),
+    HOME(.066f),
     PID(.194f);
 
     // Default value is rotations
@@ -41,7 +41,7 @@ public class Shoulder extends SubsystemBase {
 
   // Closed loop tolerance in degrees
   // TODO: Use isAtSetPoint after determining new home of ABS sensor and changing rotations to degrees
-  private final double CLOSED_LOOP_TOLERANCE = 0.02;
+  private final double CLOSED_LOOP_TOLERANCE = 0.01;
 
   // Offset value to normalize the encoder position to 0 when at home
   private final double ENCODER_OFFSET = 0.134;
