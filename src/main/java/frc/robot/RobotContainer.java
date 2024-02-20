@@ -12,6 +12,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.SetShoulderDutyCycle;
@@ -100,7 +101,11 @@ public class RobotContainer {
      */
     autoChooser.setDefaultOption("Do nothing", new WaitCommand(15));
     try {
-      autoChooser.addOption("SpeakerMiddle", getAutoPath("SpeakerMiddle"));
+      autoChooser.addOption("SpeakerShot",
+          Commands.sequence(
+              new SetShoulderPosition(shoulder, Position.SPEAKER),
+              new FireNote(indexer, launcher).withTimeout(3),
+              new SetShoulderPosition(shoulder, Position.HOME)));
     } catch (Exception e) {
       System.out.println(String.format("%s", e.getCause()));
     }
