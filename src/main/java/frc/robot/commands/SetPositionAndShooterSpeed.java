@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shoulder;
-import frc.robot.subsystems.indexer;
 import frc.robot.subsystems.launcher;
 import frc.robot.subsystems.Shoulder.Position;
 
