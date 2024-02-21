@@ -4,21 +4,27 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.indexer;
 import frc.robot.subsystems.launcher;
+import frc.robot.subsystems.Shoulder.Position;
 
-public class FireNote extends Command {
+public class SetPositionAndShooterSpeed extends Command {
+  private final Shoulder shoulder;
   private final launcher launcher;
-  private final indexer indexer;
-  private final int CLOSED_LOOP_TOLERANCE = 100;
-
-  /** Creates a new FireNote. */
-  public FireNote(indexer indexer, launcher launcher) {
-    // Use addRequirements() here to declare subsystem dependencies.
+  private final float targetPosition;
+  /** Creates a new SetPositionAndShooterSpeed. */
+  public SetPositionAndShooterSpeed(Shoulder shoulder, launcher launcher, float targetPosition) {
     this.launcher = launcher;
-    this.indexer = indexer; 
+    this.shoulder = shoulder;
+    this.targetPosition = targetPosition;
+    addRequirements(launcher, shoulder);
+
+
+
+
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -28,18 +34,14 @@ public class FireNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // TODO: Today, figure out if we need to handle a 1 sided shot logic
     launcher.SetLauncherVelocity(launcher.TARGET_RPM);
-    if (MathUtil.isNear(launcher.TARGET_RPM, (launcher.getRightLauncherRPM() + launcher.getLeftLauncherRPM()) / 2, CLOSED_LOOP_TOLERANCE)) {
-      indexer.setDutyoutIndex(1);
-    }
+    shoulder.setPosition(targetPosition);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    indexer.setDutyoutIndex(0);
-    launcher.SetDutyOutlaunch(0);
+    
   }
 
   // Returns true when the command should end.

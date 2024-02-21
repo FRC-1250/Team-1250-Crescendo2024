@@ -17,6 +17,7 @@ public class launcher extends SubsystemBase {
   private int LSHOOTER = 20;
   private int RSHOOTER = 21;
   public final int maxRPM = 5700;
+  public final int TARGET_RPM = 5000;
   /** Creates a new shooter. */
   CANSparkMax leftLauncherSparkMax = new CANSparkMax(LSHOOTER, MotorType.kBrushless);
   CANSparkMax rightLauncherSparkMax = new CANSparkMax(RSHOOTER, MotorType.kBrushless);
