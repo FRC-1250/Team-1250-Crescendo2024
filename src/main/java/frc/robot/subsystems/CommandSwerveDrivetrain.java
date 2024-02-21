@@ -46,6 +46,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         configurePathPlanner();
+        configureOpenLoopRampRates();
         if (Utils.isSimulation()) {
             startSimThread();
         }
