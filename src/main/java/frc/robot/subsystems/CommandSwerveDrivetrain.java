@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -36,6 +37,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         configurePathPlanner();
+        configureOpenLoopRampRates();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -51,6 +53,17 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
+    }
+
+    private void configureOpenLoopRampRates() {
+        OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
+        openLoopRampsConfigs.VoltageOpenLoopRampPeriod = 0.1;
+        openLoopRampsConfigs.TorqueOpenLoopRampPeriod = 0.1;
+        openLoopRampsConfigs.DutyCycleOpenLoopRampPeriod = 0.1;
+
+        for (int i = 0; i < Modules.length; i++) {
+            Modules[i].getDriveMotor().getConfigurator().apply(openLoopRampsConfigs);
+        }        
     }
 
     private void configurePathPlanner() {
