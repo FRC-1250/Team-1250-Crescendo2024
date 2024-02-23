@@ -56,12 +56,12 @@ public class SystemLights extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if(indexer.iscentered() == true) {
-      setLEDs(LedCount, LedCount, LedCount);
+      setLEDs(255, 234, 0);
     }
     if(MathUtil.isNear(Position.HOME.value, shoulder.getPosition(), 0.005, 0, 1)) {
-      setLEDs(LedCount, LedCount, LedCount);
+      setLEDs(170, 255, 0);
     } else {
-      setLEDs(LedCount, LedCount, LedCount);
+      setLEDs(160, 34, 240);
     }
   }
 }
