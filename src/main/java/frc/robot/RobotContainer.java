@@ -8,7 +8,9 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,6 +30,8 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.indexer;
 import frc.robot.subsystems.launcher;
+import frc.robot.util.HolonomicPathBuilder;
+import frc.robot.util.HolonomicPaths;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Shoulder.Position; 
 
@@ -39,6 +43,8 @@ public class RobotContainer {
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
   private final Limelight limelight = new Limelight();
+  private final HolonomicPaths hp = new HolonomicPaths();
+  private final HolonomicPathBuilder pb = new HolonomicPathBuilder();
    
   // Field centric driving in closed loop with 10% deadband
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -99,6 +105,15 @@ public class RobotContainer {
     return new PathPlannerAuto(pathName);
   }
 
+  public Command buildAutoCommand(PathPlannerPath path) {
+    return Commands.sequence(
+        Commands.runOnce(
+            () -> drivetrain.setOdometry(
+                path.getPreviewStartingHolonomicPose().getRotation(),
+                path.getPathPoses().get(0)),
+            drivetrain));
+  }
+
   private void configureAutoCommands() {
     /*
      * Do nothing as default is a human safety condition, this should always be the
@@ -106,13 +121,49 @@ public class RobotContainer {
      */
     autoChooser.setDefaultOption("Do nothing", new WaitCommand(15));
     try {
-      autoChooser.addOption("SpeakerShot",
+      autoChooser.addOption("BlueSpeakerCenterShot",
           Commands.sequence(
               new SetShoulderPosition(shoulder, Position.SPEAKER),
               new FireNote(indexer, launcher).withTimeout(3),
-              new SetShoulderPosition(shoulder, Position.HOME)));
+              new SetShoulderPosition(shoulder, Position.HOME),
+              buildAutoCommand(pb.build(Alliance.Blue, hp.speakerCenterAndLeaveStartingZone))));
+
+      autoChooser.addOption("BlueSpeakerAmpSideShot",
+          Commands.sequence(
+              new SetShoulderPosition(shoulder, Position.SPEAKER),
+              new FireNote(indexer, launcher).withTimeout(3),
+              new SetShoulderPosition(shoulder, Position.HOME),
+              buildAutoCommand(pb.build(Alliance.Blue, hp.speakerAmpSideAndLeaveStartingZone))));
+
+      autoChooser.addOption("BlueSpeakerSourceSide",
+          Commands.sequence(
+              new SetShoulderPosition(shoulder, Position.SPEAKER),
+              new FireNote(indexer, launcher).withTimeout(3),
+              new SetShoulderPosition(shoulder, Position.HOME),
+              buildAutoCommand(pb.build(Alliance.Blue, hp.speakerSourceSideAndLeaveStartingZone))));
+
+      autoChooser.addOption("RedSpeakerCenterShot",
+          Commands.sequence(
+              new SetShoulderPosition(shoulder, Position.SPEAKER),
+              new FireNote(indexer, launcher).withTimeout(3),
+              new SetShoulderPosition(shoulder, Position.HOME),
+              buildAutoCommand(pb.build(Alliance.Red, hp.speakerCenterAndLeaveStartingZone))));
+
+      autoChooser.addOption("RedSpeakerAmpSideShot",
+          Commands.sequence(
+              new SetShoulderPosition(shoulder, Position.SPEAKER),
+              new FireNote(indexer, launcher).withTimeout(3),
+              new SetShoulderPosition(shoulder, Position.HOME),
+              buildAutoCommand(pb.build(Alliance.Red, hp.speakerAmpSideAndLeaveStartingZone))));
+
+      autoChooser.addOption("RedSpeakerSourceSide",
+          Commands.sequence(
+              new SetShoulderPosition(shoulder, Position.SPEAKER),
+              new FireNote(indexer, launcher).withTimeout(3),
+              new SetShoulderPosition(shoulder, Position.HOME),
+              buildAutoCommand(pb.build(Alliance.Red, hp.speakerSourceSideAndLeaveStartingZone))));
     } catch (Exception e) {
-      System.out.println(String.format("%s", e.getCause()));
+      System.out.println(String.format("GatorBot: Not able to build auto routines! %s", e.getCause()));
     }
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
