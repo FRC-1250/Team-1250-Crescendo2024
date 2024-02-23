@@ -114,9 +114,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
+    public double getHeading() {
+        return  getPigeon2().getRotation2d().getDegrees();
+    }
+
     @Override
     public void periodic() {
-         SmartDashboard.putNumber("Heading", getPigeon2().getAngle());
+         SmartDashboard.putNumber("Heading", getHeading());
          SmartDashboard.putNumber("Pose X", this.m_odometry.getEstimatedPosition().getX());
          SmartDashboard.putNumber("Pose Y", this.m_odometry.getEstimatedPosition().getY());
          SmartDashboard.putNumber("Pose H", this.m_odometry.getEstimatedPosition().getRotation().getDegrees());

@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
@@ -28,6 +29,7 @@ public class targetlock implements SwerveRequest {
   private long fid;
   private Optional<Alliance> alliance;
   private final Limelight limelight;
+  private final Supplier<Double> headingSupplier;
   private double angle;
 
   /** Creates a new targetlock. */
@@ -103,30 +105,40 @@ public class targetlock implements SwerveRequest {
     return this;
   }
 
-  public targetlock(Limelight limelight) {
+  public targetlock(Limelight limelight, Supplier<Double> headingSupplier) {
     this.limelight = limelight;
-    this.alliance = DriverStation.getAlliance();
+    this.headingSupplier = headingSupplier;
   }
 
   @Override
   public StatusCode apply(SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
     fid = limelight.getfid();
-    if (alliance.isPresent()) {
-      if (alliance.get() == Alliance.Blue) {
-        if (fid == 1 || fid == 2) {
-          angle = 135;
-        } else if (fid == 6) {
-          angle = -90;
-        } else if (fid == 7 || fid == 8) {
-          angle = 0;
-        }
-      } else if (alliance.get() == Alliance.Red) {
-        if (fid == 3 || fid == 4) {
-          angle = 180;
-        } else if (fid == 5) {
-          angle = 90;
-        } else if (fid == 9 || fid == 10) {
-          angle = 135;
+    if (fid == -1) {
+      angle = headingSupplier.get();
+    } else {
+      alliance = DriverStation.getAlliance();
+      if (alliance.isPresent()) {
+        switch (alliance.get()) {
+          case Blue:
+            if (fid == 6) {
+              angle = -90; // AMP
+            } else if (fid == 7 || fid == 8) {
+              angle = 0; // Speaker
+            } else if (fid == 1 || fid == 2) {
+              angle = 120; // Source
+            }
+            break;
+          case Red:
+            if (fid == 5) {
+              angle = 90; // AMP
+            } else if (fid == 3 || fid == 4) {
+              angle = 0; // Speaker
+            } else if (fid == 9 || fid == 10) {
+              angle = -120; // Source
+            }
+            break;
+          default:
+            break;
         }
       }
     }

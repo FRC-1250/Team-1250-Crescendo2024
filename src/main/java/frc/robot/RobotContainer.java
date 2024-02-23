@@ -53,7 +53,7 @@ public class RobotContainer {
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   // Field centric driving in closed loop with target locking and 10% deadband
-  private final targetlock targetLock = new targetlock(limelight)
+  private final targetlock targetLock = new targetlock(limelight, drivetrain::getHeading)
       .withDeadband(TunerConstants.MaxSpeed * 0.1)
       .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.025)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
