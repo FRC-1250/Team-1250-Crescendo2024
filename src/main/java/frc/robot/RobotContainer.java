@@ -21,6 +21,7 @@ import frc.robot.commands.targetlock;
 import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
 import frc.robot.commands.SetIntakeDutyCycle;
+import frc.robot.commands.SetLauncherDutyCycle;
 import frc.robot.commands.SetPositionAndShooterSpeed;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
@@ -84,11 +85,13 @@ public class RobotContainer {
     drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher));
     drivXboxController.a().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));
     drivXboxController.b().onTrue(new SetShoulderPosition(shoulder, Position.AMP.value));
-    drivXboxController.leftBumper().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value));
-    drivXboxController.leftTrigger().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP.value));
+    drivXboxController.leftTrigger().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value));
+    drivXboxController.leftBumper().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP.value));
     drivXboxController.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.5));
     drivXboxController.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.5));
     drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, 0));
+    drivXboxController.y().onTrue(new SetLauncherDutyCycle(launcher, 0));
+    drivXboxController.y().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
