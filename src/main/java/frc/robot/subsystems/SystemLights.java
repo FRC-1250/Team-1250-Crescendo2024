@@ -48,10 +48,7 @@ public class SystemLights extends SubsystemBase {
     public void setLEDs(int r, int g, int b) {
     candle.setLEDs(r, g, b);
   }
-
-  public void SetLEDs(int r, int g, int b) {
-    candle.setLEDs(r, g, b);
-  }
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
