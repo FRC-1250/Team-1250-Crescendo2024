@@ -123,43 +123,43 @@ public class RobotContainer {
     try {
       autoChooser.addOption("BlueSpeakerCenterShot",
           Commands.sequence(
-              new SetShoulderPosition(shoulder, Position.SPEAKER),
-              new FireNote(indexer, launcher).withTimeout(3),
+              new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+              new FireNote(indexer, launcher).withTimeout(2),
               new SetShoulderPosition(shoulder, Position.HOME),
               buildAutoCommand(pb.build(Alliance.Blue, hp.speakerCenterAndLeaveStartingZone))));
 
       autoChooser.addOption("BlueSpeakerAmpSideShot",
           Commands.sequence(
-              new SetShoulderPosition(shoulder, Position.SPEAKER),
-              new FireNote(indexer, launcher).withTimeout(3),
+             new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+              new FireNote(indexer, launcher).withTimeout(2),
               new SetShoulderPosition(shoulder, Position.HOME),
               buildAutoCommand(pb.build(Alliance.Blue, hp.speakerAmpSideAndLeaveStartingZone))));
 
       autoChooser.addOption("BlueSpeakerSourceSide",
           Commands.sequence(
-              new SetShoulderPosition(shoulder, Position.SPEAKER),
-              new FireNote(indexer, launcher).withTimeout(3),
+              new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+              new FireNote(indexer, launcher).withTimeout(2),
               new SetShoulderPosition(shoulder, Position.HOME),
               buildAutoCommand(pb.build(Alliance.Blue, hp.speakerSourceSideAndLeaveStartingZone))));
 
       autoChooser.addOption("RedSpeakerCenterShot",
           Commands.sequence(
-              new SetShoulderPosition(shoulder, Position.SPEAKER),
-              new FireNote(indexer, launcher).withTimeout(3),
+              new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+              new FireNote(indexer, launcher).withTimeout(2),
               new SetShoulderPosition(shoulder, Position.HOME),
               buildAutoCommand(pb.build(Alliance.Red, hp.speakerCenterAndLeaveStartingZone))));
 
       autoChooser.addOption("RedSpeakerAmpSideShot",
           Commands.sequence(
-              new SetShoulderPosition(shoulder, Position.SPEAKER),
-              new FireNote(indexer, launcher).withTimeout(3),
+              new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+              new FireNote(indexer, launcher).withTimeout(2),
               new SetShoulderPosition(shoulder, Position.HOME),
               buildAutoCommand(pb.build(Alliance.Red, hp.speakerAmpSideAndLeaveStartingZone))));
 
       autoChooser.addOption("RedSpeakerSourceSide",
           Commands.sequence(
-              new SetShoulderPosition(shoulder, Position.SPEAKER),
-              new FireNote(indexer, launcher).withTimeout(3),
+              new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+              new FireNote(indexer, launcher).withTimeout(2),
               new SetShoulderPosition(shoulder, Position.HOME),
               buildAutoCommand(pb.build(Alliance.Red, hp.speakerSourceSideAndLeaveStartingZone))));
     } catch (Exception e) {
