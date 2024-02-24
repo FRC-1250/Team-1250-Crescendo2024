@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -18,6 +20,17 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_robotContainer = new RobotContainer();
     DataLogManager.start();
+
+    CommandScheduler.getInstance().onCommandInitialize(
+        command -> DataLogManager.log(
+            String.format("Command init: %s, with requirements: %s", command.getName(), command.getRequirements())));
+
+    CommandScheduler.getInstance().onCommandFinish(
+        command -> DataLogManager.log(String.format("Command finished: %s", command.getName())));
+
+    CommandScheduler.getInstance().onCommandInterrupt(
+        command -> DataLogManager.log(String.format("Command interrupted: %s", command.getName())));
+
   }
 
   @Override
