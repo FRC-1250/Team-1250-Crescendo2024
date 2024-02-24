@@ -120,5 +120,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Module 1 raw speed", getModule(0).getDriveMotor().getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Module 2 raw speed", getModule(1).getDriveMotor().getVelocity().getValueAsDouble());
     }
 }
