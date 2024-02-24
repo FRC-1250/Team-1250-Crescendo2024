@@ -1,60 +1,19 @@
 {
   "tabPane": [
     {
-      "title": "SmartDashboard",
+      "title": "Main",
       "autoPopulate": false,
-      "autoPopulatePrefix": "SmartDashboard/",
+      "autoPopulatePrefix": "Main/",
       "widgetPane": {
         "gridSize": 128.0,
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
-        "titleType": 0,
+        "titleType": 1,
         "tiles": {
-          "2,3": {
+          "0,1": {
             "size": [
               3,
-              2
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///Drive",
-              "_title": "Drive",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "8,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///FMSInfo/IsRedAlliance",
-              "_title": "FMSInfo/IsRedAlliance",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "5,3": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///PathPlanner",
-              "_title": "PathPlanner",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "8,0": {
-            "size": [
-              2,
               1
             ],
             "content": {
@@ -65,6 +24,200 @@
               "_showGlyph": false
             }
           },
+          "0,0": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Basic FMS Info",
+              "_source0": "network_table:///FMSInfo",
+              "_title": "FMSInfo",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Drive",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 100.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              8,
+              5
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Swerve modules",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Number of columns": 4,
+              "Layout/Number of rows": 4,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "0,0": {
+                  "_type": "Gyro",
+                  "_source0": "network_table:///Drive/Module 1 heading",
+                  "_title": "Drive/Module 1 heading",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Visuals/Major tick spacing": 45.0,
+                  "Visuals/Starting angle": 180.0,
+                  "Visuals/Show tick mark ring": true,
+                  "Visuals/Counter clockwise": false
+                },
+                "1,0": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Drive/Module 1 speed",
+                  "_title": "Drive/Module 1 speed",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                "2,0": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Drive/Module 2 speed",
+                  "_title": "/Drive/Module 2 speed",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                "3,0": {
+                  "_type": "Gyro",
+                  "_source0": "network_table:///Drive/Module 2 heading",
+                  "_title": "Drive/Module 2 heading",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Visuals/Major tick spacing": 45.0,
+                  "Visuals/Starting angle": 180.0,
+                  "Visuals/Show tick mark ring": true,
+                  "Visuals/Counter clockwise": false
+                },
+                "0,1": {
+                  "_type": "Gyro",
+                  "_source0": "network_table:///Drive/Module 3 heading",
+                  "_title": "Drive/Module 3 heading",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Visuals/Major tick spacing": 45.0,
+                  "Visuals/Starting angle": 180.0,
+                  "Visuals/Show tick mark ring": true,
+                  "Visuals/Counter clockwise": false
+                },
+                "1,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Drive/Module 3 speed",
+                  "_title": "/Drive/Module 3 speed",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                "2,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Drive/Module 4 speed",
+                  "_title": "/Drive/Module 4 speed",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                "3,1": {
+                  "_type": "Gyro",
+                  "_source0": "network_table:///Drive/Module 4 heading",
+                  "_title": "Drive/Module 4 heading",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Visuals/Major tick spacing": 45.0,
+                  "Visuals/Starting angle": 180.0,
+                  "Visuals/Show tick mark ring": true,
+                  "Visuals/Counter clockwise": false
+                }
+              }
+            }
+          },
+          "8,0": {
+            "size": [
+              2,
+              5
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Pose",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Drive/Odometry Period",
+                  "_title": "/Drive/Odometry Period",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Drive/Pose Heading",
+                  "_title": "/Drive/Pose Heading",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Drive/Pose X",
+                  "_title": "/Drive/Pose X",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Drive/Pose Y",
+                  "_title": "/Drive/Pose Y",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Drive/Speed",
+                  "_title": "/Drive/Speed",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Drive/Velocity X",
+                  "_title": "/Drive/Velocity X",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Drive/Velocity Y",
+                  "_title": "/Drive/Velocity Y",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Superstructure",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
           "4,2": {
             "size": [
               2,
@@ -72,8 +225,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Left launcher RPM",
-              "_title": "SmartDashboard/Left launcher RPM",
+              "_source0": "network_table:///SmartDashboard/Shoulder position, abs",
+              "_title": "Shoulder position, abs rotations",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -85,21 +238,21 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Right launcher RPM",
-              "_title": "SmartDashboard/Right launcher RPM",
+              "_source0": "network_table:///SmartDashboard/Shoulder position, abs degrees",
+              "_title": "Shoulder position, abs degrees",
               "_glyph": 148,
               "_showGlyph": false
             }
           },
-          "6,2": {
+          "4,3": {
             "size": [
               2,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Shoulder position",
-              "_title": "SmartDashboard/Shoulder position",
+              "_source0": "network_table:///SmartDashboard/Shoulder velocity, abs",
+              "_title": "Shoulder velocity, abs rotations",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -111,21 +264,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Shoulder position, degrees",
-              "_title": "SmartDashboard/Shoulder position, degrees",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "2,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Intake lower duty cycle",
-              "_title": "SmartDashboard/Intake lower duty cycle",
+              "_source0": "network_table:///SmartDashboard/Right index duty cycle",
+              "_title": "Right index duty cycle",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -137,8 +277,49 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Intake upper duty cycle",
-              "_title": "SmartDashboard/Intake upper duty cycle",
+              "_source0": "network_table:///SmartDashboard/Right launcher RPM",
+              "_title": "Right launcher RPM",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Note centered",
+              "_title": "Note centered",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "2,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Left launcher RPM",
+              "_title": "Left launcher RPM",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Left index duty cycle",
+              "_title": "Left index duty cycle",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -150,21 +331,21 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Left index duty cycle",
-              "_title": "SmartDashboard/Left index duty cycle",
+              "_source0": "network_table:///SmartDashboard/Intake lower duty cycle",
+              "_title": "Intake lower duty cycle",
               "_glyph": 148,
               "_showGlyph": false
             }
           },
-          "0,3": {
+          "7,3": {
             "size": [
-              2,
+              1,
               1
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Note centered",
-              "_title": "SmartDashboard/Note centered",
+              "_source0": "network_table:///SmartDashboard/Barrel sensor",
+              "_title": "Note detected",
               "_glyph": 148,
               "_showGlyph": false,
               "Colors/Color when true": "#7CFC00FF",
@@ -178,8 +359,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Right index duty cycle",
-              "_title": "SmartDashboard/Right index duty cycle",
+              "_source0": "network_table:///SmartDashboard/Intake upper duty cycle",
+              "_title": "Intake upper duty cycle",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -191,26 +372,13 @@
             ],
             "content": {
               "_type": "Basic Subsystem",
-              "_source0": "network_table:///SmartDashboard/indexer",
-              "_title": "SmartDashboard/indexer",
+              "_source0": "network_table:///SmartDashboard/Intake",
+              "_title": "SmartDashboard/Intake",
               "_glyph": 148,
               "_showGlyph": false
             }
           },
           "4,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Basic Subsystem",
-              "_source0": "network_table:///SmartDashboard/launcher",
-              "_title": "SmartDashboard/launcher",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "6,0": {
             "size": [
               2,
               1
@@ -223,6 +391,19 @@
               "_showGlyph": false
             }
           },
+          "6,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Basic Subsystem",
+              "_source0": "network_table:///SmartDashboard/indexer",
+              "_title": "SmartDashboard/indexer",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
           "2,0": {
             "size": [
               2,
@@ -230,87 +411,8 @@
             ],
             "content": {
               "_type": "Basic Subsystem",
-              "_source0": "network_table:///SmartDashboard/Intake",
-              "_title": "SmartDashboard/Intake",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          }
-        }
-      }
-    },
-    {
-      "title": "Tab 2",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
-      "widgetPane": {
-        "gridSize": 100.0,
-        "showGrid": true,
-        "hgap": 16.0,
-        "vgap": 16.0,
-        "titleType": 0,
-        "tiles": {
-          "8,0": {
-            "size": [
-              3,
-              3
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///SmartDashboard/Module 3",
-              "_title": "/SmartDashboard/Module 3",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "0,0": {
-            "size": [
-              2,
-              4
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///SmartDashboard/Module 0",
-              "_title": "/SmartDashboard/Module 0",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "2,0": {
-            "size": [
-              3,
-              3
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///SmartDashboard/Module 1",
-              "_title": "/SmartDashboard/Module 1",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "5,0": {
-            "size": [
-              3,
-              3
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///SmartDashboard/Module 2",
-              "_title": "/SmartDashboard/Module 2",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "4,3": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Shoulder position, abs",
-              "_title": "/SmartDashboard/Shoulder position, abs",
+              "_source0": "network_table:///SmartDashboard/launcher",
+              "_title": "SmartDashboard/launcher",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -320,9 +422,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -14.0,
-    "y": 36.0,
-    "width": 1297.3333740234375,
-    "height": 737.3333129882812
+    "x": -5.599999904632568,
+    "y": 0.0,
+    "width": 1475.199951171875,
+    "height": 670.4000244140625
   }
 }
