@@ -120,9 +120,5 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     @Override
     public void periodic() {
-         SmartDashboard.putNumber("Heading", getHeading());
-         SmartDashboard.putNumber("Pose X", this.m_odometry.getEstimatedPosition().getX());
-         SmartDashboard.putNumber("Pose Y", this.m_odometry.getEstimatedPosition().getY());
-         SmartDashboard.putNumber("Pose H", this.m_odometry.getEstimatedPosition().getRotation().getDegrees());
     }
 }
