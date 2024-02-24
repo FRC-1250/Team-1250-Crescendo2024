@@ -58,10 +58,10 @@ public class Shoulder extends SubsystemBase {
     rightRotator.setIdleMode(IdleMode.kBrake);
     rightRotator.setClosedLoopRampRate(0.5);
     rightRotator.setOpenLoopRampRate(0.5);
-    rightRotator.setSoftLimit(SoftLimitDirection.kForward, Position.LIMIT.value);
+    rightRotator.setSoftLimit(SoftLimitDirection.kForward, Position.AMP.value);
     rightRotator.setSoftLimit(SoftLimitDirection.kReverse, Position.HOME.value);
-    rightRotator.enableSoftLimit(SoftLimitDirection.kForward, false);
-    rightRotator.enableSoftLimit(SoftLimitDirection.kReverse, false);
+    rightRotator.enableSoftLimit(SoftLimitDirection.kForward, true);
+    rightRotator.enableSoftLimit(SoftLimitDirection.kReverse, true);
     rightRotator.setInverted(false);
 
     leftRotator = new CANSparkMax(LEFT_ROTATOR_CAN_ID, MotorType.kBrushless);
