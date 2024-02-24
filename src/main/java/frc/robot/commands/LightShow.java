@@ -37,8 +37,12 @@ public class LightShow extends Command {
     if (timer.advanceIfElapsed(LED_CYCLE)) {
       if (hasNoteSupplier.getAsBoolean()) {
         systemLights.setLEDs(0, 0, 0);
-      } else if (isShoulderHomeSupplier.getAsBoolean())
-        timer.reset();
+      } else if (isShoulderHomeSupplier.getAsBoolean()) {
+        systemLights.setLEDs(0, 0, 0);
+      } else {
+        systemLights.setLEDs(0, 0, 0);
+      }
+      timer.reset();
     }
   }
 }
