@@ -122,7 +122,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public double getHeading() {
-        return  getPigeon2().getRotation2d().getDegrees();
+        return m_odometry.getEstimatedPosition().getRotation().getDegrees();
     }
 
     @Override
