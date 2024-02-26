@@ -94,8 +94,8 @@ public class RobotContainer {
 
     drivXboxController.rightBumper().onTrue(new IntakeCenterNote(intake, shoulder, indexer, 1.0));
     drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher));
-    drivXboxController.a().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));
-    drivXboxController.b().onTrue(new SetShoulderPosition(shoulder, Position.AMP.value));
+    drivXboxController.a().onTrue(new SetIntakeDutyCycle(intake, -1));
+    drivXboxController.b().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM.value));
     drivXboxController.leftTrigger().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value));
     drivXboxController.leftBumper().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP.value));
     drivXboxController.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.5));
