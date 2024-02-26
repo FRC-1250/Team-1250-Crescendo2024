@@ -56,7 +56,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
-        return run(() -> this.setControl(requestSupplier.get()));
+        return run(() -> this.setControl(requestSupplier.get())).withName("Drive");
+    }
+
+     public Command applyRequestWithName(Supplier<SwerveRequest> requestSupplier, String name) {
+        return applyRequest(requestSupplier).withName(name);
     }
 
     private void configureOpenLoopRampRates() {
@@ -125,5 +129,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public void periodic() {
         SmartDashboard.putNumber("Module 1 raw speed", getModule(0).getDriveMotor().getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("Module 2 raw speed", getModule(1).getDriveMotor().getVelocity().getValueAsDouble());
+        if (this.getCurrentCommand() != null) {
+            SmartDashboard.putString("Drivetrain", this.getCurrentCommand().getName());
+        } else {
+            SmartDashboard.putString("Drivetrain", "None");
+        }
     }
 }

@@ -73,16 +73,16 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Drive forward with -y, left with -x, rotate counter clockwise with -x
-    drivetrain.setDefaultCommand(drivetrain.applyRequest(
+    drivetrain.setDefaultCommand(drivetrain.applyRequestWithName(
         () -> drive
             .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
             .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed)
-            .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate)));
+            .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate), "Default drive"));
 
-    drivXboxController.x().whileTrue(drivetrain.applyRequest(
+    drivXboxController.x().whileTrue(drivetrain.applyRequestWithName(
         () -> targetLock
             .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
-            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed)));
+            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed), "Target lock"));
 
     // reset the field-centric heading on left bumper press
     drivXboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
