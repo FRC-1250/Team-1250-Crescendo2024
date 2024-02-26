@@ -20,12 +20,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Shoulder extends SubsystemBase {
 
   public enum Position {
-    LIMIT(.365f),
     AMP(.358f),
     HORIZONTAL(.25f),
-    SPEAKER_PODIUM(.111f),
+    SPEAKER_PODIUM(.158f),
     SPEAKER(.105f),
-    HOME(.062f),
+    HOME(.055f),
     PID(.194f);
 
     // Default value is rotations
@@ -41,7 +40,7 @@ public class Shoulder extends SubsystemBase {
 
   // Closed loop tolerance in degrees
   // TODO: Use isAtSetPoint after determining new home of ABS sensor and changing rotations to degrees
-  private final double CLOSED_LOOP_TOLERANCE = 0.005;
+  private final double CLOSED_LOOP_TOLERANCE = 0.003;
 
   // Offset value to normalize the encoder position to 0 when at home
   private final double ENCODER_OFFSET = 0.134;
