@@ -121,6 +121,12 @@ public class RobotContainer {
      */
     autoChooser.setDefaultOption("Do nothing", new WaitCommand(15));
     try {
+      autoChooser.addOption("FireNoteOnly",
+          Commands.sequence(
+              new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+              new FireNote(indexer, launcher).withTimeout(2),
+              new SetShoulderPosition(shoulder, Position.HOME)));
+
       autoChooser.addOption("BlueSpeakerCenterShot",
           Commands.sequence(
               new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
