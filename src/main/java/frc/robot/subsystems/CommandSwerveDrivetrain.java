@@ -88,7 +88,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                                                                              // robot
                 new HolonomicPathFollowerConfig(
                         new PIDConstants(3, 0, 0),
-                        new PIDConstants(2.5, 0, 0),
+                        new PIDConstants(2, 0, 0),
                         TunerConstants.kSpeedAt12VoltsMps,
                         driveBaseRadius,
                         new ReplanningConfig()),
@@ -102,7 +102,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public void setOdometry(Rotation2d angle, Pose2d location) {
         m_yawGetter.waitForUpdate(1);
-        m_odometry.resetPosition(Rotation2d.fromDegrees(m_yawGetter.getValueAsDouble() + angle.getDegrees()),
+        m_odometry.resetPosition(Rotation2d.fromDegrees(m_yawGetter.getValueAsDouble() - angle.getDegrees()),
                 m_modulePositions, location);
     }
 
