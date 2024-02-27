@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -116,7 +117,8 @@ public class RobotContainer {
             () -> drivetrain.setOdometry(
                 path.getPreviewStartingHolonomicPose().getRotation(),
                 path.getPathPoses().get(0)),
-            drivetrain));
+            drivetrain),
+            AutoBuilder.followPath(path));
   }
 
   private void configureAutoCommands() {
@@ -126,52 +128,67 @@ public class RobotContainer {
      */
     autoChooser.setDefaultOption("Do nothing", new WaitCommand(15));
     try {
+      double fireNoteTimeout = 0.5;
       autoChooser.addOption("FireNoteOnly",
           Commands.sequence(
               new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
-              new FireNote(indexer, launcher).withTimeout(2),
+              new FireNote(indexer, launcher).withTimeout(fireNoteTimeout),
               new SetShoulderPosition(shoulder, Position.HOME)));
 
       autoChooser.addOption("BlueSpeakerCenterShot",
           Commands.sequence(
               new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
-              new FireNote(indexer, launcher).withTimeout(2),
-              new SetShoulderPosition(shoulder, Position.HOME),
-              buildAutoCommand(pb.build(Alliance.Blue, hp.speakerCenterAndLeaveStartingZone))));
+              new FireNote(indexer, launcher).withTimeout(fireNoteTimeout),
+              Commands.parallel(
+                  new IntakeCenterNote(intake, shoulder, indexer, 1.0),
+                  buildAutoCommand(pb.build(Alliance.Blue, hp.speakerCenterAndLeaveStartingZone))),
+              new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+              new FireNote(indexer, launcher).withTimeout(fireNoteTimeout),
+              new SetShoulderPosition(shoulder, Position.HOME)));
 
       autoChooser.addOption("BlueSpeakerAmpSideShot",
           Commands.sequence(
-             new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
-              new FireNote(indexer, launcher).withTimeout(2),
-              new SetShoulderPosition(shoulder, Position.HOME),
-              buildAutoCommand(pb.build(Alliance.Blue, hp.speakerAmpSideAndLeaveStartingZone))));
+              new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+              new FireNote(indexer, launcher).withTimeout(fireNoteTimeout),
+              Commands.parallel(
+                  new IntakeCenterNote(intake, shoulder, indexer, 1.0),
+                  buildAutoCommand(pb.build(Alliance.Blue, hp.speakerAmpSideAndLeaveStartingZone))),
+              new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+              new FireNote(indexer, launcher).withTimeout(fireNoteTimeout),
+              new SetShoulderPosition(shoulder, Position.HOME)));
 
       autoChooser.addOption("BlueSpeakerSourceSide",
           Commands.sequence(
               new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
-              new FireNote(indexer, launcher).withTimeout(2),
-              new SetShoulderPosition(shoulder, Position.HOME),
+              new FireNote(indexer, launcher).withTimeout(fireNoteTimeout),
               buildAutoCommand(pb.build(Alliance.Blue, hp.speakerSourceSideAndLeaveStartingZone))));
 
       autoChooser.addOption("RedSpeakerCenterShot",
           Commands.sequence(
               new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
-              new FireNote(indexer, launcher).withTimeout(2),
-              new SetShoulderPosition(shoulder, Position.HOME),
-              buildAutoCommand(pb.build(Alliance.Red, hp.speakerCenterAndLeaveStartingZone))));
+              new FireNote(indexer, launcher).withTimeout(fireNoteTimeout),
+              Commands.parallel(
+                  new IntakeCenterNote(intake, shoulder, indexer, 1.0),
+                  buildAutoCommand(pb.build(Alliance.Red, hp.speakerCenterAndLeaveStartingZone))),
+              new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+              new FireNote(indexer, launcher).withTimeout(fireNoteTimeout),
+              new SetShoulderPosition(shoulder, Position.HOME)));
 
       autoChooser.addOption("RedSpeakerAmpSideShot",
           Commands.sequence(
               new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
-              new FireNote(indexer, launcher).withTimeout(2),
-              new SetShoulderPosition(shoulder, Position.HOME),
-              buildAutoCommand(pb.build(Alliance.Red, hp.speakerAmpSideAndLeaveStartingZone))));
+              new FireNote(indexer, launcher).withTimeout(fireNoteTimeout),
+              Commands.parallel(
+                  new IntakeCenterNote(intake, shoulder, indexer, 1.0),
+                  buildAutoCommand(pb.build(Alliance.Red, hp.speakerAmpSideAndLeaveStartingZone))),
+              new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+              new FireNote(indexer, launcher).withTimeout(fireNoteTimeout),
+              new SetShoulderPosition(shoulder, Position.HOME)));
 
       autoChooser.addOption("RedSpeakerSourceSide",
           Commands.sequence(
               new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
-              new FireNote(indexer, launcher).withTimeout(2),
-              new SetShoulderPosition(shoulder, Position.HOME),
+              new FireNote(indexer, launcher).withTimeout(fireNoteTimeout),
               buildAutoCommand(pb.build(Alliance.Red, hp.speakerSourceSideAndLeaveStartingZone))));
     } catch (Exception e) {
       System.out.println(String.format("GatorBot: Not able to build auto routines! %s", e.getCause()));

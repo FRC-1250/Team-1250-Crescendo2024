@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class HolonomicPathBuilder {
     private final double Y_COORDINATE_MIDPOINT = Units.feetToMeters(13.5);
-    private final PathConstraints PATH_CONSTRAINTS = new PathConstraints(5.03, 3.35, 270, 180);
+    private final PathConstraints PATH_CONSTRAINTS = new PathConstraints(5.03 / 8, 3.35 / 8, 270 / 2, 180 / 2);
     private PathPlannerPath path;
 
     public HolonomicPathBuilder() {
