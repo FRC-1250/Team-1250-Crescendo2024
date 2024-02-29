@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.RotationTarget;
 
@@ -13,30 +12,21 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.TunerConstants;
 
 public class HolonomicPathBuilder {
-    private final double Y_COORDINATE_MIDPOINT = Units.feetToMeters(13.5);
-    private final PathConstraints PATH_CONSTRAINTS = new PathConstraints(5.03 / 8, 3.35 / 8, 270 / 2, 180 / 2);
-    private PathPlannerPath path;
+    private static final double Y_COORDINATE_MIDPOINT = Units.feetToMeters(13.5);
 
-    public HolonomicPathBuilder() {
-    }
-
-    public void addRotationTargets(List<RotationTarget> rotationTargets) {
-        rotationTargets.addAll(rotationTargets);
-    }
-
-    public PathPlannerPath build(Alliance alliance, HolonomicPathComponents holonomicPathComponents) {
+    public static PathPlannerPath build(Alliance alliance, HolonomicPathComponents holonomicPathComponents) {
         if (alliance == Alliance.Red) {
             holonomicPathComponents = flipPathToRedAlliance(holonomicPathComponents);
         }
-
-        path = new PathPlannerPath(
+        PathPlannerPath path = new PathPlannerPath(
                 PathPlannerPath.bezierFromPoses(holonomicPathComponents.getPathPoints()),
                 holonomicPathComponents.getRotationTargets(),
+                holonomicPathComponents.getConstraintsZones(),
                 Collections.emptyList(),
-                Collections.emptyList(),
-                PATH_CONSTRAINTS,
+                TunerConstants.MAX_PATH_CONSTRAINTS,
                 holonomicPathComponents.getGoalEndState(),
                 false,
                 holonomicPathComponents.getStartingRotation());
@@ -45,7 +35,7 @@ public class HolonomicPathBuilder {
         return path;
     }
 
-    private HolonomicPathComponents flipPathToRedAlliance(HolonomicPathComponents holonomicPathComponents) {
+    private static HolonomicPathComponents flipPathToRedAlliance(HolonomicPathComponents holonomicPathComponents) {
         List<Pose2d> poses = holonomicPathComponents.getPathPoints();
         List<RotationTarget> rotationTargets = holonomicPathComponents.getRotationTargets();
         GoalEndState goalEndState = holonomicPathComponents.getGoalEndState();
@@ -63,10 +53,15 @@ public class HolonomicPathBuilder {
 
         goalEndState = new GoalEndState(0, Rotation2d.fromDegrees(-goalEndState.getRotation().getDegrees()));
         startingRotation = Rotation2d.fromDegrees(-startingRotation.getDegrees());
-        return new HolonomicPathComponents(startingRotation, poses, rotationTargets, goalEndState);
+        return new HolonomicPathComponents(
+                startingRotation,
+                poses,
+                rotationTargets,
+                holonomicPathComponents.getConstraintsZones(),
+                goalEndState);
     }
 
-    private Translation2d reflectOverY(Translation2d point) {
+    private static Translation2d reflectOverY(Translation2d point) {
         return new Translation2d(point.getX(), ((Y_COORDINATE_MIDPOINT - point.getY()) + Y_COORDINATE_MIDPOINT));
     }
 }
