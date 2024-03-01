@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Limelight extends SubsystemBase {
 
   private final NetworkTable table;
+  private final double MOUNTING_ANGLE_DEGREES = 45;
+  private final double MOUNTING_HEIGHT_METERS = Units.inchesToMeters(27);
   private long fID;
   private double tx, ty, tv, ta, ts = -1;
   private Double[] cameraPoseInTargetspace, botPoseWpiBlue, botPoseWpiRed;
@@ -114,6 +117,14 @@ public class Limelight extends SubsystemBase {
 
   public boolean isTargetSeen() {
     return tv == 1;
+  }
+
+  /*
+   * https://docs.limelightvision.io/docs/docs-limelight/tutorials/tutorial-
+   * estimating-distance#using-a-fixed-angle-camera
+   */
+  public double calculateDistanceMeters(double targetHeightMeters) {
+      return (targetHeightMeters - MOUNTING_HEIGHT_METERS) / Math.tan(Math.toRadians(MOUNTING_ANGLE_DEGREES + ty));
   }
 
   @Override
