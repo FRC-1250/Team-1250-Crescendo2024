@@ -105,6 +105,10 @@ public class Shoulder extends SubsystemBase {
     return MathUtil.isNear(targetPosition, getPosition(), CLOSED_LOOP_TOLERANCE);
   }
 
+  public boolean isAtHome() {
+    return MathUtil.isNear(Position.HOME.value, getPosition(), CLOSED_LOOP_TOLERANCE);
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putData(this);

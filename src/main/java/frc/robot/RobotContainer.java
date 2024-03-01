@@ -23,12 +23,14 @@ import frc.robot.commands.SetShoulderPosition;
 import frc.robot.commands.targetlock;
 import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
+import frc.robot.commands.LightShow;
 import frc.robot.commands.SetIntakeDutyCycle;
 import frc.robot.commands.SetLauncherDutyCycle;
 import frc.robot.commands.SetPositionAndShooterSpeed;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shoulder;
+import frc.robot.subsystems.SystemLights;
 import frc.robot.subsystems.indexer;
 import frc.robot.subsystems.launcher;
 import frc.robot.util.HolonomicPathBuilder;
@@ -37,6 +39,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Shoulder.Position; 
 
 public class RobotContainer {
+  private final SystemLights systemLights = new SystemLights();
   private final Intake intake = new Intake();
   private final Shoulder shoulder = new Shoulder();
   private final launcher launcher = new launcher();
@@ -78,7 +81,8 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // Drive forward with -y, left with -x, rotate counter clockwise with -x
+    // Drive forward with -y, left with -x, rotate counter clockwise with -
+    systemLights.setDefaultCommand(new LightShow(systemLights, indexer::iscentered, shoulder::isAtHome));
     drivetrain.setDefaultCommand(drivetrain.applyRequestWithName(
         () -> drive
             .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
