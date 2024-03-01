@@ -93,6 +93,13 @@ public class RobotContainer {
         () -> targetLock
             .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
             .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed), "Target lock"));
+    
+    drivXboxController.rightStick().whileTrue(drivetrain.applyRequestWithName(
+            () -> robotCentricDrive
+            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed * 0.5)
+            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * 0.5)
+            .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate * 0.75),
+            "Robot centric drive"));
 
     // reset the field-centric heading on left bumper press
     drivXboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
@@ -108,6 +115,7 @@ public class RobotContainer {
     drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, 0));
     drivXboxController.y().onTrue(new SetLauncherDutyCycle(launcher, 0));
     drivXboxController.y().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));
+    
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
