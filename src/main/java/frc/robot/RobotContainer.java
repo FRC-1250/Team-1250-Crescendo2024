@@ -24,6 +24,7 @@ import frc.robot.commands.targetlock;
 import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
 import frc.robot.commands.LightShow;
+import frc.robot.commands.LimeLightLED;
 import frc.robot.commands.SetIntakeDutyCycle;
 import frc.robot.commands.SetLauncherDutyCycle;
 import frc.robot.commands.SetPositionAndShooterSpeed;
@@ -82,7 +83,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Drive forward with -y, left with -x, rotate counter clockwise with -
-    systemLights.setDefaultCommand(new LightShow(systemLights, indexer::iscentered, shoulder::isAtHome));
+    //systemLights.setDefaultCommand(new LightShow(systemLights, indexer::iscentered, shoulder::isAtHome)); 
+    limelight.setDefaultCommand(new LimeLightLED(limelight, indexer::iscentered, shoulder::isAtHome));
     drivetrain.setDefaultCommand(drivetrain.applyRequestWithName(
         () -> drive
             .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
