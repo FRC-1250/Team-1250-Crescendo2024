@@ -104,7 +104,7 @@ public class Limelight extends SubsystemBase {
    */
 
   public void setLEDMode(int value) {
-    if (value > 3 || value < 0)
+    if (value > 4 || value < 0)
       value = 0;
     table.getEntry("ledMode").setNumber(value);
   }
