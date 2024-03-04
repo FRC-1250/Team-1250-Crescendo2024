@@ -20,12 +20,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Shoulder extends SubsystemBase {
 
   public enum Position {
-    LIMIT(.365f),
     AMP(.358f),
     HORIZONTAL(.25f),
-    SPEAKER_PODIUM(.111f),
+    SPEAKER_PODIUM(.158f),
     SPEAKER(.105f),
-    HOME(.062f),
+    HOME(.055f),
     PID(.194f);
 
     // Default value is rotations
@@ -41,7 +40,7 @@ public class Shoulder extends SubsystemBase {
 
   // Closed loop tolerance in degrees
   // TODO: Use isAtSetPoint after determining new home of ABS sensor and changing rotations to degrees
-  private final double CLOSED_LOOP_TOLERANCE = 0.01;
+  private final double CLOSED_LOOP_TOLERANCE = 0.003;
 
   // Offset value to normalize the encoder position to 0 when at home
   private final double ENCODER_OFFSET = 0.134;
@@ -58,10 +57,10 @@ public class Shoulder extends SubsystemBase {
     rightRotator.setIdleMode(IdleMode.kBrake);
     rightRotator.setClosedLoopRampRate(0.5);
     rightRotator.setOpenLoopRampRate(0.5);
-    rightRotator.setSoftLimit(SoftLimitDirection.kForward, Position.LIMIT.value);
+    rightRotator.setSoftLimit(SoftLimitDirection.kForward, Position.AMP.value);
     rightRotator.setSoftLimit(SoftLimitDirection.kReverse, Position.HOME.value);
-    rightRotator.enableSoftLimit(SoftLimitDirection.kForward, false);
-    rightRotator.enableSoftLimit(SoftLimitDirection.kReverse, false);
+    rightRotator.enableSoftLimit(SoftLimitDirection.kForward, true);
+    rightRotator.enableSoftLimit(SoftLimitDirection.kReverse, true);
     rightRotator.setInverted(false);
 
     leftRotator = new CANSparkMax(LEFT_ROTATOR_CAN_ID, MotorType.kBrushless);
@@ -104,6 +103,10 @@ public class Shoulder extends SubsystemBase {
 
   public boolean isAtSetPoint(double targetPosition) {
     return MathUtil.isNear(targetPosition, getPosition(), CLOSED_LOOP_TOLERANCE);
+  }
+
+  public boolean isAtHome() {
+    return MathUtil.isNear(Position.HOME.value, getPosition(), CLOSED_LOOP_TOLERANCE);
   }
 
   @Override

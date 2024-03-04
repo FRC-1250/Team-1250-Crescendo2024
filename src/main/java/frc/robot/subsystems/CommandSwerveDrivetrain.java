@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -12,6 +13,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
@@ -36,6 +40,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         configurePathPlanner();
+        configureOpenLoopRampRates();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -44,13 +49,29 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         configurePathPlanner();
+        configureOpenLoopRampRates();
         if (Utils.isSimulation()) {
             startSimThread();
         }
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
-        return run(() -> this.setControl(requestSupplier.get()));
+        return run(() -> this.setControl(requestSupplier.get())).withName("Drive");
+    }
+
+     public Command applyRequestWithName(Supplier<SwerveRequest> requestSupplier, String name) {
+        return applyRequest(requestSupplier).withName(name);
+    }
+
+    private void configureOpenLoopRampRates() {
+        OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
+        openLoopRampsConfigs.VoltageOpenLoopRampPeriod = 0.1;
+        openLoopRampsConfigs.TorqueOpenLoopRampPeriod = 0.1;
+        openLoopRampsConfigs.DutyCycleOpenLoopRampPeriod = 0.1;
+
+        for (int i = 0; i < Modules.length; i++) {
+            Modules[i].getDriveMotor().getConfigurator().apply(openLoopRampsConfigs);
+        }        
     }
 
     private void configurePathPlanner() {
@@ -65,8 +86,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 this::getCurrentRobotChassisSpeeds,
                 (speeds) -> this.setControl(autoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the
                                                                              // robot
-                new HolonomicPathFollowerConfig(new PIDConstants(5.5, 0, 0),
-                        new PIDConstants(4, 0, 0),
+                new HolonomicPathFollowerConfig(
+                        new PIDConstants(3, 0, 0),
+                        new PIDConstants(2, 0, 0),
                         TunerConstants.kSpeedAt12VoltsMps,
                         driveBaseRadius,
                         new ReplanningConfig()),
@@ -76,6 +98,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+    }
+
+    public void setOdometry(Rotation2d angle, Pose2d location) {
+        m_yawGetter.waitForUpdate(1);
+        m_odometry.resetPosition(Rotation2d.fromDegrees(m_yawGetter.getValueAsDouble() - angle.getDegrees()),
+                m_modulePositions, location);
     }
 
     private void startSimThread() {
@@ -93,11 +121,18 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
+    public double getHeading() {
+        return m_odometry.getEstimatedPosition().getRotation().getDegrees();
+    }
+
     @Override
     public void periodic() {
-         SmartDashboard.putNumber("Heading", getPigeon2().getAngle());
-         SmartDashboard.putNumber("Pose X", this.m_odometry.getEstimatedPosition().getX());
-         SmartDashboard.putNumber("Pose Y", this.m_odometry.getEstimatedPosition().getY());
-         SmartDashboard.putNumber("Pose H", this.m_odometry.getEstimatedPosition().getRotation().getDegrees());
+        SmartDashboard.putNumber("Module 1 raw speed", getModule(0).getDriveMotor().getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Module 2 raw speed", getModule(1).getDriveMotor().getVelocity().getValueAsDouble());
+        if (this.getCurrentCommand() != null) {
+            SmartDashboard.putString("Drivetrain", this.getCurrentCommand().getName());
+        } else {
+            SmartDashboard.putString("Drivetrain", "None");
+        }
     }
 }
