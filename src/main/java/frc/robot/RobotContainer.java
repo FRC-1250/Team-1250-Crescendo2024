@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.SetShoulderDutyCycle;
 import frc.robot.commands.SetShoulderPosition;
 import frc.robot.commands.targetlock;
+import frc.robot.commands.FieldCentricAutoAim;
 import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
 import frc.robot.commands.LightShow;
@@ -58,6 +59,11 @@ public class RobotContainer {
       .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
+  private final FieldCentricAutoAim fieldCentricAutoAim = new FieldCentricAutoAim(limelight)
+      .withDeadband(TunerConstants.MaxSpeed * 0.1)
+      .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.025)
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
   // Field centric driving in closed loop with target locking and 10% deadband
   private final targetlock targetLock = new targetlock(limelight, drivetrain::getHeading)
       .withDeadband(TunerConstants.MaxSpeed * 0.1)
@@ -89,7 +95,7 @@ public class RobotContainer {
         "Default drive"));
 
     drivXboxController.x().whileTrue(drivetrain.applyRequestWithName(
-        () -> targetLock
+        () -> fieldCentricAutoAim
             .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
             .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed),
         "Target lock"));
