@@ -143,10 +143,12 @@ public class RobotContainer {
         new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
         fireNoteWithTimeout(),
         Commands.parallel(
-            
             Commands.sequence(
                 intakeCenterNoteWithFullSpeed(),
-                new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value)), resetOdometryAndFollowPath(pathPlannerPath)),
+                new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value)),
+            Commands.sequence(
+                new WaitCommand(0.02),
+                resetOdometryAndFollowPath(pathPlannerPath))),
         fireNoteWithTimeout(),
         new SetShoulderPosition(shoulder, Position.HOME));
   }
