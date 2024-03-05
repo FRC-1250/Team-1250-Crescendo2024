@@ -22,12 +22,15 @@ import frc.robot.commands.SetShoulderPosition;
 import frc.robot.commands.targetlock;
 import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
+import frc.robot.commands.LightShow;
+import frc.robot.commands.LimeLightLED;
 import frc.robot.commands.SetIntakeDutyCycle;
 import frc.robot.commands.SetLauncherDutyCycle;
 import frc.robot.commands.SetPositionAndShooterSpeed;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shoulder;
+import frc.robot.subsystems.SystemLights;
 import frc.robot.subsystems.indexer;
 import frc.robot.subsystems.launcher;
 import frc.robot.util.HolonomicPaths;
@@ -35,6 +38,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Shoulder.Position;
 
 public class RobotContainer {
+  private final SystemLights systemLights = new SystemLights();
   private final Intake intake = new Intake();
   private final Shoulder shoulder = new Shoulder();
   private final launcher launcher = new launcher();
@@ -74,7 +78,9 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // Drive forward with -y, left with -x, rotate counter clockwise with -x
+    // Drive forward with -y, left with -x, rotate counter clockwise with -
+    //systemLights.setDefaultCommand(new LightShow(systemLights, indexer::iscentered, shoulder::isAtHome)); 
+    limelight.setDefaultCommand(new LimeLightLED(limelight, indexer::iscentered, shoulder::isAtHome));
     drivetrain.setDefaultCommand(drivetrain.applyRequestWithName(
         () -> drive
             .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
@@ -87,6 +93,14 @@ public class RobotContainer {
             .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
             .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed),
         "Target lock"));
+    
+    drivXboxController.rightStick().whileTrue(drivetrain.applyRequestWithName(
+            () -> robotCentricDrive
+            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed * 0.5)
+            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * 0.5)
+            .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate * 0.75),
+            "Robot centric drive"));
+
 
     // reset the field-centric heading on left bumper press
     drivXboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
@@ -102,6 +116,7 @@ public class RobotContainer {
     drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, 0));
     drivXboxController.y().onTrue(new SetLauncherDutyCycle(launcher, 0));
     drivXboxController.y().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));
+    
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 

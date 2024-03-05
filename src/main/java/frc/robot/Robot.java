@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
@@ -31,6 +32,9 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().onCommandInterrupt(
         command -> DataLogManager.log(String.format("Command interrupted: %s", command.getName())));
 
+    for (int port = 5800; port <= 5807; port++) {
+      PortForwarder.add(port, "limelight.local", port);
+    }
   }
 
   @Override
