@@ -74,16 +74,18 @@ public class SystemLights extends SubsystemBase {
     candle.setLEDs(r, g, b);
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+   private void cycleLights() {
     if (timer.get() > .5 && timer.get() < 15) {
       setLEDs(255, 215, 0);
     } else if (timer.get() > 16 && timer.get() < 35) {
       candle.animate(larsonAnimation);
-    } else if(timer.get() > 50) { 
+    } else if (timer.get() > 50) {
       timer.restart();
     }
   }
 
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
 }
