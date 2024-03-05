@@ -134,10 +134,11 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Do nothing", new WaitCommand(15));
     try {
       autoChooser.addOption("FireNoteOnly", singleSpeakerShot());
-      autoChooser.addOption("BlueSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenter(Alliance.Blue)));
+      autoChooser.addOption("BlueSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenterWithRotation(Alliance.Blue)));
       autoChooser.addOption("BlueSpeakerAmpSideShot", doubleSpeakerShot(HolonomicPaths.speakerAmpSide(Alliance.Blue)));
       autoChooser.addOption("BlueSpeakerSourceSide", doubleSpeakerShot(HolonomicPaths.speakerSourceSide(Alliance.Blue)));
-      autoChooser.addOption("RedSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenter(Alliance.Red)));
+      autoChooser.addOption("BlueEscape", singleSpeakerShotWithPath(HolonomicPaths.SourceEscapePlan(Alliance.Blue)));
+      autoChooser.addOption("RedSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenterWithRotation(Alliance.Red)));
       autoChooser.addOption("RedSpeakerAmpSideShot", doubleSpeakerShot(HolonomicPaths.speakerAmpSide(Alliance.Red)));
       autoChooser.addOption("RedSpeakerSourceSide", doubleSpeakerShot(HolonomicPaths.speakerSourceSide(Alliance.Red)));
          
@@ -157,6 +158,14 @@ public class RobotContainer {
         new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
         fireNoteWithTimeout(),
         new SetShoulderPosition(shoulder, Position.HOME));
+  }
+
+  private Command singleSpeakerShotWithPath(PathPlannerPath pathPlannerPath) {
+    return Commands.sequence(
+        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+        fireNoteWithTimeout(),
+        new SetShoulderPosition(shoulder, Position.HOME),
+        resetOdometryAndFollowPath(pathPlannerPath));
   }
 
   private Command doubleSpeakerShot(PathPlannerPath pathPlannerPath) {
