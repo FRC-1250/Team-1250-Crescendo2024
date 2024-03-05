@@ -87,8 +87,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 (speeds) -> this.setControl(autoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the
                                                                              // robot
                 new HolonomicPathFollowerConfig(
+                        new PIDConstants(4, 0, 0),
                         new PIDConstants(3, 0, 0),
-                        new PIDConstants(2, 0, 0),
                         TunerConstants.kSpeedAt12VoltsMps,
                         driveBaseRadius,
                         new ReplanningConfig()),

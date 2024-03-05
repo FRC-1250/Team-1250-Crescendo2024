@@ -21,11 +21,11 @@ public class HolonomicPaths {
         Rotation2d startingRotation = PathMetadata.SPEAKER_CENTER_APPROACH_ANGLE;
         List<Pose2d> poses = new ArrayList<>();
         poses.add(new Pose2d(PathMetadata.SPEAKER_CENTER, Rotation2d.fromDegrees(0)));
-        poses.add(new Pose2d(PathMetadata.NOTE_SPEAKER_CENTER, Rotation2d.fromDegrees(0)));
+        poses.add(new Pose2d(PathMetadata.NOTE_SPEAKER_CENTER.plus(new Translation2d(.1,0)), Rotation2d.fromDegrees(0)));
         poses.add(new Pose2d(PathMetadata.SPEAKER_CENTER, Rotation2d.fromDegrees(180)));
 
         List<ConstraintsZone> constraintsZones = new ArrayList<>();
-        constraintsZones.add(new ConstraintsZone(0.8, 1.2, TunerConstants.LOW_PATH_CONSTRAINTS));
+        constraintsZones.add(new ConstraintsZone(0.5, 1.2, TunerConstants.LOW_PATH_CONSTRAINTS));
 
         GoalEndState goalEndState = new GoalEndState(0, Rotation2d.fromDegrees(0));
         return HolonomicPathBuilder.build(
@@ -49,7 +49,7 @@ public class HolonomicPaths {
         rotationTargets.add(new RotationTarget(0.7, Rotation2d.fromDegrees(30), false));
 
         List<ConstraintsZone> constraintsZones = new ArrayList<>();
-        constraintsZones.add(new ConstraintsZone(0.8, 1.2, TunerConstants.LOW_PATH_CONSTRAINTS));
+        constraintsZones.add(new ConstraintsZone(0.5, 1.2, TunerConstants.LOW_PATH_CONSTRAINTS));
 
         GoalEndState goalEndState = new GoalEndState(0, PathMetadata.SPEAKER_AMP_SIDE_APPROACH_ANGLE);
         return HolonomicPathBuilder.build(
@@ -108,5 +108,25 @@ public class HolonomicPaths {
                         rotationTargets,
                         constraintsZones,
                         goalEndState));
+    }
+
+    public static PathPlannerPath SourceEscapePlan(Alliance alliance) { 
+        Rotation2d startingRotaion = PathMetadata.SPEAKER_SOURCE_SIDE_APPROACH_ANGLE;
+        List<Pose2d> poses = new ArrayList<>();
+        poses.add(new Pose2d(PathMetadata.SPEAKER_SOURCE_SIDE, Rotation2d.fromDegrees(0)));
+        poses.add(new Pose2d(1.28, 1.78, Rotation2d.fromDegrees(-90)));
+        poses.add(new Pose2d(2.92, .64, Rotation2d.fromDegrees(0)));
+
+        GoalEndState goalEndState = new GoalEndState(0, Rotation2d.fromDegrees(0));
+
+        return HolonomicPathBuilder.build(
+                alliance,
+                 new HolonomicPathComponents(
+                        startingRotaion, 
+                        poses,
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        goalEndState
+                 ));
     }
 }
