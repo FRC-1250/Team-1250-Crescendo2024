@@ -142,6 +142,6 @@ public class TunerConstants {
     public static final CommandSwerveDrivetrain DriveTrain = new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft,
             FrontRight, BackLeft, BackRight);
 
-    public static final PathConstraints MAX_PATH_CONSTRAINTS = new PathConstraints(4, 3.35, 270, 180);
+    public static final PathConstraints MAX_PATH_CONSTRAINTS = new PathConstraints(5, 2.5, 270, 180);
     public static final PathConstraints LOW_PATH_CONSTRAINTS = new PathConstraints(0.75, 0.5, 135, 90);
 }
