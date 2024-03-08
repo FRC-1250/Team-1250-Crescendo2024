@@ -30,7 +30,7 @@ public class FieldCentricAutoAim implements SwerveRequest {
     private Optional<Alliance> alliance;
     private final Limelight limelight;
     private double xOffset;
-    private final double kP = 0.05;
+    private final double kP = 0.02;
 
     public FieldCentricAutoAim(Limelight limelight) {
         this.limelight = limelight;

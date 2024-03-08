@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -67,7 +68,8 @@ public class HolonomicPaths {
         Rotation2d startingRotation = PathMetadata.SPEAKER_AMP_SIDE_APPROACH_ANGLE;
         List<Pose2d> poses = new ArrayList<>();
         poses.add(new Pose2d(PathMetadata.SPEAKER_AMP_SIDE, Rotation2d.fromDegrees(0)));
-        poses.add(new Pose2d(PathMetadata.NOTE_AMP_SIDE, Rotation2d.fromDegrees(45)));
+        poses.add(new Pose2d(PathMetadata.NOTE_AMP_SIDE.plus(new Translation2d(0, 0)), Rotation2d.fromDegrees(0)));
+        poses.add(new Pose2d(PathMetadata.NOTE_AMP_SIDE.plus(new Translation2d(0, .1)), Rotation2d.fromDegrees(180)));
         poses.add(new Pose2d(PathMetadata.SPEAKER_AMP_SIDE, Rotation2d.fromDegrees(180)));
 
         List<RotationTarget> rotationTargets = new ArrayList<>();
@@ -139,6 +141,7 @@ public class HolonomicPaths {
         Rotation2d startingRotaion = PathMetadata.SPEAKER_SOURCE_SIDE_APPROACH_ANGLE;
         List<Pose2d> poses = new ArrayList<>();
         poses.add(new Pose2d(PathMetadata.SPEAKER_SOURCE_SIDE, Rotation2d.fromDegrees(0)));
+        //change these back to line 143 to x:1.28, y: 1.78 and line 144 to 2.92 and .64 when given a practice feild or a bigger space
         poses.add(new Pose2d(1.28, 1.78, Rotation2d.fromDegrees(-90)));
         poses.add(new Pose2d(2.92, .64, Rotation2d.fromDegrees(0)));
 

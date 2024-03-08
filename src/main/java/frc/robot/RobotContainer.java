@@ -138,6 +138,7 @@ public class RobotContainer {
       autoChooser.addOption("BlueSpeakerAmpSideShot", doubleSpeakerShot(HolonomicPaths.speakerAmpSide(Alliance.Blue)));
       autoChooser.addOption("BlueSpeakerSourceSide", doubleSpeakerShot(HolonomicPaths.speakerSourceSide(Alliance.Blue)));
       autoChooser.addOption("BlueEscape", singleSpeakerShotWithPath(HolonomicPaths.SourceEscapePlan(Alliance.Blue)));
+       autoChooser.addOption("RedEscape", singleSpeakerShotWithPath(HolonomicPaths.SourceEscapePlan(Alliance.Red)));
       autoChooser.addOption("RedSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenterWithRotation(Alliance.Red)));
       autoChooser.addOption("RedSpeakerAmpSideShot", doubleSpeakerShot(HolonomicPaths.speakerAmpSide(Alliance.Red)));
       autoChooser.addOption("RedSpeakerSourceSide", doubleSpeakerShot(HolonomicPaths.speakerSourceSide(Alliance.Red)));
@@ -194,7 +195,7 @@ public class RobotContainer {
   }
 
   private Command fireNoteWithTimeout() {
-    return new FireNote(indexer, launcher).withTimeout(0.5);
+    return new FireNote(indexer, launcher).withTimeout(1);
   }
 
   private Command intakeCenterNoteWithFullSpeed() {
