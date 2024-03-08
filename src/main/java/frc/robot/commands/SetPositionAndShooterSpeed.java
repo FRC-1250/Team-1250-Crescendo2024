@@ -12,9 +12,9 @@ import frc.robot.subsystems.Shoulder.Position;
 public class SetPositionAndShooterSpeed extends Command {
   private final Shoulder shoulder;
   private final launcher launcher;
-  private final float targetPosition;
+  private final Position targetPosition;
   /** Creates a new SetPositionAndShooterSpeed. */
-  public SetPositionAndShooterSpeed(Shoulder shoulder, launcher launcher, float targetPosition) {
+  public SetPositionAndShooterSpeed(Shoulder shoulder, launcher launcher, Position targetPosition) {
     this.launcher = launcher;
     this.shoulder = shoulder;
     this.targetPosition = targetPosition;
@@ -33,8 +33,12 @@ public class SetPositionAndShooterSpeed extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    launcher.SetLauncherVelocity(launcher.TARGET_RPM);
-    shoulder.setPosition(targetPosition);
+    if (targetPosition == Position.SPEAKER || targetPosition == Position.SPEAKER_PODIUM) {
+      launcher.SetLauncherVelocity(launcher.SPEAKER_TARGET_RPM);
+    } else if (targetPosition == Position.AMP) {
+      launcher.SetLauncherVelocity(launcher.AMP_TARGET_RPM);
+    }
+    shoulder.setPosition(targetPosition.value);
   }
 
   // Called once the command ends or is interrupted.
@@ -46,6 +50,6 @@ public class SetPositionAndShooterSpeed extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shoulder.isAtSetPoint(targetPosition);
+    return shoulder.isAtSetPoint(targetPosition.value);
   }
 }

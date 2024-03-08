@@ -112,11 +112,11 @@ public class RobotContainer {
     drivXboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     drivXboxController.rightBumper().onTrue(new IntakeCenterNote(intake, shoulder, indexer, 1.0));
-    drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher));
+    drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher, shoulder));
     drivXboxController.a().onTrue(new SetIntakeDutyCycle(intake, -1));
-    drivXboxController.b().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM.value));
-    drivXboxController.leftTrigger().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value));
-    drivXboxController.leftBumper().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP.value));
+    drivXboxController.b().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM));
+    drivXboxController.leftTrigger().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER));
+    drivXboxController.leftBumper().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP));
     drivXboxController.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.5));
     drivXboxController.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.5));
     drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, 0));
@@ -156,14 +156,14 @@ public class RobotContainer {
 
   private Command singleSpeakerShot() {
     return Commands.sequence(
-        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER),
         fireNoteWithTimeout(),
         new SetShoulderPosition(shoulder, Position.HOME));
   }
 
   private Command singleSpeakerShotWithPath(PathPlannerPath pathPlannerPath) {
     return Commands.sequence(
-        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER),
         fireNoteWithTimeout(),
         new SetShoulderPosition(shoulder, Position.HOME),
         resetOdometryAndFollowPath(pathPlannerPath));
@@ -171,12 +171,12 @@ public class RobotContainer {
 
   private Command doubleSpeakerShot(PathPlannerPath pathPlannerPath) {
     return Commands.sequence(
-        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER),
         fireNoteWithTimeout(),
         Commands.parallel(
             Commands.sequence(
                 intakeCenterNoteWithFullSpeed(),
-                new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value)),
+                new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER)),
             Commands.sequence(
                 new WaitCommand(0.02),
                 resetOdometryAndFollowPath(pathPlannerPath))),
@@ -195,7 +195,7 @@ public class RobotContainer {
   }
 
   private Command fireNoteWithTimeout() {
-    return new FireNote(indexer, launcher).withTimeout(1);
+    return new FireNote(indexer, launcher, shoulder).withTimeout(1);
   }
 
   private Command intakeCenterNoteWithFullSpeed() {
