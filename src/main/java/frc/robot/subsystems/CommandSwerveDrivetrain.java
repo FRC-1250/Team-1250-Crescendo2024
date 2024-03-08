@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -41,6 +42,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         configurePathPlanner();
         configureOpenLoopRampRates();
+        configureClosedLoopRampRates();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -50,6 +52,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         super(driveTrainConstants, modules);
         configurePathPlanner();
         configureOpenLoopRampRates();
+        configureClosedLoopRampRates();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -72,6 +75,17 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         for (int i = 0; i < Modules.length; i++) {
             Modules[i].getDriveMotor().getConfigurator().apply(openLoopRampsConfigs);
         }        
+    }
+
+    private void configureClosedLoopRampRates() {
+        ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
+        closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = 0.02;
+        closedLoopRampsConfigs.DutyCycleClosedLoopRampPeriod = 0.02;
+        closedLoopRampsConfigs.TorqueClosedLoopRampPeriod = 0.02;
+
+        for (int i = 0; i < Modules.length; i++) {
+            Modules[i].getSteerMotor().getConfigurator().apply(closedLoopRampsConfigs);
+        }
     }
 
     private void configurePathPlanner() {
