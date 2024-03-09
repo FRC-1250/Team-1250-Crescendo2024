@@ -36,8 +36,8 @@ public class IntakeCenterNote extends Command {
   @Override
   public void execute() {
     if (MathUtil.isNear(Position.HOME.value, shoulder.getPosition(), 0.005, 0, 1)) {
-    intake.setDutyCycleUpperRoller(percentOut);
-    intake.setDutyCycleLowerRoller(percentOut);
+    intake.setDutyCycleFrontRoller(percentOut);
+    intake.setDutyCycleRearRoller(percentOut);
     indexer.centernote();
     }
       shoulder.setPosition(Position.HOME.value);
@@ -46,8 +46,8 @@ public class IntakeCenterNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-  intake.setDutyCycleLowerRoller(0);
-  intake.setDutyCycleUpperRoller(0);
+  intake.setDutyCycleRearRoller(0);
+  intake.setDutyCycleFrontRoller(0);
   indexer.setDutyoutIndex(0);
   }
 

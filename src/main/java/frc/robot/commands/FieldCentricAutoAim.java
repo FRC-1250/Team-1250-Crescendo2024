@@ -58,7 +58,7 @@ public class FieldCentricAutoAim implements SwerveRequest {
 
         double toApplyX = VelocityX;
         double toApplyY = VelocityY;
-        double toApplyOmega = xOffset * kP * TunerConstants.MaxAngularRate;
+        double toApplyOmega = xOffset * kP * (TunerConstants.MaxAngularRate / 1.5);
 
         if (Math.sqrt(toApplyX * toApplyX + toApplyY * toApplyY) < Deadband) {
             toApplyX = 0;

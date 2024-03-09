@@ -89,6 +89,24 @@ public class HolonomicPaths {
                         goalEndState));
     }
 
+    public static PathPlannerPath speakerAmpSideLeaveWing(Alliance alliance) {
+        Rotation2d startingRotation = PathMetadata.SPEAKER_AMP_SIDE_APPROACH_ANGLE;
+        List<Pose2d> poses = new ArrayList<>();
+        poses.add(new Pose2d(PathMetadata.SPEAKER_AMP_SIDE, Rotation2d.fromDegrees(0)));
+        poses.add(new Pose2d(PathMetadata.NOTE_CENTERLINE_AMP_ALIGNED.plus(new Translation2d(-2,0)), Rotation2d.fromDegrees(180)));
+
+        GoalEndState goalEndState = new GoalEndState(0, Rotation2d.fromDegrees(0));
+        return HolonomicPathBuilder.build(
+                alliance, 
+                new HolonomicPathComponents(
+                        startingRotation,
+                        poses,
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        goalEndState
+                ));
+    }
+
        public static PathPlannerPath speakerAmpSideToAmp(Alliance alliance) {
         Rotation2d startingRotation = PathMetadata.SPEAKER_AMP_SIDE_APPROACH_ANGLE;
         List<Pose2d> poses = new ArrayList<>();

@@ -135,12 +135,12 @@ public class RobotContainer {
     try {
       autoChooser.addOption("FireNoteOnly", singleSpeakerShot());
       autoChooser.addOption("BlueSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenterWithRotation(Alliance.Blue)));
-      autoChooser.addOption("BlueSpeakerAmpSideShot", doubleSpeakerShot(HolonomicPaths.speakerAmpSide(Alliance.Blue)));
+      autoChooser.addOption("BlueSpeakerAmpSideShot", doubleshotandrun(HolonomicPaths.speakerAmpSide(Alliance.Blue), HolonomicPaths.speakerAmpSideLeaveWing(Alliance.Blue)));
       autoChooser.addOption("BlueSpeakerSourceSide", doubleSpeakerShot(HolonomicPaths.speakerSourceSide(Alliance.Blue)));
       autoChooser.addOption("BlueEscape", singleSpeakerShotWithPath(HolonomicPaths.SourceEscapePlan(Alliance.Blue)));
        autoChooser.addOption("RedEscape", singleSpeakerShotWithPath(HolonomicPaths.SourceEscapePlan(Alliance.Red)));
       autoChooser.addOption("RedSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenterWithRotation(Alliance.Red)));
-      autoChooser.addOption("RedSpeakerAmpSideShot", doubleSpeakerShot(HolonomicPaths.speakerAmpSide(Alliance.Red)));
+      autoChooser.addOption("RedSpeakerAmpSideShot", doubleshotandrun(HolonomicPaths.speakerAmpSide(Alliance.Red), HolonomicPaths.speakerAmpSideLeaveWing(Alliance.Red)));
       autoChooser.addOption("RedSpeakerSourceSide", doubleSpeakerShot(HolonomicPaths.speakerSourceSide(Alliance.Red)));
          
     } catch (Exception e) {
@@ -182,6 +182,23 @@ public class RobotContainer {
                 resetOdometryAndFollowPath(pathPlannerPath))),
         fireNoteWithTimeout(),
         new SetShoulderPosition(shoulder, Position.HOME));
+  }
+
+  private Command doubleshotandrun(PathPlannerPath pathPlannerPath, PathPlannerPath pathPlannerPath2) {
+    return Commands.sequence(
+        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER),
+        fireNoteWithTimeout(),
+        Commands.parallel(
+            Commands.sequence(
+                intakeCenterNoteWithFullSpeed(),
+                new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER)),
+            Commands.sequence(
+                new WaitCommand(0.02),
+                resetOdometryAndFollowPath(pathPlannerPath))),
+        fireNoteWithTimeout(),
+        new SetShoulderPosition(shoulder, Position.HOME),
+        resetOdometryAndFollowPath(pathPlannerPath2));
+
   }
 
   public Command resetOdometryAndFollowPath(PathPlannerPath path) {

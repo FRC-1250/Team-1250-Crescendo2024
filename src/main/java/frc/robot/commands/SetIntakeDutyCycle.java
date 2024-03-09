@@ -19,7 +19,7 @@ public class SetIntakeDutyCycle extends Command {
 
   @Override
   public void execute() {
-    intake.setDutyCycleLowerRoller(percentOut);
-    intake.setDutyCycleUpperRoller(percentOut);
+    intake.setDutyCycleRearRoller(percentOut);
+    intake.setDutyCycleFrontRoller(percentOut);
   }
 }
