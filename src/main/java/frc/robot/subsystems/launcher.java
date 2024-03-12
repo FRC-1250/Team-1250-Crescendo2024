@@ -31,8 +31,8 @@ public class launcher extends SubsystemBase {
     rightLauncherSparkMax.setIdleMode(IdleMode.kBrake);
     rightLauncherSparkMax.setInverted(true);
     rightLauncherSparkMax.setSmartCurrentLimit(60);
-    rightLauncherSparkMax.setOpenLoopRampRate(0.05);
-    rightLauncherSparkMax.setClosedLoopRampRate(0.05);
+    rightLauncherSparkMax.setOpenLoopRampRate(0.1);
+    rightLauncherSparkMax.setClosedLoopRampRate(0.1);
     rightLauncherPIDController.setP(1.5e-4);
     rightLauncherPIDController.setI(0);
     rightLauncherPIDController.setD(0);
@@ -70,6 +70,8 @@ public void SetLauncherVelocity(double setpoint) {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Right launcher RPM", getRightLauncherRPM());
+    SmartDashboard.putNumber("Right launcher stator current", rightLauncherSparkMax.getOutputCurrent());
     SmartDashboard.putNumber("Left launcher RPM", getLeftLauncherRPM());
+    SmartDashboard.putNumber("Right launcher stator current", leftLauncherSparkMax.getOutputCurrent());
   }
 }
