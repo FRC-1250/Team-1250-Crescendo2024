@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -41,6 +42,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         configurePathPlanner();
         configureOpenLoopRampRates();
+        configureClosedLoopRampRates();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -50,6 +52,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         super(driveTrainConstants, modules);
         configurePathPlanner();
         configureOpenLoopRampRates();
+        configureClosedLoopRampRates();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -65,13 +68,24 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     private void configureOpenLoopRampRates() {
         OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
-        openLoopRampsConfigs.VoltageOpenLoopRampPeriod = 0.1;
-        openLoopRampsConfigs.TorqueOpenLoopRampPeriod = 0.1;
-        openLoopRampsConfigs.DutyCycleOpenLoopRampPeriod = 0.1;
+        openLoopRampsConfigs.VoltageOpenLoopRampPeriod = 0.2;
+        openLoopRampsConfigs.TorqueOpenLoopRampPeriod = 0.2;
+        openLoopRampsConfigs.DutyCycleOpenLoopRampPeriod = 0.2;
 
         for (int i = 0; i < Modules.length; i++) {
             Modules[i].getDriveMotor().getConfigurator().apply(openLoopRampsConfigs);
         }        
+    }
+
+    private void configureClosedLoopRampRates() {
+        ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
+        closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = 0.05;
+        closedLoopRampsConfigs.DutyCycleClosedLoopRampPeriod = 0.05;
+        closedLoopRampsConfigs.TorqueClosedLoopRampPeriod = 0.05;
+
+        for (int i = 0; i < Modules.length; i++) {
+            Modules[i].getSteerMotor().getConfigurator().apply(closedLoopRampsConfigs);
+        }
     }
 
     private void configurePathPlanner() {

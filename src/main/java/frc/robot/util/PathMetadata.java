@@ -8,7 +8,7 @@ public class PathMetadata {
         public static final Translation2d SPEAKER_SOURCE_SIDE = new Translation2d(0.72, 4.40);
         public static final Translation2d SPEAKER_AMP_SIDE = new Translation2d(0.72, 6.69);
         public static final Translation2d AMP = new Translation2d(1.82, 7.65);
-        public static final Translation2d NOTE_AMP_SIDE = new Translation2d(2.90, 7.1);
+        public static final Translation2d NOTE_AMP_SIDE = new Translation2d(2.90, 7);
         public static final Translation2d NOTE_SPEAKER_CENTER = new Translation2d(2.90, 5.55);
         public static final Translation2d NOTE_PODIUM = new Translation2d(2.90, 4.10);
 

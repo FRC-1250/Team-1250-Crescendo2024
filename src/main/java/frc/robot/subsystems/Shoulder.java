@@ -67,8 +67,8 @@ public class Shoulder extends SubsystemBase {
     leftRotator.restoreFactoryDefaults();
     leftRotator.setSmartCurrentLimit(25);
     leftRotator.setIdleMode(IdleMode.kBrake);
-    leftRotator.setClosedLoopRampRate(0.5);
-    leftRotator.setOpenLoopRampRate(0.5);
+    leftRotator.setClosedLoopRampRate(0.25);
+    leftRotator.setOpenLoopRampRate(0.25);
     leftRotator.follow(rightRotator, true);
 
     rightRotatorThroughBoreEncoder = rightRotator.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);

@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.SetShoulderDutyCycle;
 import frc.robot.commands.SetShoulderPosition;
 import frc.robot.commands.targetlock;
+import frc.robot.commands.FieldCentricAutoAim;
 import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
 import frc.robot.commands.LightShow;
@@ -58,6 +59,11 @@ public class RobotContainer {
       .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
+  private final FieldCentricAutoAim fieldCentricAutoAim = new FieldCentricAutoAim(limelight)
+      .withDeadband(TunerConstants.MaxSpeed * 0.1)
+      .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.025)
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
   // Field centric driving in closed loop with target locking and 10% deadband
   private final targetlock targetLock = new targetlock(limelight, drivetrain::getHeading)
       .withDeadband(TunerConstants.MaxSpeed * 0.1)
@@ -89,7 +95,7 @@ public class RobotContainer {
         "Default drive"));
 
     drivXboxController.x().whileTrue(drivetrain.applyRequestWithName(
-        () -> targetLock
+        () -> fieldCentricAutoAim
             .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
             .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed),
         "Target lock"));
@@ -106,11 +112,11 @@ public class RobotContainer {
     drivXboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     drivXboxController.rightBumper().onTrue(new IntakeCenterNote(intake, shoulder, indexer, 1.0));
-    drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher));
+    drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher, shoulder));
     drivXboxController.a().onTrue(new SetIntakeDutyCycle(intake, -1));
-    drivXboxController.b().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM.value));
-    drivXboxController.leftTrigger().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value));
-    drivXboxController.leftBumper().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP.value));
+    drivXboxController.b().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM));
+    drivXboxController.leftTrigger().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER));
+    drivXboxController.leftBumper().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP));
     drivXboxController.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.5));
     drivXboxController.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.5));
     drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, 0));
@@ -128,11 +134,13 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Do nothing", new WaitCommand(15));
     try {
       autoChooser.addOption("FireNoteOnly", singleSpeakerShot());
-      autoChooser.addOption("BlueSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenter(Alliance.Blue)));
-      autoChooser.addOption("BlueSpeakerAmpSideShot", doubleSpeakerShot(HolonomicPaths.speakerAmpSide(Alliance.Blue)));
+      autoChooser.addOption("BlueSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenterWithRotation(Alliance.Blue)));
+      autoChooser.addOption("BlueSpeakerAmpSideShot", doubleshotandrun(HolonomicPaths.speakerAmpSide(Alliance.Blue), HolonomicPaths.speakerAmpSideLeaveWing(Alliance.Blue)));
       autoChooser.addOption("BlueSpeakerSourceSide", doubleSpeakerShot(HolonomicPaths.speakerSourceSide(Alliance.Blue)));
-      autoChooser.addOption("RedSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenter(Alliance.Red)));
-      autoChooser.addOption("RedSpeakerAmpSideShot", doubleSpeakerShot(HolonomicPaths.speakerAmpSide(Alliance.Red)));
+      autoChooser.addOption("BlueEscape", singleSpeakerShotWithPath(HolonomicPaths.SourceEscapePlan(Alliance.Blue)));
+       autoChooser.addOption("RedEscape", singleSpeakerShotWithPath(HolonomicPaths.SourceEscapePlan(Alliance.Red)));
+      autoChooser.addOption("RedSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenterWithRotation(Alliance.Red)));
+      autoChooser.addOption("RedSpeakerAmpSideShot", doubleshotandrun(HolonomicPaths.speakerAmpSide(Alliance.Red), HolonomicPaths.speakerAmpSideLeaveWing(Alliance.Red)));
       autoChooser.addOption("RedSpeakerSourceSide", doubleSpeakerShot(HolonomicPaths.speakerSourceSide(Alliance.Red)));
          
     } catch (Exception e) {
@@ -148,24 +156,49 @@ public class RobotContainer {
 
   private Command singleSpeakerShot() {
     return Commands.sequence(
-        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER),
         fireNoteWithTimeout(),
         new SetShoulderPosition(shoulder, Position.HOME));
   }
 
+  private Command singleSpeakerShotWithPath(PathPlannerPath pathPlannerPath) {
+    return Commands.sequence(
+        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER),
+        fireNoteWithTimeout(),
+        new SetShoulderPosition(shoulder, Position.HOME),
+        resetOdometryAndFollowPath(pathPlannerPath));
+  }
+
   private Command doubleSpeakerShot(PathPlannerPath pathPlannerPath) {
     return Commands.sequence(
-        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value),
+        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER),
         fireNoteWithTimeout(),
         Commands.parallel(
             Commands.sequence(
                 intakeCenterNoteWithFullSpeed(),
-                new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER.value)),
+                new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER)),
             Commands.sequence(
                 new WaitCommand(0.02),
                 resetOdometryAndFollowPath(pathPlannerPath))),
         fireNoteWithTimeout(),
         new SetShoulderPosition(shoulder, Position.HOME));
+  }
+
+  private Command doubleshotandrun(PathPlannerPath pathPlannerPath, PathPlannerPath pathPlannerPath2) {
+    return Commands.sequence(
+        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER),
+        fireNoteWithTimeout(),
+        Commands.parallel(
+            Commands.sequence(
+                intakeCenterNoteWithFullSpeed(),
+                new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER)),
+            Commands.sequence(
+                new WaitCommand(0.02),
+                resetOdometryAndFollowPath(pathPlannerPath))),
+        fireNoteWithTimeout(),
+        new SetShoulderPosition(shoulder, Position.HOME),
+        resetOdometryAndFollowPath(pathPlannerPath2));
+
   }
 
   public Command resetOdometryAndFollowPath(PathPlannerPath path) {
@@ -179,7 +212,7 @@ public class RobotContainer {
   }
 
   private Command fireNoteWithTimeout() {
-    return new FireNote(indexer, launcher).withTimeout(0.5);
+    return new FireNote(indexer, launcher, shoulder).withTimeout(1);
   }
 
   private Command intakeCenterNoteWithFullSpeed() {

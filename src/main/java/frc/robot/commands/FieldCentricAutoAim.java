@@ -30,7 +30,7 @@ public class FieldCentricAutoAim implements SwerveRequest {
     private Optional<Alliance> alliance;
     private final Limelight limelight;
     private double xOffset;
-    private final double kP = 0.05;
+    private final double kP = 0.02;
 
     public FieldCentricAutoAim(Limelight limelight) {
         this.limelight = limelight;
@@ -58,7 +58,7 @@ public class FieldCentricAutoAim implements SwerveRequest {
 
         double toApplyX = VelocityX;
         double toApplyY = VelocityY;
-        double toApplyOmega = xOffset * kP * TunerConstants.MaxAngularRate;
+        double toApplyOmega = xOffset * kP * (TunerConstants.MaxAngularRate / 1.5);
 
         if (Math.sqrt(toApplyX * toApplyX + toApplyY * toApplyY) < Deadband) {
             toApplyX = 0;
