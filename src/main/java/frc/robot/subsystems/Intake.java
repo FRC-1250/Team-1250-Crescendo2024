@@ -56,9 +56,9 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Intake front roller duty cycle", frontRoller.get());
-    SmartDashboard.putNumber("Intake front roller stator current", frontRoller.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Intake rear roller duty cycle", rearRoller.get());
-    SmartDashboard.putNumber("Intake rear roller stator current", rearRoller.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Intake/Front duty cycle", frontRoller.get());
+    SmartDashboard.putNumber("Intake/Front stator current", frontRoller.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Intake/Rear duty cycle", rearRoller.get());
+    SmartDashboard.putNumber("Intake/Rear stator current", rearRoller.getStatorCurrent().getValueAsDouble());
   }
 }

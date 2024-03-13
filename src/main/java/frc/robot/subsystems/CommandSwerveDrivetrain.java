@@ -17,7 +17,11 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -126,14 +130,83 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return m_odometry.getEstimatedPosition().getRotation().getDegrees();
     }
 
+    private Pose2d m_lastPose = new Pose2d();
+    private double lastTime = Utils.getCurrentTimeSeconds();
+
+    private void telemetry(SwerveDriveState state) {
+        Pose2d pose = state.Pose;
+
+        SmartDashboard.putNumber("Drive/Pose X", pose.getX());
+        SmartDashboard.putNumber("Drive/Pose Y", pose.getY());
+        SmartDashboard.putNumber("Drive/Pose Heading", pose.getRotation().getDegrees());
+
+        /* Telemeterize the robot's general speeds */
+        double currentTime = Utils.getCurrentTimeSeconds();
+        double diffTime = currentTime - lastTime;
+        lastTime = currentTime;
+        Translation2d distanceDiff = pose.minus(m_lastPose).getTranslation();
+        m_lastPose = pose;
+
+        Translation2d velocities = distanceDiff.div(diffTime);
+
+        SmartDashboard.putNumber("Drive/Speed", velocities.getNorm());
+        SmartDashboard.putNumber("Drive/Velocity X", velocities.getX());
+        SmartDashboard.putNumber("Drive/Velocity Y", velocities.getY());
+        SmartDashboard.putNumber("Drive/Odometry Period", state.OdometryPeriod);
+
+        /* Telemeterize the module's states */
+        SmartDashboard.putNumber("Drive/Module one/Speed", state.ModuleStates[0].speedMetersPerSecond);
+        SmartDashboard.putNumber("Drive/Module two/Speed", state.ModuleStates[1].speedMetersPerSecond);
+        SmartDashboard.putNumber("Drive/Module three/Speed", state.ModuleStates[2].speedMetersPerSecond);
+        SmartDashboard.putNumber("Drive/Module four/Speed", state.ModuleStates[3].speedMetersPerSecond);
+
+        SmartDashboard.putNumber("Drive/Module one/Heading", state.ModuleStates[0].angle.getDegrees());
+        SmartDashboard.putNumber("Drive/Module two/Heading", state.ModuleStates[0].angle.getDegrees());
+        SmartDashboard.putNumber("Drive/Module three/Heading", state.ModuleStates[0].angle.getDegrees());
+        SmartDashboard.putNumber("Drive/Module four/Heading", state.ModuleStates[0].angle.getDegrees());
+
+        var moduleOne = getModule(0);
+        var moduleTwo = getModule(1);
+        var moduleThree = getModule(2);
+        var moduleFour = getModule(3);
+
+        SmartDashboard.putNumber("Drive/Module one/Drive stator curret",
+                moduleOne.getDriveMotor().getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Drive/Module one/Drive RPM",
+                moduleOne.getDriveMotor().getVelocity().getValueAsDouble() * 60);
+        SmartDashboard.putNumber("Drive/Module one/Steer stator curret",
+                moduleOne.getSteerMotor().getStatorCurrent().getValueAsDouble());
+
+        SmartDashboard.putNumber("Drive/Module two/Drive stator curret",
+                moduleTwo.getDriveMotor().getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Drive/Module two/Drive RPM",
+                moduleTwo.getDriveMotor().getVelocity().getValueAsDouble() * 60);
+        SmartDashboard.putNumber("Drive/Module two/Steer stator curret",
+                moduleTwo.getSteerMotor().getStatorCurrent().getValueAsDouble());
+
+        SmartDashboard.putNumber("Drive/Module three/Drive stator curret",
+                moduleThree.getDriveMotor().getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Drive/Module three/Drive RPM",
+                moduleThree.getDriveMotor().getVelocity().getValueAsDouble() * 60);
+        SmartDashboard.putNumber("Drive/Module three/Steer stator curret",
+                moduleThree.getSteerMotor().getStatorCurrent().getValueAsDouble());
+
+        SmartDashboard.putNumber("Drive/Module four/Drive stator curret",
+                moduleFour.getDriveMotor().getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Drive/Module four/Drive RPM",
+                moduleFour.getDriveMotor().getVelocity().getValueAsDouble() * 60);
+        SmartDashboard.putNumber("Drive/Module four/Steer stator curret",
+                moduleFour.getSteerMotor().getStatorCurrent().getValueAsDouble());
+
+        if (this.getCurrentCommand() != null) {
+            SmartDashboard.putString("Drive/Command", this.getCurrentCommand().getName());
+        } else {
+            SmartDashboard.putString("Drive/Command", "None");
+        }
+    }
+
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Module 1 raw speed", getModule(0).getDriveMotor().getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("Module 2 raw speed", getModule(1).getDriveMotor().getVelocity().getValueAsDouble());
-        if (this.getCurrentCommand() != null) {
-            SmartDashboard.putString("Drivetrain", this.getCurrentCommand().getName());
-        } else {
-            SmartDashboard.putString("Drivetrain", "None");
-        }
+        telemetry(this.getState());
     }
 }

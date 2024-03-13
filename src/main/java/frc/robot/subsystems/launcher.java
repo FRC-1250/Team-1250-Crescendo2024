@@ -69,9 +69,9 @@ public void SetLauncherVelocity(double setpoint) {
 }
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Right launcher RPM", getRightLauncherRPM());
-    SmartDashboard.putNumber("Right launcher stator current", rightLauncherSparkMax.getOutputCurrent());
-    SmartDashboard.putNumber("Left launcher RPM", getLeftLauncherRPM());
-    SmartDashboard.putNumber("Right launcher stator current", leftLauncherSparkMax.getOutputCurrent());
+    SmartDashboard.putNumber("Launcher/Right RPM", getRightLauncherRPM());
+    SmartDashboard.putNumber("Launcher/Right stator current", rightLauncherSparkMax.getOutputCurrent());
+    SmartDashboard.putNumber("Launcher/Left RPM", getLeftLauncherRPM());
+    SmartDashboard.putNumber("Launcher/Left stator current", leftLauncherSparkMax.getOutputCurrent());
   }
 }

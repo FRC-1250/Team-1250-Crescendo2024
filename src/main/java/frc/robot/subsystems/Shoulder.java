@@ -111,10 +111,11 @@ public class Shoulder extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Shoulder position, abs", rightRotatorThroughBoreEncoder.getPosition());
-    SmartDashboard.putNumber("Shoulder position, abs degrees", rightRotatorThroughBoreEncoder.getPosition() * 360);
-    SmartDashboard.putNumber("Shoulder velocity, abs", rightRotatorThroughBoreEncoder.getVelocity());
-    SmartDashboard.putNumber("Right shoulder stator current", rightRotator.getOutputCurrent());
-    SmartDashboard.putNumber("Left shoulder stator current", leftRotator.getOutputCurrent());
+    SmartDashboard.putNumber("Shoulder/Absoulte position", rightRotatorThroughBoreEncoder.getPosition());
+    SmartDashboard.putNumber("Shoulder/Degress position", rightRotatorThroughBoreEncoder.getPosition() * 360);
+    SmartDashboard.putNumber("Shoulder/Right duty cycle", rightRotator.get());
+    SmartDashboard.putNumber("Shoulder/Left duty cycle", leftRotator.get());
+    SmartDashboard.putNumber("Shoulder/Right stator current", rightRotator.getOutputCurrent());
+    SmartDashboard.putNumber("Shoulder/Left stator current", leftRotator.getOutputCurrent());
   }
 }

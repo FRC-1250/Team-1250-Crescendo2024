@@ -69,16 +69,15 @@ public class RobotContainer {
       .withDeadband(TunerConstants.MaxSpeed * 0.1)
       .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.025)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-  private final Telemetry logger = new Telemetry(TunerConstants.MaxSpeed);
 
   private final CommandXboxController drivXboxController = new CommandXboxController(0);
   // final CommandPS4Controller commandPS4Controller = new CommandPS4Controller(1);
 
   public RobotContainer() {
-    SmartDashboard.putData(intake);
-    SmartDashboard.putData(shoulder);
-    SmartDashboard.putData(launcher);
-    SmartDashboard.putData(indexer);
+    SmartDashboard.putData("Intake/Command", intake);
+    SmartDashboard.putData("Shoulder/Command", shoulder);
+    SmartDashboard.putData("Launcher/Command", launcher);
+    SmartDashboard.putData("Indexer/Command", indexer);
     configureAutoCommands();
     configureBindings();
   }
@@ -121,9 +120,7 @@ public class RobotContainer {
     drivXboxController.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.5));
     drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, 0));
     drivXboxController.y().onTrue(new SetLauncherDutyCycle(launcher, 0));
-    drivXboxController.y().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));
-    
-    drivetrain.registerTelemetry(logger::telemeterize);
+    drivXboxController.y().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));    
   }
 
   private void configureAutoCommands() {
