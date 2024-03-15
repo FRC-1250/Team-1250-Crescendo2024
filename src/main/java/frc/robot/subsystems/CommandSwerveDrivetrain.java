@@ -4,9 +4,11 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
@@ -45,7 +47,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         configurePathPlanner();
-        configureOpenLoopRampRates();
+        configureCurrentLimits();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -54,7 +56,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         configurePathPlanner();
-        configureOpenLoopRampRates();
+        configureCurrentLimits();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -68,15 +70,32 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return applyRequest(requestSupplier).withName(name);
     }
 
-    private void configureOpenLoopRampRates() {
+    private void configureCurrentLimits() {
+        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+        ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
         OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
-        openLoopRampsConfigs.VoltageOpenLoopRampPeriod = 0.1;
-        openLoopRampsConfigs.TorqueOpenLoopRampPeriod = 0.1;
-        openLoopRampsConfigs.DutyCycleOpenLoopRampPeriod = 0.1;
 
         for (int i = 0; i < Modules.length; i++) {
-            Modules[i].getDriveMotor().getConfigurator().apply(openLoopRampsConfigs);
-        }        
+            var driveConfigurator = Modules[i].getDriveMotor().getConfigurator();
+            driveConfigurator.refresh(openLoopRampsConfigs);
+            currentLimitsConfigs.SupplyCurrentLimitEnable = true;
+            currentLimitsConfigs.SupplyCurrentLimit = 30;
+            driveConfigurator.apply(openLoopRampsConfigs);
+
+            driveConfigurator.refresh(openLoopRampsConfigs);
+            openLoopRampsConfigs.VoltageOpenLoopRampPeriod = 0.25;
+            driveConfigurator.apply(openLoopRampsConfigs);
+
+            driveConfigurator.refresh(closedLoopRampsConfigs);
+            closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = 0.25;
+            driveConfigurator.apply(closedLoopRampsConfigs);
+
+            var steerConfigurator = Modules[i].getSteerMotor().getConfigurator();
+            steerConfigurator.refresh(currentLimitsConfigs);
+            currentLimitsConfigs.SupplyCurrentLimitEnable = true;
+            currentLimitsConfigs.SupplyCurrentLimit = 30;
+            steerConfigurator.apply(currentLimitsConfigs);
+        }
     }
 
     private void configurePathPlanner() {

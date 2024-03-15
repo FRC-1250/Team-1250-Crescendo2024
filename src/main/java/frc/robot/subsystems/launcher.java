@@ -30,7 +30,7 @@ public class launcher extends SubsystemBase {
     rightLauncherSparkMax.restoreFactoryDefaults();
     rightLauncherSparkMax.setIdleMode(IdleMode.kBrake);
     rightLauncherSparkMax.setInverted(true);
-    rightLauncherSparkMax.setSmartCurrentLimit(60);
+    rightLauncherSparkMax.setSmartCurrentLimit(30);
     rightLauncherSparkMax.setOpenLoopRampRate(0.1);
     rightLauncherSparkMax.setClosedLoopRampRate(0.1);
     rightLauncherPIDController.setP(1.5e-4);
@@ -41,7 +41,7 @@ public class launcher extends SubsystemBase {
     leftLauncherSparkMax.restoreFactoryDefaults();
     leftLauncherSparkMax.setIdleMode(IdleMode.kBrake);
     leftLauncherSparkMax.setInverted(false);
-    leftLauncherSparkMax.setSmartCurrentLimit(60);
+    leftLauncherSparkMax.setSmartCurrentLimit(30);
     leftLauncherSparkMax.setOpenLoopRampRate(0.1);
     leftLauncherSparkMax.setClosedLoopRampRate(0.1);
     leftLauncerPIDController.setP(1.5e-4);

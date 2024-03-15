@@ -27,14 +27,14 @@ public class indexer extends SubsystemBase {
     rightIndexSparkMax.restoreFactoryDefaults();
     rightIndexSparkMax.setIdleMode(IdleMode.kBrake);
     rightIndexSparkMax.setInverted(true);
-    rightIndexSparkMax.setSmartCurrentLimit(40);
+    rightIndexSparkMax.setSmartCurrentLimit(30);
     rightIndexSparkMax.setOpenLoopRampRate(0.1);
     rightIndexSparkMax.setClosedLoopRampRate(0.1);
 
     leftIndexSparkmax.restoreFactoryDefaults();
     leftIndexSparkmax.follow(rightIndexSparkMax, true);
     leftIndexSparkmax.setIdleMode(IdleMode.kBrake);
-    leftIndexSparkmax.setSmartCurrentLimit(40);
+    leftIndexSparkmax.setSmartCurrentLimit(30);
     leftIndexSparkmax.setOpenLoopRampRate(0.1);
     leftIndexSparkmax.setClosedLoopRampRate(0.1);
 

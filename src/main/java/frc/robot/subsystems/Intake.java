@@ -28,8 +28,10 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
     CurrentLimitsConfigs currentlimits = new CurrentLimitsConfigs();
-    currentlimits.StatorCurrentLimit = 40;
     currentlimits.StatorCurrentLimitEnable = true;
+    currentlimits.StatorCurrentLimit = 40;
+    currentlimits.SupplyCurrentLimitEnable = true;
+    currentlimits.SupplyCurrentLimit = 20;
 
     OpenLoopRampsConfigs loopRampsConfigs = new OpenLoopRampsConfigs();
     loopRampsConfigs.DutyCycleOpenLoopRampPeriod = 0.1;
