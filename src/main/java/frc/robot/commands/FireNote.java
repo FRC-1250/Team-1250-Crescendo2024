@@ -40,6 +40,8 @@ public class FireNote extends Command {
       targetRPM = launcher.AMP_TARGET_RPM;
     }
 
+    launcher.SetLauncherVelocity(targetRPM);
+
     if (MathUtil.isNear(targetRPM, (launcher.getRightLauncherRPM() + launcher.getLeftLauncherRPM()) / 2, CLOSED_LOOP_TOLERANCE)) {
       indexer.setDutyoutIndex(1);
     }

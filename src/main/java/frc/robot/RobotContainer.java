@@ -25,6 +25,7 @@ import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
 import frc.robot.commands.LightShow;
 import frc.robot.commands.LimeLightLED;
+import frc.robot.commands.SetIndexDutyCycle;
 import frc.robot.commands.SetIntakeDutyCycle;
 import frc.robot.commands.SetLauncherDutyCycle;
 import frc.robot.commands.SetPositionAndShooterSpeed;
@@ -112,7 +113,8 @@ public class RobotContainer {
 
     drivXboxController.rightBumper().onTrue(new IntakeCenterNote(intake, shoulder, indexer, 1.0));
     drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher, shoulder));
-    drivXboxController.a().onTrue(new SetIntakeDutyCycle(intake, -1));
+    drivXboxController.a().whileTrue(new SetIntakeDutyCycle(intake, -1));
+    drivXboxController.a().whileTrue(new SetIndexDutyCycle(indexer, -.1));
     drivXboxController.b().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM));
     drivXboxController.leftTrigger().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER));
     drivXboxController.leftBumper().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP));

@@ -78,7 +78,7 @@ public class Shoulder extends SubsystemBase {
 
     rightRotatorPIDController = rightRotator.getPIDController();
     rightRotatorPIDController.setFeedbackDevice(rightRotatorThroughBoreEncoder);
-    rightRotatorPIDController.setP(10);
+    rightRotatorPIDController.setP(25);
     rightRotatorPIDController.setI(0);
     rightRotatorPIDController.setD(0);
     rightRotatorPIDController.setFF(0);

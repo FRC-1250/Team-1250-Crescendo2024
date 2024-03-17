@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.indexer;
@@ -17,6 +18,8 @@ public class IntakeCenterNote extends Command {
   private final Intake intake;
   private double percentOut;
   private final Shoulder shoulder;
+  Timer timer = new Timer();
+
   public IntakeCenterNote(Intake intake, Shoulder shoulder, indexer indexer, Double percentOut) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
@@ -24,6 +27,7 @@ public class IntakeCenterNote extends Command {
     this.percentOut = percentOut;
     this.shoulder = shoulder;
     addRequirements(intake, indexer, shoulder);
+    timer.stop();
 
 
   }
@@ -41,6 +45,12 @@ public class IntakeCenterNote extends Command {
     indexer.centernote();
     }
       shoulder.setPosition(Position.HOME.value);
+      if (indexer.iscentered()) {
+        timer.start();
+      } else {
+        timer.stop();
+        timer.reset();
+      }
   }
 
   // Called once the command ends or is interrupted.
@@ -54,6 +64,6 @@ public class IntakeCenterNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-  return indexer.iscentered();
+  return timer.hasElapsed(0.2);
   }
 }

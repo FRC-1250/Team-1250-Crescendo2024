@@ -65,28 +65,28 @@ public class indexer extends SubsystemBase {
     if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == false
         && barrelsensor == false) {
           //was .3
-      setDutyoutIndex(1);
+      setDutyoutIndex(.4);
     } else if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == false
         && barrelsensor == true) {
-      setDutyoutIndex(.1);
+      setDutyoutIndex(.05);
     } else if (intakeside == true && indexerclose == false && indexerfar == false && shooterside == false) {
-      setDutyoutIndex(.1); //all point ones after this were .05
+      setDutyoutIndex(.05); //all point ones after this were .05
     } else if (intakeside == true && indexerclose == true && indexerfar == false && shooterside == false) {
-      setDutyoutIndex(.1);
+      setDutyoutIndex(.05);
     } else if (intakeside == true && indexerclose == true && indexerfar == true && shooterside == false) {
-      setDutyoutIndex(.1);
+      setDutyoutIndex(.05);
     } else if (intakeside == false && indexerclose == true && indexerfar == false && shooterside == false) {
-      setDutyoutIndex(.1);
+      setDutyoutIndex(.05);
     } else if (intakeside == false && indexerclose == false && indexerfar == true && shooterside == false) {
-      setDutyoutIndex(-.1);
+      setDutyoutIndex(-.05);
     } else if (intakeside == false && indexerclose == true && indexerfar == true && shooterside == false) {
       setDutyoutIndex(0);
     } else if (intakeside == false && indexerclose == true && indexerfar == true && shooterside == true) {
-      setDutyoutIndex(-0.1);
+      setDutyoutIndex(-0.05);
     } else if (intakeside == false && indexerclose == false && indexerfar == true && shooterside == true) {
-      setDutyoutIndex(-0.1);
+      setDutyoutIndex(-0.05);
     } else if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == true) {
-      setDutyoutIndex(-0.5);
+      setDutyoutIndex(-0.2);
     }
 
   }
