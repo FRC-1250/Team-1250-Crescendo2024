@@ -17,8 +17,14 @@ public class launcher extends SubsystemBase {
   private int LSHOOTER = 20;
   private int RSHOOTER = 21;
   public final int maxRPM = 5700;
-  public final int SPEAKER_TARGET_RPM = 5000;
-  public final int AMP_TARGET_RPM = 2500;
+  public final int PODIUM_TARGET_RPM_LEFT = 5000;
+  public final int PODIUM_TARGET_RPM_RIGHT = 4500;
+  public final int SPEAKER_TARGET_RPM_LEFT = 4500;
+  public final int SPEAKER_TARGET_RPM_RIGHT = 4000;
+  public final int AMP_TARGET_RPM_LEFT = 2500;
+  public final int AMP_TARGET_RPM_RIGHT = 2000; 
+
+
   /** Creates a new shooter. */
   CANSparkMax leftLauncherSparkMax = new CANSparkMax(LSHOOTER, MotorType.kBrushless);
   CANSparkMax rightLauncherSparkMax = new CANSparkMax(RSHOOTER, MotorType.kBrushless);
@@ -63,9 +69,9 @@ public double getLeftLauncherRPM() {
  return leftLauncherSparkMax.getEncoder().getVelocity();
 }
 
-public void SetLauncherVelocity(double setpoint) {
-    rightLauncherPIDController.setReference(setpoint, ControlType.kVelocity);
-    leftLauncerPIDController.setReference(setpoint, ControlType.kVelocity);
+public void SetLauncherVelocity(double right, double left) {
+    rightLauncherPIDController.setReference(right, ControlType.kVelocity);
+    leftLauncerPIDController.setReference(left, ControlType.kVelocity);
 }
   @Override
   public void periodic() {
