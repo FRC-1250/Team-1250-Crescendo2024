@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9011432430447806,
-        "y": 7.00319125756735
+        "x": 8.027090177403105,
+        "y": 7.440890711165308
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9011432430447806,
-        "y": 7.00319125756735
+        "x": 9.027090177403105,
+        "y": 7.440890711165308
       },
       "isLocked": false,
-      "linkedName": "AmpSideNote"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.6834660114817857,
+        "x": 4.19478829478986,
+        "y": 7.032371221140546
+      },
+      "prevControl": {
+        "x": 4.87419632628816,
+        "y": 6.298610547122381
+      },
+      "nextControl": {
+        "x": 3.708455568569905,
+        "y": 7.5576105654580985
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.7223726295793819,
         "y": 6.701664967310976
       },
       "prevControl": {
-        "x": 1.6834660114817854,
-        "y": 6.701664967310976
+        "x": 1.0238989198357542,
+        "y": 7.431164056640908
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AmpSideSpeaker"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -39,13 +55,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 60.0,
-    "rotateFast": false
+    "rotation": 60.572543596810256,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "AmpSideSpeaker",
   "previewStartingState": {
-    "rotation": 10.0,
+    "rotation": 1.5275254422129503,
     "velocity": 0
   },
   "useDefaultConstraints": true
