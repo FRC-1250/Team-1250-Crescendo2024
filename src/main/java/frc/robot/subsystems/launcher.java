@@ -18,11 +18,11 @@ public class launcher extends SubsystemBase {
   private int RSHOOTER = 21;
   public final int maxRPM = 5700;
   public final int PODIUM_TARGET_RPM_LEFT = 5000;
-  public final int PODIUM_TARGET_RPM_RIGHT = 3000;
+  public final int PODIUM_TARGET_RPM_RIGHT = 5000;
   public final int SPEAKER_TARGET_RPM_LEFT = 4500;
-  public final int SPEAKER_TARGET_RPM_RIGHT = 2700;
-  public final int AMP_TARGET_RPM_LEFT = 2500;
-  public final int AMP_TARGET_RPM_RIGHT = 2000; 
+  public final int SPEAKER_TARGET_RPM_RIGHT = 4500;
+  public final int AMP_TARGET_RPM_LEFT = 1500;
+  public final int AMP_TARGET_RPM_RIGHT = 1500; 
 
 
   /** Creates a new shooter. */
