@@ -73,6 +73,25 @@
           "data": {
             "name": "speakerFireNote"
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AmpSideSpeakerToCenterLine"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeCenterNote"
+                }
+              }
+            ]
+          }
         }
       ]
     }
