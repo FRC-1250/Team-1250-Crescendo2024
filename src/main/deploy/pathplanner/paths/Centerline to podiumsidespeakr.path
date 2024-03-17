@@ -3,37 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8099125202944064,
-        "y": 4.338087917884098
+        "x": 7.95,
+        "y": 0.78
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8099125202944064,
-        "y": 4.338087917884098
+        "x": 7.248957815451177,
+        "y": 0.4766060716955549
       },
       "isLocked": false,
-      "linkedName": "PodiumSideSpeaker"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.55,
-        "y": 4.0927334104305375
+        "x": 4.292054840033851,
+        "y": 2.1884972679897965
       },
       "prevControl": {
-        "x": 1.5499999999999998,
-        "y": 4.0927334104305375
+        "x": 6.008186772747536,
+        "y": 1.1614183082596348
+      },
+      "nextControl": {
+        "x": 2.575922907320165,
+        "y": 3.215576227719958
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.8099125202944064,
+        "y": 4.338087917884098
+      },
+      "prevControl": {
+        "x": 0.8001858657700072,
+        "y": 3.598862174029767
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PodiumNote"
+      "linkedName": "PodiumSideSpeaker"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
-      "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.7,
-      "maxWaypointRelativePos": 1.0,
+      "name": "Intake",
+      "minWaypointRelativePos": 1.8,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 0.75,
         "maxAcceleration": 0.75,
@@ -51,13 +67,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": -58.46520809481164,
     "rotateFast": true
   },
   "reversed": false,
   "folder": "PodiumSideSpeaker",
   "previewStartingState": {
-    "rotation": -60.0,
+    "rotation": 20.014745180924965,
     "velocity": 0
   },
   "useDefaultConstraints": true
