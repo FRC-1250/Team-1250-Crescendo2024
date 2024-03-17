@@ -82,9 +82,9 @@ public class RobotContainer {
     SmartDashboard.putData("Shoulder/Command", shoulder);
     SmartDashboard.putData("Launcher/Command", launcher);
     SmartDashboard.putData("Indexer/Command", indexer);
+    configureNamedCommands();
     configureAutoCommands();
     configureBindings();
-    configureNamedCommands();
   } 
 
   private void configureBindings() {
