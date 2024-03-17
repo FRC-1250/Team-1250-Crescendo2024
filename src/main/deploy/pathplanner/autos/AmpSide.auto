@@ -41,22 +41,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.02
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "AmpSideSpeakerToAmpNote"
-                      }
-                    }
-                  ]
+                  "pathName": "AmpSideSpeakerToAmpNote"
                 }
               }
             ]
@@ -79,18 +66,43 @@
           "data": {
             "commands": [
               {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intakeCenterNote"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "passingShotPrep"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
                 "type": "path",
                 "data": {
                   "pathName": "AmpSideSpeakerToCenterLine"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intakeCenterNote"
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "passingFireNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterLineLeftToCenterLineLeftMiddle"
           }
         }
       ]
