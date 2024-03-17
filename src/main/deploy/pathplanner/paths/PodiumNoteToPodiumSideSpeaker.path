@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3643318281897225,
-        "y": 5.55
+        "x": 2.55,
+        "y": 4.0927334104305375
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3643318281897225,
-        "y": 5.55
+        "x": 1.5499999999999998,
+        "y": 4.0927334104305375
       },
       "isLocked": false,
-      "linkedName": "BlueSpeakerMiddle"
+      "linkedName": "PodiumNote"
     },
     {
       "anchor": {
-        "x": 2.9,
-        "y": 5.553919733431884
+        "x": 0.6737393569573865,
+        "y": 4.376994535979592
       },
       "prevControl": {
-        "x": 1.9000000000000004,
-        "y": 5.553919733431884
+        "x": 1.6737393569573864,
+        "y": 4.376994535979592
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BlueNoteMiddle"
+      "linkedName": "PodiumSideSpeaker"
     }
   ],
   "rotationTargets": [],
@@ -33,17 +33,17 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.0292,
-    "maxAcceleration": 3.35,
-    "maxAngularVelocity": 270.0,
-    "maxAngularAcceleration": 180.0
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 135.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -60.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "PodiumSideSpeaker",
   "previewStartingState": {
     "rotation": 0.0,
     "velocity": 0

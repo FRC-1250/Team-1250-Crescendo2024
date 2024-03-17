@@ -7,8 +7,12 @@ package frc.robot;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -80,24 +84,13 @@ public class RobotContainer {
     SmartDashboard.putData("Indexer/Command", indexer);
     configureAutoCommands();
     configureBindings();
-  }
+    configureNamedCommands();
+  } 
 
   private void configureBindings() {
     // Drive forward with -y, left with -x, rotate counter clockwise with -
     //systemLights.setDefaultCommand(new LightShow(systemLights, indexer::iscentered, shoulder::isAtHome)); 
     limelight.setDefaultCommand(new LimeLightLED(limelight, indexer::iscentered, shoulder::isAtHome));
-    drivetrain.setDefaultCommand(drivetrain.applyRequestWithName(
-        () -> drive
-            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
-            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed)
-            .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate),
-        "Default drive"));
-
-    drivXboxController.x().whileTrue(drivetrain.applyRequestWithName(
-        () -> fieldCentricAutoAim
-            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
-            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed),
-        "Target lock"));
     
     drivXboxController.rightStick().whileTrue(drivetrain.applyRequestWithName(
             () -> robotCentricDrive
@@ -105,10 +98,6 @@ public class RobotContainer {
             .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * 0.5)
             .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate * 0.75),
             "Robot centric drive"));
-
-
-    // reset the field-centric heading on left bumper press
-    drivXboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     drivXboxController.rightBumper().onTrue(new IntakeCenterNote(intake, shoulder, indexer, 1.0));
     drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher, shoulder));
@@ -129,26 +118,62 @@ public class RobotContainer {
      * default
      */
     autoChooser.setDefaultOption("Do nothing", new WaitCommand(15));
+    autoChooser.addOption("FireNoteOnly", singleSpeakerShot());
     try {
-      autoChooser.addOption("FireNoteOnly", singleSpeakerShot());
-      autoChooser.addOption("BlueSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenterWithRotation(Alliance.Blue)));
-      autoChooser.addOption("BlueSpeakerAmpSideShot", doubleshotandrun(HolonomicPaths.speakerAmpSide(Alliance.Blue), HolonomicPaths.speakerAmpSideLeaveWing(Alliance.Blue)));
-      autoChooser.addOption("BlueSpeakerSourceSide", doubleSpeakerShot(HolonomicPaths.speakerSourceSide(Alliance.Blue)));
-      autoChooser.addOption("BlueEscape", singleSpeakerShotWithPath(HolonomicPaths.SourceEscapePlan(Alliance.Blue)));
-       autoChooser.addOption("RedEscape", singleSpeakerShotWithPath(HolonomicPaths.SourceEscapePlan(Alliance.Red)));
-      autoChooser.addOption("RedSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenterWithRotation(Alliance.Red)));
-      autoChooser.addOption("RedSpeakerAmpSideShot", doubleshotandrun(HolonomicPaths.speakerAmpSide(Alliance.Red), HolonomicPaths.speakerAmpSideLeaveWing(Alliance.Red)));
-      autoChooser.addOption("RedSpeakerSourceSide", doubleSpeakerShot(HolonomicPaths.speakerSourceSide(Alliance.Red)));
-         
+        autoChooser.addOption("SpeakerCenter", getPathAuto("Center"));
+        autoChooser.addOption("SpeakerAmpSide", getPathAuto("AmpSide"));
+        autoChooser.addOption("SpeakerPodiumSide", getPathAuto("PodiumSide"));
     } catch (Exception e) {
       DataLogManager.log(String.format("GatorBot: Not able to build auto routines! %s", e.getMessage()));
     }
-
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
+  }
+
+  public Command getPathAuto(String pathName) {
+    return new PathPlannerAuto(pathName);
+  }
+
+  private void configureNamedCommands() {
+    NamedCommands.registerCommand("intakeCenterNote", new IntakeCenterNote(intake, shoulder, indexer, 1.0).withTimeout(1));
+    NamedCommands.registerCommand("speakerFireNote", fireNoteWithTimeoutV2(Position.SPEAKER));
+    NamedCommands.registerCommand("speakerShotPrep", new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER).withTimeout(1));
+    NamedCommands.registerCommand("passingFireNote", fireNoteWithTimeoutV2(Position.SPEAKER_PODIUM));
+    NamedCommands.registerCommand("passingShotPrep", new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM));
+  }
+
+  public void configureDrive(Alliance alliance) {
+    double driveInvert;
+    if (alliance == Alliance.Red) {
+      driveInvert = -1;
+    } else {
+      driveInvert = 1;
+    }
+    drivetrain.setDefaultCommand(drivetrain.applyRequestWithName(
+        () -> drive
+            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed * driveInvert)
+            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * driveInvert)
+            .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate),
+        "Default drive"));
+
+    drivXboxController.x().whileTrue(drivetrain.applyRequestWithName(
+        () -> fieldCentricAutoAim
+            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed * driveInvert)
+            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * driveInvert),
+        "Target lock"));
+
+    if (alliance == Alliance.Red) {
+      drivXboxController.start()
+          .onTrue(drivetrain.runOnce(() -> drivetrain.setOdometry(Rotation2d.fromDegrees(180), new Pose2d())));
+      drivetrain.setOdometry(Rotation2d.fromDegrees(180), new Pose2d());
+    } else {
+      drivXboxController.start()
+          .onTrue(drivetrain.runOnce(() -> drivetrain.setOdometry(Rotation2d.fromDegrees(0), new Pose2d())));
+      drivetrain.setOdometry(Rotation2d.fromDegrees(0), new Pose2d());
+    }
   }
 
   private Command singleSpeakerShot() {

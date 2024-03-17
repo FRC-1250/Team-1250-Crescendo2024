@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -17,9 +21,25 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  private Alliance alliance;
+
+  void checkDSUpdate() {
+    Optional<Alliance> currentAllianceOpt = DriverStation.getAlliance();
+    Alliance currentAlliance;
+
+    if (currentAllianceOpt.isPresent()) {
+      currentAlliance = currentAllianceOpt.get();
+      if (DriverStation.isDSAttached() && currentAlliance != alliance) {
+        alliance = currentAlliance;
+        m_robotContainer.configureDrive(alliance);
+      }
+    }
+  }
+
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    checkDSUpdate();
     DataLogManager.start();
 
     CommandScheduler.getInstance().onCommandInitialize(
@@ -39,6 +59,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    checkDSUpdate();
     CommandScheduler.getInstance().run();
   }
 
@@ -53,6 +74,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    checkDSUpdate();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -68,6 +90,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    checkDSUpdate();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -81,6 +104,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+    checkDSUpdate();
     CommandScheduler.getInstance().cancelAll();
   }
 
