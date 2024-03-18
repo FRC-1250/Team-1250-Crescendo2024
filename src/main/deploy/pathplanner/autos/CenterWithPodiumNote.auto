@@ -60,6 +60,50 @@
           "data": {
             "name": "speakerFireNote"
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CenterSpeakerToPodiumNote"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intakeCenterNote"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "speakerShotPrep"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PodiumNoteToCenterSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "speakerFireNote"
+          }
         }
       ]
     }

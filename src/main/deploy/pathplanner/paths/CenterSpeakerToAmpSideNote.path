@@ -8,31 +8,31 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3284010703998748,
-        "y": 5.55
+        "x": 2.0355078515864222,
+        "y": 6.257106781186548
       },
       "isLocked": false,
       "linkedName": "CenterSpeaker"
     },
     {
       "anchor": {
-        "x": 2.880725534822175,
-        "y": 5.55
+        "x": 2.9011432430447806,
+        "y": 7.00319125756735
       },
       "prevControl": {
-        "x": 2.630725534822175,
-        "y": 5.55
+        "x": 2.5181210214852916,
+        "y": 6.68179745272408
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CenterNote"
+      "linkedName": "AmpSideNote"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Intake",
-      "minWaypointRelativePos": 0.7,
+      "minWaypointRelativePos": 0.65,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 0.75,
@@ -51,14 +51,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 40.0,
     "rotateFast": true
   },
   "reversed": false,
   "folder": "CenterSpeaker",
-  "previewStartingState": {
-    "rotation": 0.0,
-    "velocity": 0
-  },
-  "useDefaultConstraints": true
+  "previewStartingState": null,
+  "useDefaultConstraints": false
 }

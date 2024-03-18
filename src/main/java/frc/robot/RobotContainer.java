@@ -123,6 +123,8 @@ public class RobotContainer {
     autoChooser.addOption("FireNoteOnly", singleSpeakerShot());
     try {
         autoChooser.addOption("SpeakerCenter", getPathAuto("Center"));
+        autoChooser.addOption("SpeakerCenterWithPodiumNote", getPathAuto("CenterWithPodiumNote"));
+        autoChooser.addOption("SpeakerCenterWithAmpNote", getPathAuto("CenterWithAmpNote"));
         autoChooser.addOption("SpeakerAmpSide", getPathAuto("AmpSide"));
         autoChooser.addOption("SpeakerPodiumSide", getPathAuto("PodiumSide"));
         autoChooser.addOption("SpeakerAmpSideDisruptNotes", getPathAuto("AmpDisruptNotes"));
