@@ -18,35 +18,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "CenterSpeakerToCenterNote"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "intakeCenterNote"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "speakerShotPrep"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "pathName": "CenterSpeakerToCenterNote"
           }
         },
         {
@@ -62,35 +36,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "CenterSpeakerToAmpSideNote"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "intakeCenterNote"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "speakerShotPrep"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "pathName": "CenterSpeakerToAmpSideNote"
           }
         },
         {
