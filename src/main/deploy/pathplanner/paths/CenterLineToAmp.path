@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.587315911596577,
-        "y": 7.440890711165308
+        "x": 1.89,
+        "y": 7.4
       },
       "prevControl": {
-        "x": 3.587315911596577,
-        "y": 7.440890711165308
+        "x": 2.8900000000000023,
+        "y": 7.4
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,8 +39,8 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 45.0,
-    "rotateFast": true
+    "rotation": 50.0,
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "AmpSideSpeaker",
