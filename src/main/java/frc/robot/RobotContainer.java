@@ -44,7 +44,6 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Shoulder.Position;
 
 public class RobotContainer {
-  private final SystemLights systemLights = new SystemLights();
   private final Intake intake = new Intake();
   private final Shoulder shoulder = new Shoulder();
   private final launcher launcher = new launcher();

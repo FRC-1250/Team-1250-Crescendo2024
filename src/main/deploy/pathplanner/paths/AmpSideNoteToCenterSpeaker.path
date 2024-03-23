@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 1.3284010703998748,
+        "x": 1.481051682482512,
         "y": 5.55
       },
       "prevControl": {
-        "x": 2.0715458958772675,
+        "x": 2.2241965079599044,
         "y": 6.219130606358857
       },
       "nextControl": null,
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Prep",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.75,
       "command": {
         "type": "sequential",
         "data": {
@@ -42,6 +42,23 @@
               "type": "named",
               "data": {
                 "name": "speakerShotPrep"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intakeCenterNote"
               }
             }
           ]
