@@ -128,6 +128,7 @@ public class RobotContainer {
         autoChooser.addOption("SpeakerPodiumSide", getPathAuto("PodiumSide"));
         autoChooser.addOption("SpeakerAmpSideDisruptNotes", getPathAuto("AmpDisruptNotes"));
         autoChooser.addOption("SpeakerSourceDisrupt", getPathAuto("SourceSideDisrupt"));
+        autoChooser.addOption("SpeakerALLNOTE", getPathAuto("CenterAllNote"));
     } catch (Exception e) {
       DataLogManager.log(String.format("GatorBot: Not able to build auto routines! %s", e.getMessage()));
     }
