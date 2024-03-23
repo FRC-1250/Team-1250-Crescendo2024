@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6834660114817857,
-      "y": 6.701664967310976
+      "x": 0.7807325567257765,
+      "y": 6.711391621835377
     },
     "rotation": 60.0
   },
@@ -54,12 +54,6 @@
                       "data": {
                         "name": "intakeCenterNote"
                       }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "passingShotPrep"
-                      }
                     }
                   ]
                 }
@@ -71,12 +65,6 @@
           "type": "path",
           "data": {
             "pathName": "CenterLineToAmp"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "passingFireNote"
           }
         }
       ]
