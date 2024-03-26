@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
@@ -45,38 +50,44 @@ public class Shoulder extends SubsystemBase {
   // Offset value to normalize the encoder position to 0 when at home
   private final double ENCODER_OFFSET = 0.134;
 
-  private final CANSparkMax leftRotator;
-  private final CANSparkMax rightRotator;
+  private final TalonFX leftRotator;
+  private final TalonFX rightRotator;
   private final SparkPIDController rightRotatorPIDController;
   private final AbsoluteEncoder rightRotatorThroughBoreEncoder;
 
   public Shoulder() {
-    rightRotator = new CANSparkMax(RIGHT_ROTATOR_CAN_ID, MotorType.kBrushless);
-    rightRotator.restoreFactoryDefaults();
-    rightRotator.setSmartCurrentLimit(25);
-    rightRotator.setIdleMode(IdleMode.kBrake);
-    rightRotator.setClosedLoopRampRate(0.1);
-    rightRotator.setOpenLoopRampRate(0.1);
-    rightRotator.setSoftLimit(SoftLimitDirection.kForward, Position.AMP.value);
-    rightRotator.setSoftLimit(SoftLimitDirection.kReverse, Position.HOME.value);
-    rightRotator.enableSoftLimit(SoftLimitDirection.kForward, true);
-    rightRotator.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    rightRotator.setInverted(false);
+    CurrentLimitsConfigs currentLimit = new CurrentLimitsConfigs();
+    currentLimit.StatorCurrentLimitEnable = true;
+    currentLimit.StatorCurrentLimit = 35;
+    currentLimit.SupplyCurrentLimitEnable = true; 
+    currentLimit.SupplyCurrentLimit = 25; 
 
-    leftRotator = new CANSparkMax(LEFT_ROTATOR_CAN_ID, MotorType.kBrushless);
-    leftRotator.restoreFactoryDefaults();
-    leftRotator.setSmartCurrentLimit(25);
-    leftRotator.setIdleMode(IdleMode.kBrake);
-    leftRotator.setClosedLoopRampRate(0.1);
-    leftRotator.setOpenLoopRampRate(0.1);
-    leftRotator.follow(rightRotator, true);
+    OpenLoopRampsConfigs openloopconfigs = new OpenLoopRampsConfigs();
+    openloopconfigs.DutyCycleOpenLoopRampPeriod = .1;
+
+
+    rightRotator = new TalonFX(RIGHT_ROTATOR_CAN_ID, "rio");
+    rightRotator.getConfigurator().apply(new TalonFXConfiguration());
+    rightRotator.getConfigurator().apply(currentLimit);
+    rightRotator.getConfigurator().apply(openloopconfigs);
+
+
+    leftRotator = new TalonFX(LEFT_ROTATOR_CAN_ID, "rio");
+    leftRotator.getConfigurator().apply(new TalonFXConfiguration());
+    leftRotator.getConfigurator().apply(currentLimit);
+    leftRotator.getConfigurator().apply(openloopconfigs);
+
 
     rightRotatorThroughBoreEncoder = rightRotator.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     rightRotatorThroughBoreEncoder.setInverted(true);
     //rightRotatorThroughBoreEncoder.setPositionConversionFactor(ENCODER_POSITION_CONVERSION_FACTOR);
     rightRotatorThroughBoreEncoder.setZeroOffset(ENCODER_OFFSET);
 
-    rightRotatorPIDController = rightRotator.getPIDController();
+    
+
+
+
+    //rightRotatorPIDController = rightRotator.set;
     rightRotatorPIDController.setFeedbackDevice(rightRotatorThroughBoreEncoder);
     rightRotatorPIDController.setP(25);
     rightRotatorPIDController.setI(0);

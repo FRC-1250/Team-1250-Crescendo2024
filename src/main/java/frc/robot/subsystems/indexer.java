@@ -6,9 +6,13 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -16,32 +20,36 @@ public class indexer extends SubsystemBase {
   private int LINDEX = 22;
   private int RINDEX = 23;
   DigitalInput[] irArray = new DigitalInput[5];
-  CANSparkMax leftIndexSparkmax = new CANSparkMax(LINDEX, MotorType.kBrushless);
-  CANSparkMax rightIndexSparkMax = new CANSparkMax(RINDEX, MotorType.kBrushless);
+
+  private final TalonFX rightindexer;
+  private final TalonFX leftindexer;
 
   /** Creates a new indexer. */
   public indexer() {
     for (int i = 0; i < irArray.length; i++) {
       irArray[i] = new DigitalInput(i);
     }
-    rightIndexSparkMax.restoreFactoryDefaults();
-    rightIndexSparkMax.setIdleMode(IdleMode.kBrake);
-    rightIndexSparkMax.setInverted(true);
-    rightIndexSparkMax.setSmartCurrentLimit(30);
-    rightIndexSparkMax.setOpenLoopRampRate(0.1);
-    rightIndexSparkMax.setClosedLoopRampRate(0.1);
+        CurrentLimitsConfigs currentLimit = new CurrentLimitsConfigs();
+    currentLimit.StatorCurrentLimitEnable = true;
+    currentLimit.StatorCurrentLimit = 45;
+    currentLimit.SupplyCurrentLimitEnable = true; 
+    currentLimit.SupplyCurrentLimit = 25; 
 
-    leftIndexSparkmax.restoreFactoryDefaults();
-    leftIndexSparkmax.follow(rightIndexSparkMax, true);
-    leftIndexSparkmax.setIdleMode(IdleMode.kBrake);
-    leftIndexSparkmax.setSmartCurrentLimit(30);
-    leftIndexSparkmax.setOpenLoopRampRate(0.1);
-    leftIndexSparkmax.setClosedLoopRampRate(0.1);
+    OpenLoopRampsConfigs openloopconfigs = new OpenLoopRampsConfigs();
+    openloopconfigs.DutyCycleOpenLoopRampPeriod = .1;
 
+    rightindexer = new TalonFX(RINDEX, "rio");
+    rightindexer.getConfigurator().apply(currentLimit);
+    rightindexer.getConfigurator().apply(openloopconfigs);
+
+    leftindexer = new TalonFX(LINDEX, "rio");
+    leftindexer.getConfigurator().apply(currentLimit);
+    leftindexer.getConfigurator().apply(openloopconfigs);
   }
 
   public void setDutyoutIndex(double percent) {
-    rightIndexSparkMax.set(percent);
+    rightindexer.set(percent);
+    leftindexer.set(percent);
   }
 
   boolean pollIrArraySensor(int index) {
