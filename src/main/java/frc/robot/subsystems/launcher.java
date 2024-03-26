@@ -17,8 +17,14 @@ public class launcher extends SubsystemBase {
   private int LSHOOTER = 20;
   private int RSHOOTER = 21;
   public final int maxRPM = 5700;
-  public final int SPEAKER_TARGET_RPM = 5000;
-  public final int AMP_TARGET_RPM = 2500;
+  public final int PODIUM_TARGET_RPM_LEFT = 5000;
+  public final int PODIUM_TARGET_RPM_RIGHT = 5000;
+  public final int SPEAKER_TARGET_RPM_LEFT = 4500;
+  public final int SPEAKER_TARGET_RPM_RIGHT = 4500;
+  public final int AMP_TARGET_RPM_LEFT = 1500;
+  public final int AMP_TARGET_RPM_RIGHT = 1500; 
+
+
   /** Creates a new shooter. */
   CANSparkMax leftLauncherSparkMax = new CANSparkMax(LSHOOTER, MotorType.kBrushless);
   CANSparkMax rightLauncherSparkMax = new CANSparkMax(RSHOOTER, MotorType.kBrushless);
@@ -30,9 +36,9 @@ public class launcher extends SubsystemBase {
     rightLauncherSparkMax.restoreFactoryDefaults();
     rightLauncherSparkMax.setIdleMode(IdleMode.kBrake);
     rightLauncherSparkMax.setInverted(true);
-    rightLauncherSparkMax.setSmartCurrentLimit(60);
-    rightLauncherSparkMax.setOpenLoopRampRate(0.05);
-    rightLauncherSparkMax.setClosedLoopRampRate(0.05);
+    rightLauncherSparkMax.setSmartCurrentLimit(50);
+    rightLauncherSparkMax.setOpenLoopRampRate(0.1);
+    rightLauncherSparkMax.setClosedLoopRampRate(0.1);
     rightLauncherPIDController.setP(1.5e-4);
     rightLauncherPIDController.setI(0);
     rightLauncherPIDController.setD(0);
@@ -41,7 +47,7 @@ public class launcher extends SubsystemBase {
     leftLauncherSparkMax.restoreFactoryDefaults();
     leftLauncherSparkMax.setIdleMode(IdleMode.kBrake);
     leftLauncherSparkMax.setInverted(false);
-    leftLauncherSparkMax.setSmartCurrentLimit(60);
+    leftLauncherSparkMax.setSmartCurrentLimit(50);
     leftLauncherSparkMax.setOpenLoopRampRate(0.1);
     leftLauncherSparkMax.setClosedLoopRampRate(0.1);
     leftLauncerPIDController.setP(1.5e-4);
@@ -63,13 +69,15 @@ public double getLeftLauncherRPM() {
  return leftLauncherSparkMax.getEncoder().getVelocity();
 }
 
-public void SetLauncherVelocity(double setpoint) {
-    rightLauncherPIDController.setReference(setpoint, ControlType.kVelocity);
-    leftLauncerPIDController.setReference(setpoint, ControlType.kVelocity);
+public void SetLauncherVelocity(double right, double left) {
+    rightLauncherPIDController.setReference(right, ControlType.kVelocity);
+    leftLauncerPIDController.setReference(left, ControlType.kVelocity);
 }
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Right launcher RPM", getRightLauncherRPM());
-    SmartDashboard.putNumber("Left launcher RPM", getLeftLauncherRPM());
+    SmartDashboard.putNumber("Launcher/Right RPM", getRightLauncherRPM());
+    SmartDashboard.putNumber("Launcher/Right stator current", rightLauncherSparkMax.getOutputCurrent());
+    SmartDashboard.putNumber("Launcher/Left RPM", getLeftLauncherRPM());
+    SmartDashboard.putNumber("Launcher/Left stator current", leftLauncherSparkMax.getOutputCurrent());
   }
 }

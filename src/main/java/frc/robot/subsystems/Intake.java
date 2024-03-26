@@ -28,10 +28,13 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
     CurrentLimitsConfigs currentlimits = new CurrentLimitsConfigs();
-    currentlimits.StatorCurrentLimit = 40;
     currentlimits.StatorCurrentLimitEnable = true;
+    currentlimits.StatorCurrentLimit = 40;
+    currentlimits.SupplyCurrentLimitEnable = true;
+    currentlimits.SupplyCurrentLimit = 20;
 
     OpenLoopRampsConfigs loopRampsConfigs = new OpenLoopRampsConfigs();
+    loopRampsConfigs.DutyCycleOpenLoopRampPeriod = 0.1;
 
     frontRoller = new TalonFX(FRONT_ROLLER_CAN_ID, "rio");
     frontRoller.getConfigurator().apply(new TalonFXConfiguration());
@@ -55,7 +58,9 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Intake upper duty cycle", frontRoller.get());
-    SmartDashboard.putNumber("Intake lower duty cycle", rearRoller.get());
+    SmartDashboard.putNumber("Intake/Front duty cycle", frontRoller.get());
+    SmartDashboard.putNumber("Intake/Front stator current", frontRoller.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Intake/Rear duty cycle", rearRoller.get());
+    SmartDashboard.putNumber("Intake/Rear stator current", rearRoller.getStatorCurrent().getValueAsDouble());
   }
 }

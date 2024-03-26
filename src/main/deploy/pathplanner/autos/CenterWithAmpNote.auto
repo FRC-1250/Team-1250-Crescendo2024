@@ -1,0 +1,61 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3284010703998748,
+      "y": 5.55
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "speakerFireNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterSpeakerToCenterNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterNoteToCenterSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "speakerFireNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterSpeakerToAmpSideNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpSideNoteToCenterSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "speakerFireNote"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -27,14 +27,14 @@ public class indexer extends SubsystemBase {
     rightIndexSparkMax.restoreFactoryDefaults();
     rightIndexSparkMax.setIdleMode(IdleMode.kBrake);
     rightIndexSparkMax.setInverted(true);
-    rightIndexSparkMax.setSmartCurrentLimit(40);
+    rightIndexSparkMax.setSmartCurrentLimit(30);
     rightIndexSparkMax.setOpenLoopRampRate(0.1);
     rightIndexSparkMax.setClosedLoopRampRate(0.1);
 
     leftIndexSparkmax.restoreFactoryDefaults();
     leftIndexSparkmax.follow(rightIndexSparkMax, true);
     leftIndexSparkmax.setIdleMode(IdleMode.kBrake);
-    leftIndexSparkmax.setSmartCurrentLimit(40);
+    leftIndexSparkmax.setSmartCurrentLimit(30);
     leftIndexSparkmax.setOpenLoopRampRate(0.1);
     leftIndexSparkmax.setClosedLoopRampRate(0.1);
 
@@ -64,12 +64,13 @@ public class indexer extends SubsystemBase {
 
     if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == false
         && barrelsensor == false) {
-      setDutyoutIndex(0.3);
+          //was .3
+      setDutyoutIndex(.4);
     } else if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == false
         && barrelsensor == true) {
-      setDutyoutIndex(.1);
-    } else if (intakeside == true && indexerclose == false && indexerfar == false && shooterside == false) {
       setDutyoutIndex(.05);
+    } else if (intakeside == true && indexerclose == false && indexerfar == false && shooterside == false) {
+      setDutyoutIndex(.05); //all point ones after this were .05
     } else if (intakeside == true && indexerclose == true && indexerfar == false && shooterside == false) {
       setDutyoutIndex(.05);
     } else if (intakeside == true && indexerclose == true && indexerfar == true && shooterside == false) {
@@ -85,7 +86,7 @@ public class indexer extends SubsystemBase {
     } else if (intakeside == false && indexerclose == false && indexerfar == true && shooterside == true) {
       setDutyoutIndex(-0.05);
     } else if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == true) {
-      setDutyoutIndex(-0.5);
+      setDutyoutIndex(-0.2);
     }
 
   }
@@ -102,9 +103,11 @@ public class indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Right index duty cycle", leftIndexSparkmax.get());
-    SmartDashboard.putNumber("Left index duty cycle", rightIndexSparkMax.get());
-    SmartDashboard.putBoolean("Note centered", iscentered());
-    SmartDashboard.putBoolean("Barrel sensor", pollIrArraySensor(0));
+    SmartDashboard.putNumber("Indexer/Right duty cycle", rightIndexSparkMax.get());
+    SmartDashboard.putNumber("Indexer/Right stator current", rightIndexSparkMax.getOutputCurrent());
+    SmartDashboard.putNumber("Indexer/Left duty cycle", leftIndexSparkmax.get());
+    SmartDashboard.putNumber("Indexer/Left stator current", leftIndexSparkmax.getOutputCurrent());
+    SmartDashboard.putBoolean("Indexer/Note centered", iscentered());
+    SmartDashboard.putBoolean("Indexer/Barrel sensor", pollIrArraySensor(0));
   }
 }

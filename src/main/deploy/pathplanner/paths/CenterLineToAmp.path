@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3643318281897225,
-        "y": 5.55
+        "x": 8.027090177403105,
+        "y": 7.440890711165308
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3643318281897225,
-        "y": 5.55
+        "x": 7.027090177403105,
+        "y": 7.440890711165308
       },
       "isLocked": false,
-      "linkedName": "BlueSpeakerMiddle"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.9,
-        "y": 5.553919733431884
+        "x": 1.89,
+        "y": 7.4
       },
       "prevControl": {
-        "x": 1.9000000000000004,
-        "y": 5.553919733431884
+        "x": 2.8900000000000023,
+        "y": 7.4
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BlueNoteMiddle"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,19 +33,19 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.0292,
-    "maxAcceleration": 3.35,
-    "maxAngularVelocity": 270.0,
-    "maxAngularAcceleration": 180.0
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 135.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 50.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "AmpSideSpeaker",
   "previewStartingState": {
-    "rotation": 0.0,
+    "rotation": 1.5275254422129503,
     "velocity": 0
   },
   "useDefaultConstraints": true

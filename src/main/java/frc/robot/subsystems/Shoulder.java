@@ -55,8 +55,8 @@ public class Shoulder extends SubsystemBase {
     rightRotator.restoreFactoryDefaults();
     rightRotator.setSmartCurrentLimit(25);
     rightRotator.setIdleMode(IdleMode.kBrake);
-    rightRotator.setClosedLoopRampRate(0.5);
-    rightRotator.setOpenLoopRampRate(0.5);
+    rightRotator.setClosedLoopRampRate(0.1);
+    rightRotator.setOpenLoopRampRate(0.1);
     rightRotator.setSoftLimit(SoftLimitDirection.kForward, Position.AMP.value);
     rightRotator.setSoftLimit(SoftLimitDirection.kReverse, Position.HOME.value);
     rightRotator.enableSoftLimit(SoftLimitDirection.kForward, true);
@@ -67,8 +67,8 @@ public class Shoulder extends SubsystemBase {
     leftRotator.restoreFactoryDefaults();
     leftRotator.setSmartCurrentLimit(25);
     leftRotator.setIdleMode(IdleMode.kBrake);
-    leftRotator.setClosedLoopRampRate(0.25);
-    leftRotator.setOpenLoopRampRate(0.25);
+    leftRotator.setClosedLoopRampRate(0.1);
+    leftRotator.setOpenLoopRampRate(0.1);
     leftRotator.follow(rightRotator, true);
 
     rightRotatorThroughBoreEncoder = rightRotator.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
@@ -78,7 +78,7 @@ public class Shoulder extends SubsystemBase {
 
     rightRotatorPIDController = rightRotator.getPIDController();
     rightRotatorPIDController.setFeedbackDevice(rightRotatorThroughBoreEncoder);
-    rightRotatorPIDController.setP(10);
+    rightRotatorPIDController.setP(25);
     rightRotatorPIDController.setI(0);
     rightRotatorPIDController.setD(0);
     rightRotatorPIDController.setFF(0);
@@ -111,9 +111,11 @@ public class Shoulder extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putData(this);
-    SmartDashboard.putNumber("Shoulder position, abs", rightRotatorThroughBoreEncoder.getPosition());
-    SmartDashboard.putNumber("Shoulder position, abs degrees", rightRotatorThroughBoreEncoder.getPosition() * 360);
-    SmartDashboard.putNumber("Shoulder velocity, abs", rightRotatorThroughBoreEncoder.getVelocity());
+    SmartDashboard.putNumber("Shoulder/Absoulte position", rightRotatorThroughBoreEncoder.getPosition());
+    SmartDashboard.putNumber("Shoulder/Degress position", rightRotatorThroughBoreEncoder.getPosition() * 360);
+    SmartDashboard.putNumber("Shoulder/Right duty cycle", rightRotator.get());
+    SmartDashboard.putNumber("Shoulder/Left duty cycle", leftRotator.get());
+    SmartDashboard.putNumber("Shoulder/Right stator current", rightRotator.getOutputCurrent());
+    SmartDashboard.putNumber("Shoulder/Left stator current", leftRotator.getOutputCurrent());
   }
 }

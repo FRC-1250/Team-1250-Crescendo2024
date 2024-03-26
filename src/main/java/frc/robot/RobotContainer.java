@@ -7,8 +7,12 @@ package frc.robot;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -25,6 +29,7 @@ import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
 import frc.robot.commands.LightShow;
 import frc.robot.commands.LimeLightLED;
+import frc.robot.commands.SetIndexDutyCycle;
 import frc.robot.commands.SetIntakeDutyCycle;
 import frc.robot.commands.SetLauncherDutyCycle;
 import frc.robot.commands.SetPositionAndShooterSpeed;
@@ -69,36 +74,24 @@ public class RobotContainer {
       .withDeadband(TunerConstants.MaxSpeed * 0.1)
       .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.025)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-  private final Telemetry logger = new Telemetry(TunerConstants.MaxSpeed);
 
   private final CommandXboxController drivXboxController = new CommandXboxController(0);
   // final CommandPS4Controller commandPS4Controller = new CommandPS4Controller(1);
 
   public RobotContainer() {
-    SmartDashboard.putData(intake);
-    SmartDashboard.putData(shoulder);
-    SmartDashboard.putData(launcher);
-    SmartDashboard.putData(indexer);
+    SmartDashboard.putData("Intake/Command", intake);
+    SmartDashboard.putData("Shoulder/Command", shoulder);
+    SmartDashboard.putData("Launcher/Command", launcher);
+    SmartDashboard.putData("Indexer/Command", indexer);
+    configureNamedCommands();
     configureAutoCommands();
     configureBindings();
-  }
+  } 
 
   private void configureBindings() {
     // Drive forward with -y, left with -x, rotate counter clockwise with -
     //systemLights.setDefaultCommand(new LightShow(systemLights, indexer::iscentered, shoulder::isAtHome)); 
     limelight.setDefaultCommand(new LimeLightLED(limelight, indexer::iscentered, shoulder::isAtHome));
-    drivetrain.setDefaultCommand(drivetrain.applyRequestWithName(
-        () -> drive
-            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
-            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed)
-            .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate),
-        "Default drive"));
-
-    drivXboxController.x().whileTrue(drivetrain.applyRequestWithName(
-        () -> fieldCentricAutoAim
-            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed)
-            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed),
-        "Target lock"));
     
     drivXboxController.rightStick().whileTrue(drivetrain.applyRequestWithName(
             () -> robotCentricDrive
@@ -107,13 +100,10 @@ public class RobotContainer {
             .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate * 0.75),
             "Robot centric drive"));
 
-
-    // reset the field-centric heading on left bumper press
-    drivXboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
-
     drivXboxController.rightBumper().onTrue(new IntakeCenterNote(intake, shoulder, indexer, 1.0));
     drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher, shoulder));
-    drivXboxController.a().onTrue(new SetIntakeDutyCycle(intake, -1));
+    drivXboxController.a().whileTrue(new SetIntakeDutyCycle(intake, -1));
+    drivXboxController.a().whileTrue(new SetIndexDutyCycle(indexer, -.1));
     drivXboxController.b().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM));
     drivXboxController.leftTrigger().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER));
     drivXboxController.leftBumper().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP));
@@ -121,9 +111,7 @@ public class RobotContainer {
     drivXboxController.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.5));
     drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, 0));
     drivXboxController.y().onTrue(new SetLauncherDutyCycle(launcher, 0));
-    drivXboxController.y().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));
-    
-    drivetrain.registerTelemetry(logger::telemeterize);
+    drivXboxController.y().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));    
   }
 
   private void configureAutoCommands() {
@@ -132,26 +120,66 @@ public class RobotContainer {
      * default
      */
     autoChooser.setDefaultOption("Do nothing", new WaitCommand(15));
+    autoChooser.addOption("FireNoteOnly", singleSpeakerShot());
     try {
-      autoChooser.addOption("FireNoteOnly", singleSpeakerShot());
-      autoChooser.addOption("BlueSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenterWithRotation(Alliance.Blue)));
-      autoChooser.addOption("BlueSpeakerAmpSideShot", doubleshotandrun(HolonomicPaths.speakerAmpSide(Alliance.Blue), HolonomicPaths.speakerAmpSideLeaveWing(Alliance.Blue)));
-      autoChooser.addOption("BlueSpeakerSourceSide", doubleSpeakerShot(HolonomicPaths.speakerSourceSide(Alliance.Blue)));
-      autoChooser.addOption("BlueEscape", singleSpeakerShotWithPath(HolonomicPaths.SourceEscapePlan(Alliance.Blue)));
-       autoChooser.addOption("RedEscape", singleSpeakerShotWithPath(HolonomicPaths.SourceEscapePlan(Alliance.Red)));
-      autoChooser.addOption("RedSpeakerCenterShot", doubleSpeakerShot(HolonomicPaths.speakerCenterWithRotation(Alliance.Red)));
-      autoChooser.addOption("RedSpeakerAmpSideShot", doubleshotandrun(HolonomicPaths.speakerAmpSide(Alliance.Red), HolonomicPaths.speakerAmpSideLeaveWing(Alliance.Red)));
-      autoChooser.addOption("RedSpeakerSourceSide", doubleSpeakerShot(HolonomicPaths.speakerSourceSide(Alliance.Red)));
-         
+        autoChooser.addOption("SpeakerCenter", getPathAuto("Center"));
+        autoChooser.addOption("SpeakerCenterWithPodiumNote", getPathAuto("CenterWithPodiumNote"));
+        autoChooser.addOption("SpeakerCenterWithAmpNote", getPathAuto("CenterWithAmpNote"));
+        autoChooser.addOption("SpeakerAmpSide", getPathAuto("AmpSide"));
+        autoChooser.addOption("SpeakerPodiumSide", getPathAuto("PodiumSide"));
+        autoChooser.addOption("SpeakerAmpSideDisruptNotes", getPathAuto("AmpDisruptNotes"));
+        autoChooser.addOption("SpeakerSourceDisrupt", getPathAuto("SourceSideDisrupt"));
     } catch (Exception e) {
       DataLogManager.log(String.format("GatorBot: Not able to build auto routines! %s", e.getMessage()));
     }
-
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
+  }
+
+  public Command getPathAuto(String pathName) {
+    return new PathPlannerAuto(pathName);
+  }
+
+  private void configureNamedCommands() {
+    NamedCommands.registerCommand("intakeCenterNote", new IntakeCenterNote(intake, shoulder, indexer, 1.0));
+    NamedCommands.registerCommand("speakerFireNote", fireNoteWithTimeoutV2(Position.SPEAKER));
+    NamedCommands.registerCommand("speakerShotPrep", new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER));
+    NamedCommands.registerCommand("passingFireNote", fireNoteWithTimeoutV2(Position.SPEAKER_PODIUM));
+    NamedCommands.registerCommand("passingShotPrep", new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM));
+  }
+
+  public void configureDrive(Alliance alliance) {
+    double driveInvert;
+    if (alliance == Alliance.Red) {
+      driveInvert = -1;
+    } else {
+      driveInvert = 1;
+    }
+    drivetrain.setDefaultCommand(drivetrain.applyRequestWithName(
+        () -> drive
+            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed * driveInvert)
+            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * driveInvert)
+            .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate),
+        "Default drive"));
+
+    drivXboxController.x().whileTrue(drivetrain.applyRequestWithName(
+        () -> fieldCentricAutoAim
+            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed * driveInvert)
+            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * driveInvert),
+        "Target lock"));
+
+    if (alliance == Alliance.Red) {
+      drivXboxController.start()
+          .onTrue(drivetrain.runOnce(() -> drivetrain.setOdometry(Rotation2d.fromDegrees(180), new Pose2d())));
+      drivetrain.setOdometry(Rotation2d.fromDegrees(180), new Pose2d());
+    } else {
+      drivXboxController.start()
+          .onTrue(drivetrain.runOnce(() -> drivetrain.setOdometry(Rotation2d.fromDegrees(0), new Pose2d())));
+      drivetrain.setOdometry(Rotation2d.fromDegrees(0), new Pose2d());
+    }
   }
 
   private Command singleSpeakerShot() {
@@ -217,5 +245,78 @@ public class RobotContainer {
 
   private Command intakeCenterNoteWithFullSpeed() {
     return new IntakeCenterNote(intake, shoulder, indexer, 1.0);
+  }
+
+  private Command doubleShotV2(PathPlannerPath path, Position position) {
+    return Commands.sequence(
+        fireNoteWithTimeoutV2(position),
+        followPathWithResetAndIntake(path, position),
+        fireNoteWithTimeoutV2(position));
+  }
+
+  private Command doubleShotAndRunV2(PathPlannerPath intakePath, PathPlannerPath run, Position position) {
+    return Commands.sequence(
+        fireNoteWithTimeoutV2(position),
+        followPathWithResetAndIntake(intakePath, position),
+        fireNoteWithTimeoutV2(position),
+        followPath(run));
+  }
+
+  private Command tripleShot(PathPlannerPath intakePathOne, PathPlannerPath intakePathTwo, Position position) {
+    return Commands.sequence(
+        fireNoteWithTimeoutV2(position),
+        followPathWithResetAndIntake(intakePathOne, position),
+        fireNoteWithTimeoutV2(position),
+        followPathAndIntake(intakePathTwo, position),
+        fireNoteWithTimeoutV2(position));
+  }
+
+  private Command tripleShotAndRun(PathPlannerPath intakePathOne, PathPlannerPath intakePathTwo, PathPlannerPath run, Position position) {
+    return Commands.sequence(
+        fireNoteWithTimeoutV2(position),
+        followPathWithResetAndIntake(intakePathOne, position),
+        fireNoteWithTimeoutV2(position),
+        followPathAndIntake(intakePathTwo, position),
+        fireNoteWithTimeoutV2(position),
+        followPath(run));
+  }
+
+  private Command fireNoteWithTimeoutV2(Position position) {
+    return Commands.sequence(
+        new SetPositionAndShooterSpeed(shoulder, launcher, position),
+        new FireNote(indexer, launcher, shoulder).withTimeout(1));
+  }
+
+  private Command followPathWithResetAndIntake(PathPlannerPath path, Position position) {
+    return Commands.parallel(
+        Commands.sequence(
+            new IntakeCenterNote(intake, shoulder, indexer, 1.0),
+            new SetPositionAndShooterSpeed(shoulder, launcher, position)),
+        followPathWithReset(path));
+  }
+
+  private Command followPathAndIntake(PathPlannerPath path, Position position) {
+    return Commands.parallel(
+        Commands.sequence(
+            new IntakeCenterNote(intake, shoulder, indexer, 1.0),
+            new SetPositionAndShooterSpeed(shoulder, launcher, position)),
+        followPath(path));
+  }
+
+  private Command followPath(PathPlannerPath path) {
+    return Commands.sequence(
+        new WaitCommand(0.05),
+        AutoBuilder.followPath(path));
+  }
+
+  private Command followPathWithReset(PathPlannerPath path) {
+    return Commands.sequence(
+        new WaitCommand(0.05),
+        Commands.runOnce(
+            () -> drivetrain.setOdometry(
+                path.getPreviewStartingHolonomicPose().getRotation(),
+                path.getPathPoses().get(0)),
+            drivetrain),
+        AutoBuilder.followPath(path));
   }
 }

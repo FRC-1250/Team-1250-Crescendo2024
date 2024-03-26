@@ -1,0 +1,67 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.55,
+        "y": 4.0927334104305375
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.907212390313462,
+        "y": 4.858777853549514
+      },
+      "isLocked": false,
+      "linkedName": "PodiumNote"
+    },
+    {
+      "anchor": {
+        "x": 1.3284010703998748,
+        "y": 5.55
+      },
+      "prevControl": {
+        "x": 1.9711886800864125,
+        "y": 4.783955556881024
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "CenterSpeaker"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Prep",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "speakerShotPrep"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0292,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 135.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "CenterSpeaker",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}

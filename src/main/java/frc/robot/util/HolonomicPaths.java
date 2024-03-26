@@ -1,6 +1,5 @@
 package frc.robot.util;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -105,30 +104,6 @@ public class HolonomicPaths {
                         Collections.emptyList(),
                         goalEndState
                 ));
-    }
-
-       public static PathPlannerPath speakerAmpSideToAmp(Alliance alliance) {
-        Rotation2d startingRotation = PathMetadata.SPEAKER_AMP_SIDE_APPROACH_ANGLE;
-        List<Pose2d> poses = new ArrayList<>();
-        poses.add(new Pose2d(PathMetadata.SPEAKER_AMP_SIDE, Rotation2d.fromDegrees(0)));
-        poses.add(new Pose2d(PathMetadata.NOTE_AMP_SIDE, Rotation2d.fromDegrees(-30)));
-        poses.add(new Pose2d(PathMetadata.AMP, Rotation2d.fromDegrees(90)));
-
-        List<RotationTarget> rotationTargets = new ArrayList<>();
-        rotationTargets.add(new RotationTarget(0.7, Rotation2d.fromDegrees(-30), false));
-
-        List<ConstraintsZone> constraintsZones = new ArrayList<>();
-        constraintsZones.add(new ConstraintsZone(0.8, 1.2, TunerConstants.LOW_PATH_CONSTRAINTS));
-
-        GoalEndState goalEndState = new GoalEndState(0, PathMetadata.AMP_APPROACH_ANGLE);
-        return HolonomicPathBuilder.build(
-                alliance,
-                new HolonomicPathComponents(
-                        startingRotation,
-                        poses,
-                        rotationTargets,
-                        constraintsZones,
-                        goalEndState));
     }
 
     public static PathPlannerPath speakerSourceSide(Alliance alliance) {

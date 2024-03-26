@@ -1,0 +1,79 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.3284010703998748,
+        "y": 5.55
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.0355078515864222,
+        "y": 6.257106781186548
+      },
+      "isLocked": false,
+      "linkedName": "CenterSpeaker"
+    },
+    {
+      "anchor": {
+        "x": 2.9011432430447806,
+        "y": 7.00319125756735
+      },
+      "prevControl": {
+        "x": 2.5181210214852916,
+        "y": 6.68179745272408
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "AmpSideNote"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Intake",
+      "minWaypointRelativePos": 0.6,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 0.75,
+        "maxAcceleration": 0.75,
+        "maxAngularVelocity": 135.0,
+        "maxAngularAcceleration": 135.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intakeCenterNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0292,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 135.0
+  },
+  "goalEndState": {
+    "velocity": 0.5,
+    "rotation": 40.0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "CenterSpeaker",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}

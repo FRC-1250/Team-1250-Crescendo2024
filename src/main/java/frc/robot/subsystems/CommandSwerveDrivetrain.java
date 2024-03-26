@@ -4,9 +4,11 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
@@ -17,9 +19,14 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -41,8 +48,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         configurePathPlanner();
-        configureOpenLoopRampRates();
-        configureClosedLoopRampRates();
+        configureCurrentLimits();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -51,8 +57,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         configurePathPlanner();
-        configureOpenLoopRampRates();
-        configureClosedLoopRampRates();
+        configureCurrentLimits();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -66,25 +71,31 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return applyRequest(requestSupplier).withName(name);
     }
 
-    private void configureOpenLoopRampRates() {
-        OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
-        openLoopRampsConfigs.VoltageOpenLoopRampPeriod = 0.2;
-        openLoopRampsConfigs.TorqueOpenLoopRampPeriod = 0.2;
-        openLoopRampsConfigs.DutyCycleOpenLoopRampPeriod = 0.2;
-
-        for (int i = 0; i < Modules.length; i++) {
-            Modules[i].getDriveMotor().getConfigurator().apply(openLoopRampsConfigs);
-        }        
-    }
-
-    private void configureClosedLoopRampRates() {
+    private void configureCurrentLimits() {
+        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
         ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
-        closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = 0.05;
-        closedLoopRampsConfigs.DutyCycleClosedLoopRampPeriod = 0.05;
-        closedLoopRampsConfigs.TorqueClosedLoopRampPeriod = 0.05;
+        OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
 
         for (int i = 0; i < Modules.length; i++) {
-            Modules[i].getSteerMotor().getConfigurator().apply(closedLoopRampsConfigs);
+            var driveConfigurator = Modules[i].getDriveMotor().getConfigurator();
+            driveConfigurator.refresh(openLoopRampsConfigs);
+            currentLimitsConfigs.SupplyCurrentLimitEnable = true;
+            currentLimitsConfigs.SupplyCurrentLimit = 30;
+            driveConfigurator.apply(openLoopRampsConfigs);
+
+            driveConfigurator.refresh(openLoopRampsConfigs);
+            openLoopRampsConfigs.VoltageOpenLoopRampPeriod = 0.25;
+            driveConfigurator.apply(openLoopRampsConfigs);
+
+            driveConfigurator.refresh(closedLoopRampsConfigs);
+            closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = 0.25;
+            driveConfigurator.apply(closedLoopRampsConfigs);
+
+            var steerConfigurator = Modules[i].getSteerMotor().getConfigurator();
+            steerConfigurator.refresh(currentLimitsConfigs);
+            currentLimitsConfigs.SupplyCurrentLimitEnable = true;
+            currentLimitsConfigs.SupplyCurrentLimit = 30;
+            steerConfigurator.apply(currentLimitsConfigs);
         }
     }
 
@@ -106,7 +117,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                         TunerConstants.kSpeedAt12VoltsMps,
                         driveBaseRadius,
                         new ReplanningConfig()),
-                () -> false, // Change this if the path needs to be flipped on red vs blue
+                () -> {
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                }, // Change this if the path needs to be flipped on red vs blue
                 this); // Subsystem for requirements
     }
 
@@ -139,14 +156,83 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return m_odometry.getEstimatedPosition().getRotation().getDegrees();
     }
 
+    private Pose2d m_lastPose = new Pose2d();
+    private double lastTime = Utils.getCurrentTimeSeconds();
+
+    private void telemetry(SwerveDriveState state) {
+        Pose2d pose = state.Pose;
+
+        SmartDashboard.putNumber("Drive/Pose X", pose.getX());
+        SmartDashboard.putNumber("Drive/Pose Y", pose.getY());
+        SmartDashboard.putNumber("Drive/Pose Heading", pose.getRotation().getDegrees());
+
+        /* Telemeterize the robot's general speeds */
+        double currentTime = Utils.getCurrentTimeSeconds();
+        double diffTime = currentTime - lastTime;
+        lastTime = currentTime;
+        Translation2d distanceDiff = pose.minus(m_lastPose).getTranslation();
+        m_lastPose = pose;
+
+        Translation2d velocities = distanceDiff.div(diffTime);
+
+        SmartDashboard.putNumber("Drive/Speed", velocities.getNorm());
+        SmartDashboard.putNumber("Drive/Velocity X", velocities.getX());
+        SmartDashboard.putNumber("Drive/Velocity Y", velocities.getY());
+        SmartDashboard.putNumber("Drive/Odometry Period", state.OdometryPeriod);
+
+        /* Telemeterize the module's states */
+        SmartDashboard.putNumber("Drive/Module one/Speed", state.ModuleStates[0].speedMetersPerSecond);
+        SmartDashboard.putNumber("Drive/Module two/Speed", state.ModuleStates[1].speedMetersPerSecond);
+        SmartDashboard.putNumber("Drive/Module three/Speed", state.ModuleStates[2].speedMetersPerSecond);
+        SmartDashboard.putNumber("Drive/Module four/Speed", state.ModuleStates[3].speedMetersPerSecond);
+
+        SmartDashboard.putNumber("Drive/Module one/Heading", state.ModuleStates[0].angle.getDegrees());
+        SmartDashboard.putNumber("Drive/Module two/Heading", state.ModuleStates[0].angle.getDegrees());
+        SmartDashboard.putNumber("Drive/Module three/Heading", state.ModuleStates[0].angle.getDegrees());
+        SmartDashboard.putNumber("Drive/Module four/Heading", state.ModuleStates[0].angle.getDegrees());
+
+        var moduleOne = getModule(0);
+        var moduleTwo = getModule(1);
+        var moduleThree = getModule(2);
+        var moduleFour = getModule(3);
+
+        SmartDashboard.putNumber("Drive/Module one/Drive stator curret",
+                moduleOne.getDriveMotor().getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Drive/Module one/Drive RPM",
+                moduleOne.getDriveMotor().getVelocity().getValueAsDouble() * 60);
+        SmartDashboard.putNumber("Drive/Module one/Steer stator curret",
+                moduleOne.getSteerMotor().getStatorCurrent().getValueAsDouble());
+
+        SmartDashboard.putNumber("Drive/Module two/Drive stator curret",
+                moduleTwo.getDriveMotor().getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Drive/Module two/Drive RPM",
+                moduleTwo.getDriveMotor().getVelocity().getValueAsDouble() * 60);
+        SmartDashboard.putNumber("Drive/Module two/Steer stator curret",
+                moduleTwo.getSteerMotor().getStatorCurrent().getValueAsDouble());
+
+        SmartDashboard.putNumber("Drive/Module three/Drive stator curret",
+                moduleThree.getDriveMotor().getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Drive/Module three/Drive RPM",
+                moduleThree.getDriveMotor().getVelocity().getValueAsDouble() * 60);
+        SmartDashboard.putNumber("Drive/Module three/Steer stator curret",
+                moduleThree.getSteerMotor().getStatorCurrent().getValueAsDouble());
+
+        SmartDashboard.putNumber("Drive/Module four/Drive stator curret",
+                moduleFour.getDriveMotor().getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Drive/Module four/Drive RPM",
+                moduleFour.getDriveMotor().getVelocity().getValueAsDouble() * 60);
+        SmartDashboard.putNumber("Drive/Module four/Steer stator curret",
+                moduleFour.getSteerMotor().getStatorCurrent().getValueAsDouble());
+
+        if (this.getCurrentCommand() != null) {
+            SmartDashboard.putString("Drive/Command", this.getCurrentCommand().getName());
+        } else {
+            SmartDashboard.putString("Drive/Command", "None");
+        }
+    }
+
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Module 1 raw speed", getModule(0).getDriveMotor().getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("Module 2 raw speed", getModule(1).getDriveMotor().getVelocity().getValueAsDouble());
-        if (this.getCurrentCommand() != null) {
-            SmartDashboard.putString("Drivetrain", this.getCurrentCommand().getName());
-        } else {
-            SmartDashboard.putString("Drivetrain", "None");
-        }
+        telemetry(this.getState());
     }
 }

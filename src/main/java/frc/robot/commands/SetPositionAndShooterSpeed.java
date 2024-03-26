@@ -33,10 +33,12 @@ public class SetPositionAndShooterSpeed extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (targetPosition == Position.SPEAKER || targetPosition == Position.SPEAKER_PODIUM) {
-      launcher.SetLauncherVelocity(launcher.SPEAKER_TARGET_RPM);
-    } else if (targetPosition == Position.AMP) {
-      launcher.SetLauncherVelocity(launcher.AMP_TARGET_RPM);
+    if (targetPosition == Position.SPEAKER) {
+      launcher.SetLauncherVelocity(launcher.SPEAKER_TARGET_RPM_RIGHT, launcher.SPEAKER_TARGET_RPM_LEFT);
+    } else if ( targetPosition == Position.SPEAKER_PODIUM) { 
+      launcher.SetLauncherVelocity(launcher.PODIUM_TARGET_RPM_RIGHT, launcher.PODIUM_TARGET_RPM_LEFT);
+    }else if (targetPosition == Position.AMP) {
+      launcher.SetLauncherVelocity(launcher.AMP_TARGET_RPM_RIGHT, launcher.AMP_TARGET_RPM_LEFT);
     }
     shoulder.setPosition(targetPosition.value);
   }

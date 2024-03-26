@@ -10,12 +10,14 @@ import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.indexer;
 import frc.robot.subsystems.launcher;
 import frc.robot.subsystems.Shoulder.Position;
+import edu.wpi.first.wpilibj.Timer;
 
 public class FireNote extends Command {
   private final launcher launcher;
   private final indexer indexer;
   private final Shoulder shoulder;
   private final int CLOSED_LOOP_TOLERANCE = 100;
+  Timer timer = new Timer();
 
   /** Creates a new FireNote. */
   public FireNote(indexer indexer, launcher launcher, Shoulder shoulder) {
@@ -27,22 +29,33 @@ public class FireNote extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    timer.start();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     var targetRPM = 0;
+    var targetRPMleft = 0; 
+    var targetRPMright = 0; 
 
     if (shoulder.isAtSetPoint(Position.SPEAKER.value) || shoulder.isAtSetPoint(Position.SPEAKER_PODIUM.value)) {
-      targetRPM = launcher.SPEAKER_TARGET_RPM;
+      targetRPMright = launcher.SPEAKER_TARGET_RPM_RIGHT;
+      targetRPMleft = launcher.SPEAKER_TARGET_RPM_LEFT; 
+    } else if (shoulder.isAtSetPoint(Position.SPEAKER_PODIUM.value)) {
+      targetRPMright = launcher.PODIUM_TARGET_RPM_RIGHT;
+      targetRPMleft = launcher.PODIUM_TARGET_RPM_LEFT;
     } else {
-      targetRPM = launcher.AMP_TARGET_RPM;
+      targetRPMleft = launcher.AMP_TARGET_RPM_LEFT;
+      targetRPMright = launcher.AMP_TARGET_RPM_RIGHT;
     }
 
-    if (MathUtil.isNear(targetRPM, (launcher.getRightLauncherRPM() + launcher.getLeftLauncherRPM()) / 2, CLOSED_LOOP_TOLERANCE)) {
+    launcher.SetLauncherVelocity(targetRPMright, targetRPMleft);
+
+    if ((MathUtil.isNear(targetRPMleft,launcher.getLeftLauncherRPM(), CLOSED_LOOP_TOLERANCE) && MathUtil.isNear(targetRPMright, launcher.getRightLauncherRPM(), CLOSED_LOOP_TOLERANCE)) || timer.hasElapsed(3)) {
       indexer.setDutyoutIndex(1);
-    }
+    } 
   }
 
   // Called once the command ends or is interrupted.

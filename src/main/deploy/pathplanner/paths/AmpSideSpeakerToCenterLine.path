@@ -1,0 +1,80 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.6834660114817857,
+        "y": 6.701664967310976
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.649391837770854,
+        "y": 6.960484012413497
+      },
+      "isLocked": false,
+      "linkedName": "AmpSideSpeaker"
+    },
+    {
+      "anchor": {
+        "x": 4.129105654074984,
+        "y": 7.45
+      },
+      "prevControl": {
+        "x": 2.6348136069373655,
+        "y": 7.319266385878513
+      },
+      "nextControl": {
+        "x": 5.623397701212602,
+        "y": 7.580733614121487
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.04,
+        "y": 7.453222806241709
+      },
+      "prevControl": {
+        "x": 7.039999999999999,
+        "y": 7.453222806241709
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Intake",
+      "minWaypointRelativePos": 1.9,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 0.75,
+        "maxAcceleration": 0.75,
+        "maxAngularVelocity": 135.0,
+        "maxAngularAcceleration": 180.0
+      }
+    }
+  ],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0292,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 135.0
+  },
+  "goalEndState": {
+    "velocity": 0.5,
+    "rotation": 0.0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "AmpSideSpeaker",
+  "previewStartingState": {
+    "rotation": 60.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
