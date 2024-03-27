@@ -114,6 +114,14 @@ public class RobotContainer {
     drivXboxController.y().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));    
   }
 
+  private void addPathAuto(String name, String pathName) {
+    try {
+      autoChooser.addOption(name, getPathAuto(pathName));
+    } catch (Exception e) {
+      DataLogManager.log(String.format("GatorBot: Not able to build auto routines! %s", e.getMessage()));
+    }
+  }
+
   private void configureAutoCommands() {
     /*
      * Do nothing as default is a human safety condition, this should always be the
@@ -121,17 +129,14 @@ public class RobotContainer {
      */
     autoChooser.setDefaultOption("Do nothing", new WaitCommand(15));
     autoChooser.addOption("FireNoteOnly", singleSpeakerShot());
-    try {
-        autoChooser.addOption("SpeakerCenter", getPathAuto("Center"));
-        autoChooser.addOption("SpeakerCenterWithPodiumNote", getPathAuto("CenterWithPodiumNote"));
-        autoChooser.addOption("SpeakerCenterWithAmpNote", getPathAuto("CenterWithAmpNote"));
-        autoChooser.addOption("SpeakerAmpSide", getPathAuto("AmpSide"));
-        autoChooser.addOption("SpeakerPodiumSide", getPathAuto("PodiumSide"));
-        autoChooser.addOption("SpeakerAmpSideDisruptNotes", getPathAuto("AmpDisruptNotes"));
-        autoChooser.addOption("SpeakerSourceDisrupt", getPathAuto("SourceSideDisrupt"));
-    } catch (Exception e) {
-      DataLogManager.log(String.format("GatorBot: Not able to build auto routines! %s", e.getMessage()));
-    }
+    addPathAuto("SpeakerCenter", "Center");
+    addPathAuto("SpeakerCenterWithPodiumNote", "CenterWithPodiumNote");
+    addPathAuto("SpeakerCenterWithAmpNote", "CenterWithAmpNote");
+    addPathAuto("SpeakerAmpSide", "AmpSide");
+    addPathAuto("SpeakerPodiumSide", "PodiumSide");
+    addPathAuto("SpeakerAmpSideDisruptNotes", "AmpDisruptNotes");
+    addPathAuto("SpeakerSourceDisrupt", "SourceSideDisrupt");
+    addPathAuto("SpeakerALLNOTE", "CenterAllNote");
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
