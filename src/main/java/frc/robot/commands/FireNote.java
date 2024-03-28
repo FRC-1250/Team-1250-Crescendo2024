@@ -25,12 +25,14 @@ public class FireNote extends Command {
     this.launcher = launcher;
     this.indexer = indexer; 
     this.shoulder = shoulder;
+    addRequirements(launcher, indexer, shoulder);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     timer.start();
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
