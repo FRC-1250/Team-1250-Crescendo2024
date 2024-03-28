@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 
@@ -29,22 +30,20 @@ public class indexer extends SubsystemBase {
     for (int i = 0; i < irArray.length; i++) {
       irArray[i] = new DigitalInput(i);
     }
-        CurrentLimitsConfigs currentLimit = new CurrentLimitsConfigs();
-    currentLimit.StatorCurrentLimitEnable = true;
-    currentLimit.StatorCurrentLimit = 45;
-    currentLimit.SupplyCurrentLimitEnable = true; 
-    currentLimit.SupplyCurrentLimit = 25; 
 
-    OpenLoopRampsConfigs openloopconfigs = new OpenLoopRampsConfigs();
-    openloopconfigs.DutyCycleOpenLoopRampPeriod = .1;
+    //Configurations/settings that are being set to the talonfx motor controller
+    TalonFXConfiguration configs = new TalonFXConfiguration();
+    configs.CurrentLimits.StatorCurrentLimitEnable = true;
+    configs.CurrentLimits.StatorCurrentLimit = 45;
+    configs.CurrentLimits.SupplyCurrentLimitEnable = true; 
+    configs.CurrentLimits.SupplyCurrentLimit = 25; 
+    configs.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = .1;
 
     rightindexer = new TalonFX(RINDEX, "rio");
-    rightindexer.getConfigurator().apply(currentLimit);
-    rightindexer.getConfigurator().apply(openloopconfigs);
+    rightindexer.getConfigurator().apply(configs);
 
     leftindexer = new TalonFX(LINDEX, "rio");
-    leftindexer.getConfigurator().apply(currentLimit);
-    leftindexer.getConfigurator().apply(openloopconfigs);
+    leftindexer.getConfigurator().apply(configs);
   }
 
   public void setDutyoutIndex(double percent) {

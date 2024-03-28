@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
@@ -42,8 +43,10 @@ public class ShoulderV2 extends SubsystemBase {
   private final TalonFX leftRotator;
   private final TalonFX rightRotator;
   private final CANcoder cancoder;
+   private final PositionVoltage vPostion = new PositionVoltage(0, 0, true, 0, 0, false, false, false);
 
   public ShoulderV2() {
+
     CANcoderConfiguration configuration = new CANcoderConfiguration();
     configuration.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
     configuration.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
@@ -53,9 +56,17 @@ public class ShoulderV2 extends SubsystemBase {
     cancoder.getPosition().setUpdateFrequency(100);
 
     TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration();
+
+    //PID for the Shoulder
+    talonFXConfiguration.Slot0.kP = 1;
+    talonFXConfiguration.Slot0.kI = 0;
+    talonFXConfiguration.Slot0.kD = 0;
+
+    //How much power is being supplied to the motors 
     talonFXConfiguration.CurrentLimits.SupplyCurrentLimit = 25;
     talonFXConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
 
+    //The mode for which the motor is set to when not recieving a command 
     talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     talonFXConfiguration.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.25;
@@ -69,6 +80,7 @@ public class ShoulderV2 extends SubsystemBase {
   }
 
   public void setPosition(double targetPosition) {
+    rightRotator.setControl(vPostion.withPosition(targetPosition));
   }
 
   public void setDutyCycle(double percentOut) {
@@ -80,7 +92,7 @@ public class ShoulderV2 extends SubsystemBase {
   }
 
   public double getPosition() {
-    return 0.0;
+    return cancoder.getPosition().getValueAsDouble();
   }
 
   public boolean isAtSetPoint(double targetPosition) {
