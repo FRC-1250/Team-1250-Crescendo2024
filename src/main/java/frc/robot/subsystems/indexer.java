@@ -111,10 +111,10 @@ public class indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Indexer/Right duty cycle", rightIndexSparkMax.get());
-    SmartDashboard.putNumber("Indexer/Right stator current", rightIndexSparkMax.getOutputCurrent());
-    SmartDashboard.putNumber("Indexer/Left duty cycle", leftIndexSparkmax.get());
-    SmartDashboard.putNumber("Indexer/Left stator current", leftIndexSparkmax.getOutputCurrent());
+    SmartDashboard.putNumber("Indexer/Right duty cycle", rightindexer.get());
+    SmartDashboard.putNumber("Indexer/Right stator current", rightindexer.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Indexer/Left duty cycle", leftindexer.get());
+    SmartDashboard.putNumber("Indexer/Left stator current", leftindexer.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putBoolean("Indexer/Note centered", iscentered());
     SmartDashboard.putBoolean("Indexer/Barrel sensor", pollIrArraySensor(0));
   }

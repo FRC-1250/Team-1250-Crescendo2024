@@ -126,7 +126,7 @@ public class Shoulder extends SubsystemBase {
     SmartDashboard.putNumber("Shoulder/Degress position", rightRotatorThroughBoreEncoder.getPosition() * 360);
     SmartDashboard.putNumber("Shoulder/Right duty cycle", rightRotator.get());
     SmartDashboard.putNumber("Shoulder/Left duty cycle", leftRotator.get());
-    SmartDashboard.putNumber("Shoulder/Right stator current", rightRotator.getOutputCurrent());
-    SmartDashboard.putNumber("Shoulder/Left stator current", leftRotator.getOutputCurrent());
+    SmartDashboard.putNumber("Shoulder/Right stator current", rightRotator.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Shoulder/Left stator current", leftRotator.getStatorCurrent().getValueAsDouble());
   }
 }
