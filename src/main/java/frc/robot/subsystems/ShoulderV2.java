@@ -64,7 +64,7 @@ public class ShoulderV2 extends SubsystemBase {
     rightRotator.getConfigurator().apply(talonFXConfiguration);
 
     leftRotator = new TalonFX(LEFT_ROTATOR_CAN_ID, "rio");
-    leftRotator.getConfigurator().apply(new TalonFXConfiguration());
+    leftRotator.getConfigurator().apply(talonFXConfiguration);
     leftRotator.setControl(new Follower(rightRotator.getDeviceID(), true));
   }
 
