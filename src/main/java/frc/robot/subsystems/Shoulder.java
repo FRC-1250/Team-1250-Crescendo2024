@@ -4,11 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
@@ -23,7 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shoulder extends SubsystemBase {
-
   public enum Position {
     AMP(.358f),
     HORIZONTAL(.25f),
@@ -32,8 +26,7 @@ public class Shoulder extends SubsystemBase {
     HOME(.055f),
     PID(.194f);
 
-    // Default value is rotations
-    public final float value;
+    public final float value; // Default value is rotations
 
     Position(float value) {
       this.value = value;
@@ -42,52 +35,36 @@ public class Shoulder extends SubsystemBase {
 
   private final int LEFT_ROTATOR_CAN_ID = 30;
   private final int RIGHT_ROTATOR_CAN_ID = 31;
+  private final double CLOSED_LOOP_TOLERANCE = 0.003; // Closed loop tolerance in degrees
+  private final double ENCODER_OFFSET = 0.134; // Offset value to normalize the encoder position to 0 when at home
 
-  // Closed loop tolerance in degrees
-  // TODO: Use isAtSetPoint after determining new home of ABS sensor and changing rotations to degrees
-  private final double CLOSED_LOOP_TOLERANCE = 0.003;
-
-  // Offset value to normalize the encoder position to 0 when at home
-  private final double ENCODER_OFFSET = 0.134;
-
-  private final TalonFX leftRotator;
-  private final TalonFX rightRotator;
+  private final CANSparkMax leftRotator;
+  private final CANSparkMax rightRotator;
   private final SparkPIDController rightRotatorPIDController;
   private final AbsoluteEncoder rightRotatorThroughBoreEncoder;
 
   public Shoulder() {
-    CurrentLimitsConfigs currentLimit = new CurrentLimitsConfigs();
-    currentLimit.StatorCurrentLimitEnable = true;
-    currentLimit.StatorCurrentLimit = 35;
-    currentLimit.SupplyCurrentLimitEnable = true; 
-    currentLimit.SupplyCurrentLimit = 25; 
+    rightRotator = new CANSparkMax(RIGHT_ROTATOR_CAN_ID, MotorType.kBrushless);
+    rightRotator.restoreFactoryDefaults();
+    rightRotator.setSmartCurrentLimit(25);
+    rightRotator.setIdleMode(IdleMode.kBrake);
+    rightRotator.setSoftLimit(SoftLimitDirection.kForward, Position.AMP.value);
+    rightRotator.setSoftLimit(SoftLimitDirection.kReverse, Position.HOME.value);
+    rightRotator.enableSoftLimit(SoftLimitDirection.kForward, true);
+    rightRotator.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    rightRotator.setInverted(false);
 
-    OpenLoopRampsConfigs openloopconfigs = new OpenLoopRampsConfigs();
-    openloopconfigs.DutyCycleOpenLoopRampPeriod = .1;
-
-
-    rightRotator = new TalonFX(RIGHT_ROTATOR_CAN_ID, "rio");
-    rightRotator.getConfigurator().apply(new TalonFXConfiguration());
-    rightRotator.getConfigurator().apply(currentLimit);
-    rightRotator.getConfigurator().apply(openloopconfigs);
-
-
-    leftRotator = new TalonFX(LEFT_ROTATOR_CAN_ID, "rio");
-    leftRotator.getConfigurator().apply(new TalonFXConfiguration());
-    leftRotator.getConfigurator().apply(currentLimit);
-    leftRotator.getConfigurator().apply(openloopconfigs);
-
+    leftRotator = new CANSparkMax(LEFT_ROTATOR_CAN_ID, MotorType.kBrushless);
+    leftRotator.restoreFactoryDefaults();
+    leftRotator.setSmartCurrentLimit(25);
+    leftRotator.setIdleMode(IdleMode.kBrake);
+    leftRotator.follow(rightRotator, true);
 
     rightRotatorThroughBoreEncoder = rightRotator.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     rightRotatorThroughBoreEncoder.setInverted(true);
-    //rightRotatorThroughBoreEncoder.setPositionConversionFactor(ENCODER_POSITION_CONVERSION_FACTOR);
     rightRotatorThroughBoreEncoder.setZeroOffset(ENCODER_OFFSET);
 
-    
-
-
-
-    //rightRotatorPIDController = rightRotator.set;
+    rightRotatorPIDController = rightRotator.getPIDController();
     rightRotatorPIDController.setFeedbackDevice(rightRotatorThroughBoreEncoder);
     rightRotatorPIDController.setP(25);
     rightRotatorPIDController.setI(0);
@@ -126,7 +103,7 @@ public class Shoulder extends SubsystemBase {
     SmartDashboard.putNumber("Shoulder/Degress position", rightRotatorThroughBoreEncoder.getPosition() * 360);
     SmartDashboard.putNumber("Shoulder/Right duty cycle", rightRotator.get());
     SmartDashboard.putNumber("Shoulder/Left duty cycle", leftRotator.get());
-    SmartDashboard.putNumber("Shoulder/Right stator current", rightRotator.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Shoulder/Left stator current", leftRotator.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Shoulder/Right stator current", rightRotator.getOutputCurrent());
+    SmartDashboard.putNumber("Shoulder/Left stator current", leftRotator.getOutputCurrent());
   }
 }
