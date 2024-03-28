@@ -12,7 +12,10 @@
     "**/.project": true,
     "**/.settings": true,
     "**/.factorypath": true,
-    "**/*~": true
+    "**/*~": true, 
+  },
+  "[java]": {
+    "editor.tabSize": 2
   },
   "java.test.config": [
     {
