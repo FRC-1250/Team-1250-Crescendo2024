@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.248957815451177,
-        "y": 0.4766060716955549
+        "x": 7.015518106865598,
+        "y": 0.5155126897931507
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.292054840033851,
-        "y": 2.1884972679897965
+        "x": 3.9710752407286805,
+        "y": 1.7994310870138313
       },
       "prevControl": {
-        "x": 6.008186772747536,
-        "y": 1.1614183082596348
+        "x": 5.687207173442367,
+        "y": 0.7723521272836695
       },
       "nextControl": {
-        "x": 2.575922907320165,
-        "y": 3.215576227719958
+        "x": 2.2549433080149948,
+        "y": 2.8265100467439943
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 4.338087917884098
       },
       "prevControl": {
-        "x": 0.8001858657700072,
-        "y": 3.598862174029767
+        "x": 1.315698555567727,
+        "y": 3.6961287192716563
       },
       "nextControl": null,
       "isLocked": false,
@@ -49,7 +49,7 @@
     {
       "name": "Intake",
       "minWaypointRelativePos": 1.8,
-      "maxWaypointRelativePos": 2.0,
+      "maxWaypointRelativePos": 1.8,
       "constraints": {
         "maxVelocity": 0.75,
         "maxAcceleration": 0.75,
