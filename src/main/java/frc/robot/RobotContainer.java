@@ -6,10 +6,8 @@ package frc.robot;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,11 +21,9 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.SetShoulderDutyCycle;
 import frc.robot.commands.SetShoulderPosition;
-import frc.robot.commands.targetlock;
 import frc.robot.commands.FieldCentricAutoAim;
 import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
-import frc.robot.commands.LightShow;
 import frc.robot.commands.LimeLightLED;
 import frc.robot.commands.SetIndexDutyCycle;
 import frc.robot.commands.SetIntakeDutyCycle;
@@ -36,14 +32,12 @@ import frc.robot.commands.SetPositionAndShooterSpeed;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shoulder;
-import frc.robot.subsystems.SystemLights;
 import frc.robot.subsystems.indexer;
 import frc.robot.subsystems.launcher;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Shoulder.Position;
 
 public class RobotContainer {
-  private final SystemLights systemLights = new SystemLights();
   private final Intake intake = new Intake();
   private final Shoulder shoulder = new Shoulder();
   private final launcher launcher = new launcher();
@@ -68,14 +62,7 @@ public class RobotContainer {
       .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.025)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-  // Field centric driving in closed loop with target locking and 10% deadband
-  private final targetlock targetLock = new targetlock(limelight, drivetrain::getHeading)
-      .withDeadband(TunerConstants.MaxSpeed * 0.1)
-      .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.025)
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-
   private final CommandXboxController drivXboxController = new CommandXboxController(0);
-  // final CommandPS4Controller commandPS4Controller = new CommandPS4Controller(1);
 
   public RobotContainer() {
     SmartDashboard.putData("Intake/Command", intake);
