@@ -39,7 +39,6 @@ import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.SystemLights;
 import frc.robot.subsystems.indexer;
 import frc.robot.subsystems.launcher;
-import frc.robot.util.HolonomicPaths;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Shoulder.Position;
 
@@ -128,7 +127,7 @@ public class RobotContainer {
      * default
      */
     autoChooser.setDefaultOption("Do nothing", new WaitCommand(15));
-    autoChooser.addOption("FireNoteOnly", singleSpeakerShot());
+    autoChooser.addOption("FireNoteOnly", fireNoteWithTimeoutV2(Position.SPEAKER));
     addPathAuto("SpeakerCenter", "Center");
     addPathAuto("SpeakerCenterWithPodiumNote", "CenterWithPodiumNote");
     addPathAuto("SpeakerCenterWithAmpNote", "CenterWithAmpNote");
@@ -187,141 +186,9 @@ public class RobotContainer {
     }
   }
 
-  private Command singleSpeakerShot() {
-    return Commands.sequence(
-        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER),
-        fireNoteWithTimeout(),
-        new SetShoulderPosition(shoulder, Position.HOME));
-  }
-
-  private Command singleSpeakerShotWithPath(PathPlannerPath pathPlannerPath) {
-    return Commands.sequence(
-        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER),
-        fireNoteWithTimeout(),
-        new SetShoulderPosition(shoulder, Position.HOME),
-        resetOdometryAndFollowPath(pathPlannerPath));
-  }
-
-  private Command doubleSpeakerShot(PathPlannerPath pathPlannerPath) {
-    return Commands.sequence(
-        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER),
-        fireNoteWithTimeout(),
-        Commands.parallel(
-            Commands.sequence(
-                intakeCenterNoteWithFullSpeed(),
-                new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER)),
-            Commands.sequence(
-                new WaitCommand(0.02),
-                resetOdometryAndFollowPath(pathPlannerPath))),
-        fireNoteWithTimeout(),
-        new SetShoulderPosition(shoulder, Position.HOME));
-  }
-
-  private Command doubleshotandrun(PathPlannerPath pathPlannerPath, PathPlannerPath pathPlannerPath2) {
-    return Commands.sequence(
-        new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER),
-        fireNoteWithTimeout(),
-        Commands.parallel(
-            Commands.sequence(
-                intakeCenterNoteWithFullSpeed(),
-                new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER)),
-            Commands.sequence(
-                new WaitCommand(0.02),
-                resetOdometryAndFollowPath(pathPlannerPath))),
-        fireNoteWithTimeout(),
-        new SetShoulderPosition(shoulder, Position.HOME),
-        resetOdometryAndFollowPath(pathPlannerPath2));
-
-  }
-
-  public Command resetOdometryAndFollowPath(PathPlannerPath path) {
-    return Commands.sequence(
-        Commands.runOnce(
-            () -> drivetrain.setOdometry(
-                path.getPreviewStartingHolonomicPose().getRotation(),
-                path.getPathPoses().get(0)),
-            drivetrain),
-        AutoBuilder.followPath(path));
-  }
-
-  private Command fireNoteWithTimeout() {
-    return new FireNote(indexer, launcher, shoulder).withTimeout(1);
-  }
-
-  private Command intakeCenterNoteWithFullSpeed() {
-    return new IntakeCenterNote(intake, shoulder, indexer, 1.0);
-  }
-
-  private Command doubleShotV2(PathPlannerPath path, Position position) {
-    return Commands.sequence(
-        fireNoteWithTimeoutV2(position),
-        followPathWithResetAndIntake(path, position),
-        fireNoteWithTimeoutV2(position));
-  }
-
-  private Command doubleShotAndRunV2(PathPlannerPath intakePath, PathPlannerPath run, Position position) {
-    return Commands.sequence(
-        fireNoteWithTimeoutV2(position),
-        followPathWithResetAndIntake(intakePath, position),
-        fireNoteWithTimeoutV2(position),
-        followPath(run));
-  }
-
-  private Command tripleShot(PathPlannerPath intakePathOne, PathPlannerPath intakePathTwo, Position position) {
-    return Commands.sequence(
-        fireNoteWithTimeoutV2(position),
-        followPathWithResetAndIntake(intakePathOne, position),
-        fireNoteWithTimeoutV2(position),
-        followPathAndIntake(intakePathTwo, position),
-        fireNoteWithTimeoutV2(position));
-  }
-
-  private Command tripleShotAndRun(PathPlannerPath intakePathOne, PathPlannerPath intakePathTwo, PathPlannerPath run, Position position) {
-    return Commands.sequence(
-        fireNoteWithTimeoutV2(position),
-        followPathWithResetAndIntake(intakePathOne, position),
-        fireNoteWithTimeoutV2(position),
-        followPathAndIntake(intakePathTwo, position),
-        fireNoteWithTimeoutV2(position),
-        followPath(run));
-  }
-
   private Command fireNoteWithTimeoutV2(Position position) {
     return Commands.sequence(
         new SetPositionAndShooterSpeed(shoulder, launcher, position),
         new FireNote(indexer, launcher, shoulder).withTimeout(1));
-  }
-
-  private Command followPathWithResetAndIntake(PathPlannerPath path, Position position) {
-    return Commands.parallel(
-        Commands.sequence(
-            new IntakeCenterNote(intake, shoulder, indexer, 1.0),
-            new SetPositionAndShooterSpeed(shoulder, launcher, position)),
-        followPathWithReset(path));
-  }
-
-  private Command followPathAndIntake(PathPlannerPath path, Position position) {
-    return Commands.parallel(
-        Commands.sequence(
-            new IntakeCenterNote(intake, shoulder, indexer, 1.0),
-            new SetPositionAndShooterSpeed(shoulder, launcher, position)),
-        followPath(path));
-  }
-
-  private Command followPath(PathPlannerPath path) {
-    return Commands.sequence(
-        new WaitCommand(0.05),
-        AutoBuilder.followPath(path));
-  }
-
-  private Command followPathWithReset(PathPlannerPath path) {
-    return Commands.sequence(
-        new WaitCommand(0.05),
-        Commands.runOnce(
-            () -> drivetrain.setOdometry(
-                path.getPreviewStartingHolonomicPose().getRotation(),
-                path.getPathPoses().get(0)),
-            drivetrain),
-        AutoBuilder.followPath(path));
   }
 }
