@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,6 +33,7 @@ public class launcher extends SubsystemBase {
 
   public launcher() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
+    configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     configs.Slot0.kP = 0.11;
     configs.Slot0.kI = 0;
     configs.Slot0.kD = 0.0001;
