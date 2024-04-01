@@ -3,24 +3,24 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.55,
-        "y": 4.0927334104305375
+        "x": 2.657976879934803,
+        "y": 4.124101518345216
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.907212390313462,
-        "y": 4.858777853549514
+        "x": 2.015189270248265,
+        "y": 4.890145961464192
       },
       "isLocked": false,
       "linkedName": "PodiumNote"
     },
     {
       "anchor": {
-        "x": 1.3284010703998748,
+        "x": 1.481051682482512,
         "y": 5.55
       },
       "prevControl": {
-        "x": 1.9711886800864125,
+        "x": 2.12383929216905,
         "y": 4.783955556881024
       },
       "nextControl": null,
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Prep",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.65,
       "command": {
         "type": "sequential",
         "data": {
@@ -42,6 +42,23 @@
               "type": "named",
               "data": {
                 "name": "speakerShotPrep"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intakeCenterNote"
               }
             }
           ]

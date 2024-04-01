@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6542860479085884,
+      "x": 0.7807325567257765,
       "y": 6.711391621835377
     },
     "rotation": 60.0
@@ -11,12 +11,6 @@
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "speakerShotPrep"
-          }
-        },
         {
           "type": "named",
           "data": {

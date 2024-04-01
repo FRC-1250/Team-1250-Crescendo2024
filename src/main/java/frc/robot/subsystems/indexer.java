@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -33,11 +34,9 @@ public class indexer extends SubsystemBase {
 
     //Configurations/settings that are being set to the talonfx motor controller
     TalonFXConfiguration configs = new TalonFXConfiguration();
-    configs.CurrentLimits.StatorCurrentLimitEnable = true;
-    configs.CurrentLimits.StatorCurrentLimit = 45;
     configs.CurrentLimits.SupplyCurrentLimitEnable = true; 
-    configs.CurrentLimits.SupplyCurrentLimit = 25; 
-    configs.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = .1;
+    configs.CurrentLimits.SupplyCurrentLimit = 25;
+    configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     rightindexer = new TalonFX(RINDEX, "rio");
     rightindexer.getConfigurator().apply(configs);

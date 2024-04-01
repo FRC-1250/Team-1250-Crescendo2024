@@ -57,11 +57,11 @@ public class launcher extends SubsystemBase {
   }
 
   public double getRightLauncherRPM() {
-    return rightLauncher.getVelocity().getValue();
+    return rightLauncher.getVelocity().getValue() * 60;
   }
 
   public double getLeftLauncherRPM() {
-    return leftLauncher.getVelocity().getValue();
+    return leftLauncher.getVelocity().getValue() * 60;
   }
 
   public void SetLauncherVelocity(double right, double left) {

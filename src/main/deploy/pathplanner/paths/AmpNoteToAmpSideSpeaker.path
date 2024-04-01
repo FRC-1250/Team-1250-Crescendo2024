@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 0.6834660114817857,
-        "y": 6.701664967310976
+        "x": 0.7807325567257765,
+        "y": 6.711391621835377
       },
       "prevControl": {
-        "x": 1.6834660114817854,
-        "y": 6.701664967310976
+        "x": 1.7728513182144843,
+        "y": 6.88647140327456
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,42 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intakeCenterNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Prep",
+      "waypointRelativePos": 0.4,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "speakerShotPrep"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.0292,
     "maxAcceleration": 2.5,

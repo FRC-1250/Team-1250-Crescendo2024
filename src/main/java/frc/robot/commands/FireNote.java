@@ -38,11 +38,10 @@ public class FireNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    var targetRPM = 0;
     var targetRPMleft = 0; 
     var targetRPMright = 0; 
 
-    if (shoulder.isAtSetPoint(Position.SPEAKER.value) || shoulder.isAtSetPoint(Position.SPEAKER_PODIUM.value)) {
+    if (shoulder.isAtSetPoint(Position.SPEAKER.value)) {
       targetRPMright = launcher.SPEAKER_TARGET_RPM_RIGHT;
       targetRPMleft = launcher.SPEAKER_TARGET_RPM_LEFT; 
     } else if (shoulder.isAtSetPoint(Position.SPEAKER_PODIUM.value)) {

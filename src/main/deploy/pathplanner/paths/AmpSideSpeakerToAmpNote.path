@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.6834660114817857,
-        "y": 6.701664967310976
+        "x": 0.7807325567257765,
+        "y": 6.711391621835377
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6834660114817854,
-        "y": 6.701664967310976
+        "x": 1.7807325567257761,
+        "y": 6.711391621835377
       },
       "isLocked": false,
       "linkedName": "AmpSideSpeaker"
@@ -42,7 +42,25 @@
       }
     }
   ],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.6,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intakeCenterNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.0292,
     "maxAcceleration": 2.5,
