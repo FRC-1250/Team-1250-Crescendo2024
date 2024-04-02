@@ -176,6 +176,6 @@ public class RobotContainer {
   private Command fireNoteWithTimeoutV2(Position position) {
     return Commands.sequence(
         new SetPositionAndShooterSpeed(shoulder, launcher, position),
-        new FireNote(indexer, launcher, shoulder).withTimeout(1));
+        new FireNote(indexer, launcher, shoulder).withTimeout(0.6));
   }
 }

@@ -23,7 +23,7 @@ public class indexer extends SubsystemBase {
   private int RINDEX = 23;
   DigitalInput[] irArray = new DigitalInput[5];
 
-  private final TalonFX rightindexer;
+
   private final TalonFX leftindexer;
 
   /** Creates a new indexer. */
@@ -35,18 +35,15 @@ public class indexer extends SubsystemBase {
     //Configurations/settings that are being set to the talonfx motor controller
     TalonFXConfiguration configs = new TalonFXConfiguration();
     configs.CurrentLimits.SupplyCurrentLimitEnable = true; 
-    configs.CurrentLimits.SupplyCurrentLimit = 25;
+    configs.CurrentLimits.SupplyCurrentLimit = 20;
     configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    rightindexer = new TalonFX(RINDEX, "rio");
-    rightindexer.getConfigurator().apply(configs);
 
     leftindexer = new TalonFX(LINDEX, "rio");
     leftindexer.getConfigurator().apply(configs);
   }
 
   public void setDutyoutIndex(double percent) {
-    rightindexer.set(percent);
     leftindexer.set(percent);
   }
 
@@ -109,8 +106,6 @@ public class indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Indexer/Right duty cycle", rightindexer.get());
-    SmartDashboard.putNumber("Indexer/Right stator current", rightindexer.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Indexer/Left duty cycle", leftindexer.get());
     SmartDashboard.putNumber("Indexer/Left stator current", leftindexer.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putBoolean("Indexer/Note centered", iscentered());

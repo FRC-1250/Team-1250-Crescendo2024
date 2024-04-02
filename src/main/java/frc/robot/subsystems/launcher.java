@@ -37,7 +37,15 @@ public class launcher extends SubsystemBase {
     configs.Slot0.kP = 0.11;
     configs.Slot0.kI = 0;
     configs.Slot0.kD = 0.0001;
-    configs.Slot0.kV = 0.12;
+    configs.Slot0.kV = 0.1;
+
+    //The configurations for the shooter wheels when shooting podium shot
+    configs.Slot1.kP = .11;
+    configs.Slot1.kI = 0;
+    configs.Slot1.kD = .0001;
+    configs.Slot1.kV = .12;
+
+    //Motor settings that are applied and given to the talons 
     configs.CurrentLimits.SupplyCurrentLimit = 50;
     configs.CurrentLimits.SupplyCurrentLimitEnable = true;
     configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
