@@ -34,6 +34,8 @@ public class launcher extends SubsystemBase {
   public launcher() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
     configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    //Configurations for the shooter wheels for speaker and amp shots 
     configs.Slot0.kP = 0.11;
     configs.Slot0.kI = 0;
     configs.Slot0.kD = 0.0001;
