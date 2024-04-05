@@ -22,7 +22,7 @@ public class Shoulder extends SubsystemBase {
     AMP(.358f),
     HORIZONTAL(.25f),
     SPEAKER_PODIUM(.158f),
-    SPEAKER(.105f),
+    SPEAKER(.085f),
     HOME(.055f),
     PID(.194f);
 

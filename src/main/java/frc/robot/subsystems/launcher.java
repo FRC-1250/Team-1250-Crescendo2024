@@ -19,8 +19,8 @@ public class launcher extends SubsystemBase {
   public final int FALCON_500_MAX_RPM = 6380;
   public final int PODIUM_TARGET_RPM_LEFT = 5000;
   public final int PODIUM_TARGET_RPM_RIGHT = 5000;
-  public final int SPEAKER_TARGET_RPM_LEFT = 4500;
-  public final int SPEAKER_TARGET_RPM_RIGHT = 4500;
+  public final int SPEAKER_TARGET_RPM_LEFT = 3000;
+  public final int SPEAKER_TARGET_RPM_RIGHT = 3000;
   public final int AMP_TARGET_RPM_LEFT = 1500;
   public final int AMP_TARGET_RPM_RIGHT = 1500;
 

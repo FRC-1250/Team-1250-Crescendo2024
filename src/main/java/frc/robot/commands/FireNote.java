@@ -55,9 +55,11 @@ public class FireNote extends Command {
 
     launcher.SetLauncherVelocity(targetRPMright, targetRPMleft);
 
-    if ((MathUtil.isNear(targetRPMleft,launcher.getLeftLauncherRPM(), CLOSED_LOOP_TOLERANCE) && MathUtil.isNear(targetRPMright, launcher.getRightLauncherRPM(), CLOSED_LOOP_TOLERANCE)) || timer.hasElapsed(TRIGGER_TIME_OVERRIDE)) {
+    if ((MathUtil.isNear(targetRPMleft, launcher.getLeftLauncherRPM(), CLOSED_LOOP_TOLERANCE)
+        && MathUtil.isNear(targetRPMright, launcher.getRightLauncherRPM(), CLOSED_LOOP_TOLERANCE))
+        || timer.hasElapsed(TRIGGER_TIME_OVERRIDE)) {
       indexer.setDutyoutIndex(1);
-    } 
+    }
   }
 
   // Called once the command ends or is interrupted.
