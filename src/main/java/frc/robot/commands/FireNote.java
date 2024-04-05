@@ -17,7 +17,8 @@ public class FireNote extends Command {
   private final indexer indexer;
   private final Shoulder shoulder;
   private final int CLOSED_LOOP_TOLERANCE = 100;
-  Timer timer = new Timer();
+  private final double TRIGGER_TIME_OVERRIDE = 0.5;
+  private final Timer timer = new Timer();
 
   /** Creates a new FireNote. */
   public FireNote(indexer indexer, launcher launcher, Shoulder shoulder) {
@@ -54,7 +55,7 @@ public class FireNote extends Command {
 
     launcher.SetLauncherVelocity(targetRPMright, targetRPMleft);
 
-    if ((MathUtil.isNear(targetRPMleft,launcher.getLeftLauncherRPM(), CLOSED_LOOP_TOLERANCE) && MathUtil.isNear(targetRPMright, launcher.getRightLauncherRPM(), CLOSED_LOOP_TOLERANCE)) || timer.hasElapsed(3)) {
+    if ((MathUtil.isNear(targetRPMleft,launcher.getLeftLauncherRPM(), CLOSED_LOOP_TOLERANCE) && MathUtil.isNear(targetRPMright, launcher.getRightLauncherRPM(), CLOSED_LOOP_TOLERANCE)) || timer.hasElapsed(TRIGGER_TIME_OVERRIDE)) {
       indexer.setDutyoutIndex(1);
     } 
   }
