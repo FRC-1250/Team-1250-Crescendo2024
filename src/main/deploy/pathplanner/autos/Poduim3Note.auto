@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "speakerFireNote"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "PodiumSideSpeakerToCenterLine5"
