@@ -5,7 +5,7 @@
       "x": 0.7807325567257765,
       "y": 6.711391621835377
     },
-    "rotation": 60.0
+    "rotation": 60.436927003364836
   },
   "command": {
     "type": "sequential",
@@ -14,19 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "speakerFireNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AmpSideSpeakerToAmpNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AmpNoteToAmpSideSpeaker"
+            "name": "speakerShotPrep"
           }
         },
         {
@@ -44,13 +32,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterLineToAmp"
+            "pathName": "CenterLineToAmpSideSpeaker"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "passingFireNote"
+            "name": "speakerFireNote"
           }
         }
       ]

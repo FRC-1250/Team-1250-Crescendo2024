@@ -8,36 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0348635746382708,
-        "y": 3.3637178530988647
+        "x": 1.6143482913532248,
+        "y": 2.715857461790112
       },
       "isLocked": false,
       "linkedName": "PodiumSideSpeaker"
     },
     {
       "anchor": {
-        "x": 4.109833282294003,
-        "y": 1.6040579707142528
+        "x": 4.24790704218,
+        "y": 1.9443070465088297
       },
       "prevControl": {
-        "x": 3.1701406615080945,
-        "y": 1.9460781140399217
+        "x": 3.414632593676215,
+        "y": 2.1706285016580065
       },
       "nextControl": {
-        "x": 5.049525903079906,
-        "y": 1.2620378273885862
+        "x": 5.90773004258623,
+        "y": 1.4934909229417042
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.279983195037481,
-        "y": 0.7489523983787291
+        "x": 8.270256540513081,
+        "y": 2.43809931228885
       },
       "prevControl": {
-        "x": 6.279983195037481,
-        "y": 0.7489523983787291
+        "x": 7.210660636860121,
+        "y": 2.0677551129538356
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,20 +45,26 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
+  "constraintZones": [],
+  "eventMarkers": [
     {
-      "name": "Intake",
-      "minWaypointRelativePos": 1.9,
-      "maxWaypointRelativePos": 2.0,
-      "constraints": {
-        "maxVelocity": 0.75,
-        "maxAcceleration": 0.75,
-        "maxAngularVelocity": 135.0,
-        "maxAngularAcceleration": 180.0
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intakeCenterNote"
+              }
+            }
+          ]
+        }
       }
     }
   ],
-  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.0292,
     "maxAcceleration": 2.5,
@@ -67,13 +73,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
-    "rotateFast": true
+    "rotation": 0,
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "PodiumSideSpeaker",
   "previewStartingState": {
-    "rotation": -60.0,
+    "rotation": -61.74243459951766,
     "velocity": 0
   },
   "useDefaultConstraints": true

@@ -64,6 +64,12 @@
           "data": {
             "pathName": "AmpSideNoteToCenterSpeaker"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "speakerFireNote"
+          }
         }
       ]
     }

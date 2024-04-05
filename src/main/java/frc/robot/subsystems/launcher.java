@@ -39,7 +39,7 @@ public class launcher extends SubsystemBase {
     configs.Slot0.kP = 0.11;
     configs.Slot0.kI = 0;
     configs.Slot0.kD = 0.0001;
-    configs.Slot0.kV = 0.1;
+    configs.Slot0.kV = 0.115;
 
     //The configurations for the shooter wheels when shooting podium shot
     configs.Slot1.kP = .11;

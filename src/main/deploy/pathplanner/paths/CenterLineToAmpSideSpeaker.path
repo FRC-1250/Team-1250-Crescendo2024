@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.027090177403105,
-        "y": 7.440890711165308
+        "x": 8.301118557124333,
+        "y": 7.448033342181972
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.027090177403105,
-        "y": 7.440890711165308
+        "x": 7.344396042175544,
+        "y": 7.31429793686655
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.89,
-        "y": 7.4
+        "x": 0.7807325567257765,
+        "y": 6.711391621835377
       },
       "prevControl": {
-        "x": 2.8900000000000023,
-        "y": 7.4
+        "x": 1.8303824076319835,
+        "y": 7.2011372092919625
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "AmpSideSpeaker"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,24 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.65,
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intakeCenterNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.75,
       "command": {
         "type": "sequential",
         "data": {
@@ -41,7 +58,7 @@
             {
               "type": "named",
               "data": {
-                "name": "passingShotPrep"
+                "name": "speakerShotPrep"
               }
             }
           ]
@@ -57,13 +74,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 50.0,
+    "rotation": 59.179197746823235,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "AmpSideSpeaker",
   "previewStartingState": {
-    "rotation": 1.5275254422129503,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true

@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.8099125202944064,
+      "y": 4.338087917884098
+    },
+    "rotation": -60.899223461603626
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PodiumSideSpeakerToCenterLine5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Centerline5 to podiumsidespeakr"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "speakerFireNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PodiumSideToCetnerline4"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

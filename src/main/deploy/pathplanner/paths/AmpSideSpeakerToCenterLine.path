@@ -8,36 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7466583830148448,
-        "y": 6.970210666937898
+        "x": 1.3571648195927977,
+        "y": 7.612630764108646
       },
       "isLocked": false,
       "linkedName": "AmpSideSpeaker"
     },
     {
       "anchor": {
-        "x": 4.129105654074984,
-        "y": 7.45
+        "x": 8.301118557124333,
+        "y": 7.437746003311556
       },
       "prevControl": {
-        "x": 2.6296093935676703,
-        "y": 7.411128870294494
-      },
-      "nextControl": {
-        "x": 5.653786473449725,
-        "y": 7.489523983787303
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 7.9590035957323115,
-        "y": 7.236630966152928
-      },
-      "prevControl": {
-        "x": 6.9590035957323115,
-        "y": 7.236630966152928
+        "x": 7.301118557124333,
+        "y": 7.437746003311556
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,20 +29,26 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
+  "constraintZones": [],
+  "eventMarkers": [
     {
-      "name": "Intake",
-      "minWaypointRelativePos": 1.9,
-      "maxWaypointRelativePos": 2.0,
-      "constraints": {
-        "maxVelocity": 0.75,
-        "maxAcceleration": 0.75,
-        "maxAngularVelocity": 135.0,
-        "maxAngularAcceleration": 180.0
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.15,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intakeCenterNote"
+              }
+            }
+          ]
+        }
       }
     }
   ],
-  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.0292,
     "maxAcceleration": 2.5,
@@ -66,14 +56,14 @@
     "maxAngularAcceleration": 135.0
   },
   "goalEndState": {
-    "velocity": 0.5,
-    "rotation": 20.0,
-    "rotateFast": true
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "AmpSideSpeaker",
   "previewStartingState": {
-    "rotation": 60.0,
+    "rotation": 63.77420205784143,
     "velocity": 0
   },
   "useDefaultConstraints": true

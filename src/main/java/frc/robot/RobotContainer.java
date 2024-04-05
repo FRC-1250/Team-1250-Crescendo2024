@@ -123,6 +123,7 @@ public class RobotContainer {
     addPathAuto("SpeakerAmpSideDisruptNotes", "AmpDisruptNotes");
     addPathAuto("SpeakerSourceDisrupt", "SourceSideDisrupt");
     addPathAuto("SpeakerALLNOTE", "CenterAllNote");
+    addPathAuto("Poduim3Note", "Poduim3Note");
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
@@ -176,6 +177,6 @@ public class RobotContainer {
   private Command fireNoteWithTimeoutV2(Position position) {
     return Commands.sequence(
         new SetPositionAndShooterSpeed(shoulder, launcher, position),
-        new FireNote(indexer, launcher, shoulder).withTimeout(0.6));
+        new FireNote(indexer, launcher, shoulder).withTimeout(0.7));
   }
 }

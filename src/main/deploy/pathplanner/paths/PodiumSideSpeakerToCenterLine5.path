@@ -3,53 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.95,
-        "y": 0.78
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 7.015518106865598,
-        "y": 0.5155126897931507
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.9710752407286805,
-        "y": 1.7994310870138313
-      },
-      "prevControl": {
-        "x": 5.687207173442367,
-        "y": 0.7723521272836695
-      },
-      "nextControl": {
-        "x": 2.2549433080149948,
-        "y": 2.8265100467439943
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
         "x": 0.8099125202944064,
         "y": 4.338087917884098
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.0348635746382708,
+        "y": 3.3637178530988647
+      },
+      "isLocked": false,
+      "linkedName": "PodiumSideSpeaker"
+    },
+    {
+      "anchor": {
+        "x": 4.109833282294003,
+        "y": 1.6040579707142528
+      },
       "prevControl": {
-        "x": 1.315698555567727,
-        "y": 3.6961287192716563
+        "x": 3.1701406615080945,
+        "y": 1.9460781140399217
+      },
+      "nextControl": {
+        "x": 5.049525903079906,
+        "y": 1.2620378273885862
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.279983195037481,
+        "y": 0.7489523983787291
+      },
+      "prevControl": {
+        "x": 6.279983195037481,
+        "y": 0.7489523983787291
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PodiumSideSpeaker"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Intake",
-      "minWaypointRelativePos": 1.8,
-      "maxWaypointRelativePos": 1.8,
+      "minWaypointRelativePos": 1.9,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 0.75,
         "maxAcceleration": 0.75,
@@ -58,7 +58,25 @@
       }
     }
   ],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intakeCenterNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.0292,
     "maxAcceleration": 2.5,
@@ -67,13 +85,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -58.46520809481164,
+    "rotation": 0.0,
     "rotateFast": true
   },
   "reversed": false,
   "folder": "PodiumSideSpeaker",
   "previewStartingState": {
-    "rotation": 20.014745180924965,
+    "rotation": -60.0,
     "velocity": 0
   },
   "useDefaultConstraints": true
