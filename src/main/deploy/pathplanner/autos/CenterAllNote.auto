@@ -38,6 +38,24 @@
         {
           "type": "path",
           "data": {
+            "pathName": "CenterSpeakerToPodiumNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PodiumNoteToCenterSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "speakerFireNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "CenterSpeakerToAmpSideNote"
           }
         },

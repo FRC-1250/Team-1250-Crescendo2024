@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Telemetry {
     private final double MaxSpeed;
@@ -47,6 +48,7 @@ public class Telemetry {
     /* Keep a reference of the last pose to calculate the speeds */
     private Pose2d m_lastPose = new Pose2d();
     private double lastTime = Utils.getCurrentTimeSeconds();
+    private int aliveCounter = 0;
 
     /* Accept the swerve drive state and telemeterize it to smartdashboard */
     public void telemeterize(SwerveDriveState state) {
@@ -80,5 +82,7 @@ public class Telemetry {
         moduleTwoHeading.set(state.ModuleStates[1].angle.getDegrees());
         moduleThreeHeading.set(state.ModuleStates[2].angle.getDegrees());
         moduleFourHeading.set(state.ModuleStates[3].angle.getDegrees());
+
+        SmartDashboard.putNumber("Odometry Thread Alive", aliveCounter++);
     }
 }

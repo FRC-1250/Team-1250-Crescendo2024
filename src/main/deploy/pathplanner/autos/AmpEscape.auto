@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.481051682482512,
-      "y": 5.55
+      "x": 0.7807325567257765,
+      "y": 6.711391621835377
     },
-    "rotation": 0
+    "rotation": 60.436927003364836
   },
   "command": {
     "type": "sequential",
@@ -14,19 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "speakerFireNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CenterSpeakerToCenterNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CenterNoteToCenterSpeaker"
+            "name": "speakerShotPrep"
           }
         },
         {
@@ -38,13 +26,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterSpeakerToAmpSideNote"
+            "pathName": "AmpSideSpeakerToCenterline"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "AmpSideNoteToCenterSpeaker"
+            "pathName": "CenterLineToAmpSideSpeaker"
           }
         },
         {

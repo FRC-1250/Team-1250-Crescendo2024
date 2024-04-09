@@ -4,22 +4,14 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.DutyCycle;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
-
 
   private final int FRONT_ROLLER_CAN_ID = 40;
   private final int REAR_ROLLER_CAN_ID = 41;
@@ -27,25 +19,16 @@ public class Intake extends SubsystemBase {
   private final TalonFX rearRoller;
 
   public Intake() {
-    CurrentLimitsConfigs currentlimits = new CurrentLimitsConfigs();
-    currentlimits.StatorCurrentLimitEnable = true;
-    currentlimits.StatorCurrentLimit = 40;
-    currentlimits.SupplyCurrentLimitEnable = true;
-    currentlimits.SupplyCurrentLimit = 20;
-
-    OpenLoopRampsConfigs loopRampsConfigs = new OpenLoopRampsConfigs();
-    loopRampsConfigs.DutyCycleOpenLoopRampPeriod = 0.1;
+    TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration();
+    talonFXConfiguration.CurrentLimits.SupplyCurrentLimit = 25;
+    talonFXConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
+    talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     frontRoller = new TalonFX(FRONT_ROLLER_CAN_ID, "rio");
-    frontRoller.getConfigurator().apply(new TalonFXConfiguration());
-    frontRoller.getConfigurator().apply(currentlimits);
-    frontRoller.getConfigurator().apply(loopRampsConfigs);
+    frontRoller.getConfigurator().apply(talonFXConfiguration);
 
     rearRoller = new TalonFX(REAR_ROLLER_CAN_ID, "rio");
-    rearRoller.getConfigurator().apply(new TalonFXConfiguration());
-    rearRoller.getConfigurator().apply(currentlimits);
-    rearRoller.getConfigurator().apply(loopRampsConfigs);
-
+    rearRoller.getConfigurator().apply(talonFXConfiguration);
   }
 
   public void setDutyCycleFrontRoller(double percentOut) {

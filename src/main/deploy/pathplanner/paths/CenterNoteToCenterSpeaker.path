@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 1.3284010703998748,
+        "x": 1.4907783370069108,
         "y": 5.55
       },
       "prevControl": {
-        "x": 2.3284010703998743,
+        "x": 2.49077833700691,
         "y": 5.55
       },
       "nextControl": null,
@@ -42,6 +42,23 @@
               "type": "named",
               "data": {
                 "name": "speakerShotPrep"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intakeCenterNote"
               }
             }
           ]

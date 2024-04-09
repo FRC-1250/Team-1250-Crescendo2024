@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.481051682482512,
-      "y": 5.55
+      "x": 0.8099125202944064,
+      "y": 4.338087917884098
     },
-    "rotation": 0
+    "rotation": -60.899223461603626
   },
   "command": {
     "type": "sequential",
@@ -20,13 +20,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterSpeakerToCenterNote"
+            "pathName": "PodiumSideSpeakerToCenterLine5"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CenterNoteToCenterSpeaker"
+            "pathName": "Centerline5 to podiumsidespeakr"
           }
         },
         {
@@ -38,19 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterSpeakerToAmpSideNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AmpSideNoteToCenterSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "speakerFireNote"
+            "pathName": "PodiumSideToCetnerline4"
           }
         }
       ]

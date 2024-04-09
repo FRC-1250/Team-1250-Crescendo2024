@@ -4,80 +4,87 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class launcher extends SubsystemBase {
-  private int LSHOOTER = 20;
-  private int RSHOOTER = 21;
-  public final int maxRPM = 5700;
+  private final int LEFT_LAUNCHER_CAN_ID = 20;
+  private final int RIGHT_LAUNCHER_CAN_ID = 21;
+  public final int FALCON_500_MAX_RPM = 6380;
   public final int PODIUM_TARGET_RPM_LEFT = 5000;
   public final int PODIUM_TARGET_RPM_RIGHT = 5000;
-  public final int SPEAKER_TARGET_RPM_LEFT = 4500;
-  public final int SPEAKER_TARGET_RPM_RIGHT = 4500;
+  public final int SPEAKER_TARGET_RPM_LEFT = 3500;
+  public final int SPEAKER_TARGET_RPM_RIGHT = 3500;
   public final int AMP_TARGET_RPM_LEFT = 1500;
-  public final int AMP_TARGET_RPM_RIGHT = 1500; 
+  public final int AMP_TARGET_RPM_RIGHT = 1500;
 
+  private final VelocityVoltage leftVelocityControl;
+  private final VelocityVoltage rightVelocityControl;
+  private final TalonFX rightLauncher;
+  private final TalonFX leftLauncher;
 
   /** Creates a new shooter. */
-  CANSparkMax leftLauncherSparkMax = new CANSparkMax(LSHOOTER, MotorType.kBrushless);
-  CANSparkMax rightLauncherSparkMax = new CANSparkMax(RSHOOTER, MotorType.kBrushless);
-  
-  SparkPIDController rightLauncherPIDController = rightLauncherSparkMax.getPIDController();
-  SparkPIDController leftLauncerPIDController = leftLauncherSparkMax.getPIDController();
 
   public launcher() {
-    rightLauncherSparkMax.restoreFactoryDefaults();
-    rightLauncherSparkMax.setIdleMode(IdleMode.kBrake);
-    rightLauncherSparkMax.setInverted(true);
-    rightLauncherSparkMax.setSmartCurrentLimit(50);
-    rightLauncherSparkMax.setOpenLoopRampRate(0.1);
-    rightLauncherSparkMax.setClosedLoopRampRate(0.1);
-    rightLauncherPIDController.setP(1.5e-4);
-    rightLauncherPIDController.setI(0);
-    rightLauncherPIDController.setD(0);
-    rightLauncherPIDController.setFF(0.00017);
+    TalonFXConfiguration configs = new TalonFXConfiguration();
+    configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    leftLauncherSparkMax.restoreFactoryDefaults();
-    leftLauncherSparkMax.setIdleMode(IdleMode.kBrake);
-    leftLauncherSparkMax.setInverted(false);
-    leftLauncherSparkMax.setSmartCurrentLimit(50);
-    leftLauncherSparkMax.setOpenLoopRampRate(0.1);
-    leftLauncherSparkMax.setClosedLoopRampRate(0.1);
-    leftLauncerPIDController.setP(1.5e-4);
-    leftLauncerPIDController.setI(0);
-    leftLauncerPIDController.setD(0);
-    leftLauncerPIDController.setFF(0.00017);  
+    //Configurations for the shooter wheels for speaker and amp shots 
+    configs.Slot0.kP = 0.11;
+    configs.Slot0.kI = 0;
+    configs.Slot0.kD = 0.0001;
+    configs.Slot0.kV = 0.115;
+
+    //The configurations for the shooter wheels when shooting podium shot
+    configs.Slot1.kP = .11;
+    configs.Slot1.kI = 0;
+    configs.Slot1.kD = .0001;
+    configs.Slot1.kV = .12;
+
+    //Motor settings that are applied and given to the talons 
+    configs.CurrentLimits.SupplyCurrentLimit = 50;
+    configs.CurrentLimits.SupplyCurrentLimitEnable = true;
+    configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    rightLauncher = new TalonFX(RIGHT_LAUNCHER_CAN_ID, "rio");
+    rightLauncher.getConfigurator().apply(configs);
+    rightVelocityControl = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
+
+    leftLauncher = new TalonFX(LEFT_LAUNCHER_CAN_ID, "rio");
+    leftLauncher.getConfigurator().apply(configs);
+    leftVelocityControl = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
+    SmartDashboard.putNumber("Launcher/tuning RPM", 0);
   }
 
-public void SetDutyOutlaunch(double percent) {
-  rightLauncherSparkMax.set(percent);
-  leftLauncherSparkMax.set(percent);
-}
+  public void SetDutyOutlaunch(double percent) {
+    rightLauncher.set(percent);
+    leftLauncher.set(percent);
+  }
 
-public double getRightLauncherRPM() {
- return rightLauncherSparkMax.getEncoder().getVelocity();
-}
+  public double getRightLauncherRPM() {
+    return rightLauncher.getVelocity().getValue() * 60;
+  }
 
-public double getLeftLauncherRPM() {
- return leftLauncherSparkMax.getEncoder().getVelocity();
-}
+  public double getLeftLauncherRPM() {
+    return leftLauncher.getVelocity().getValue() * 60;
+  }
 
-public void SetLauncherVelocity(double right, double left) {
-    rightLauncherPIDController.setReference(right, ControlType.kVelocity);
-    leftLauncerPIDController.setReference(left, ControlType.kVelocity);
-}
+  public void SetLauncherVelocity(double right, double left) {
+    rightLauncher.setControl(rightVelocityControl.withVelocity(right / 60));
+    leftLauncher.setControl(leftVelocityControl.withVelocity(left / 60));
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Launcher/Right RPM", getRightLauncherRPM());
-    SmartDashboard.putNumber("Launcher/Right stator current", rightLauncherSparkMax.getOutputCurrent());
+    SmartDashboard.putNumber("Launcher/Right stator current", rightLauncher.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Launcher/Left RPM", getLeftLauncherRPM());
-    SmartDashboard.putNumber("Launcher/Left stator current", leftLauncherSparkMax.getOutputCurrent());
+    SmartDashboard.putNumber("Launcher/Left stator current", leftLauncher.getStatorCurrent().getValueAsDouble());
   }
 }

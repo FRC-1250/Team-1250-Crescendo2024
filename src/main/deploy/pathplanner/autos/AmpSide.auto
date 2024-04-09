@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6834660114817857,
-      "y": 6.701664967310976
+      "x": 0.7807325567257765,
+      "y": 6.711391621835377
     },
     "rotation": 60.0
   },
@@ -36,35 +36,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "AmpSideSpeakerToCenterLine"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "intakeCenterNote"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "passingShotPrep"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "pathName": "AmpSideSpeakerToCenterline"
           }
         },
         {

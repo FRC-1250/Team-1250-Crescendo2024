@@ -4,11 +4,15 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -16,32 +20,29 @@ public class indexer extends SubsystemBase {
   private int LINDEX = 22;
   private int RINDEX = 23;
   DigitalInput[] irArray = new DigitalInput[5];
-  CANSparkMax leftIndexSparkmax = new CANSparkMax(LINDEX, MotorType.kBrushless);
-  CANSparkMax rightIndexSparkMax = new CANSparkMax(RINDEX, MotorType.kBrushless);
+
+
+  private final TalonFX leftindexer;
 
   /** Creates a new indexer. */
   public indexer() {
     for (int i = 0; i < irArray.length; i++) {
       irArray[i] = new DigitalInput(i);
     }
-    rightIndexSparkMax.restoreFactoryDefaults();
-    rightIndexSparkMax.setIdleMode(IdleMode.kBrake);
-    rightIndexSparkMax.setInverted(true);
-    rightIndexSparkMax.setSmartCurrentLimit(30);
-    rightIndexSparkMax.setOpenLoopRampRate(0.1);
-    rightIndexSparkMax.setClosedLoopRampRate(0.1);
 
-    leftIndexSparkmax.restoreFactoryDefaults();
-    leftIndexSparkmax.follow(rightIndexSparkMax, true);
-    leftIndexSparkmax.setIdleMode(IdleMode.kBrake);
-    leftIndexSparkmax.setSmartCurrentLimit(30);
-    leftIndexSparkmax.setOpenLoopRampRate(0.1);
-    leftIndexSparkmax.setClosedLoopRampRate(0.1);
+    //Configurations/settings that are being set to the talonfx motor controller
+    TalonFXConfiguration configs = new TalonFXConfiguration();
+    configs.CurrentLimits.SupplyCurrentLimitEnable = true; 
+    configs.CurrentLimits.SupplyCurrentLimit = 20;
+    configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+
+    leftindexer = new TalonFX(LINDEX, "rio");
+    leftindexer.getConfigurator().apply(configs);
   }
 
   public void setDutyoutIndex(double percent) {
-    rightIndexSparkMax.set(percent);
+    leftindexer.set(percent);
   }
 
   boolean pollIrArraySensor(int index) {
@@ -103,10 +104,8 @@ public class indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Indexer/Right duty cycle", rightIndexSparkMax.get());
-    SmartDashboard.putNumber("Indexer/Right stator current", rightIndexSparkMax.getOutputCurrent());
-    SmartDashboard.putNumber("Indexer/Left duty cycle", leftIndexSparkmax.get());
-    SmartDashboard.putNumber("Indexer/Left stator current", leftIndexSparkmax.getOutputCurrent());
+    SmartDashboard.putNumber("Indexer/Left duty cycle", leftindexer.get());
+    SmartDashboard.putNumber("Indexer/Left stator current", leftindexer.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putBoolean("Indexer/Note centered", iscentered());
     SmartDashboard.putBoolean("Indexer/Barrel sensor", pollIrArraySensor(0));
   }

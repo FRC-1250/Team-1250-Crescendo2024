@@ -18,17 +18,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shoulder extends SubsystemBase {
-
   public enum Position {
     AMP(.358f),
     HORIZONTAL(.25f),
     SPEAKER_PODIUM(.158f),
-    SPEAKER(.105f),
+    SPEAKER(0.0959f),
     HOME(.055f),
     PID(.194f);
 
-    // Default value is rotations
-    public final float value;
+    public final float value; // Default value is rotations
 
     Position(float value) {
       this.value = value;
@@ -37,13 +35,8 @@ public class Shoulder extends SubsystemBase {
 
   private final int LEFT_ROTATOR_CAN_ID = 30;
   private final int RIGHT_ROTATOR_CAN_ID = 31;
-
-  // Closed loop tolerance in degrees
-  // TODO: Use isAtSetPoint after determining new home of ABS sensor and changing rotations to degrees
-  private final double CLOSED_LOOP_TOLERANCE = 0.003;
-
-  // Offset value to normalize the encoder position to 0 when at home
-  private final double ENCODER_OFFSET = 0.134;
+  private final double CLOSED_LOOP_TOLERANCE = 0.003; // Closed loop tolerance in degrees
+  private final double ENCODER_OFFSET = 0.134; // Offset value to normalize the encoder position to 0 when at home
 
   private final CANSparkMax leftRotator;
   private final CANSparkMax rightRotator;
@@ -55,8 +48,6 @@ public class Shoulder extends SubsystemBase {
     rightRotator.restoreFactoryDefaults();
     rightRotator.setSmartCurrentLimit(25);
     rightRotator.setIdleMode(IdleMode.kBrake);
-    rightRotator.setClosedLoopRampRate(0.1);
-    rightRotator.setOpenLoopRampRate(0.1);
     rightRotator.setSoftLimit(SoftLimitDirection.kForward, Position.AMP.value);
     rightRotator.setSoftLimit(SoftLimitDirection.kReverse, Position.HOME.value);
     rightRotator.enableSoftLimit(SoftLimitDirection.kForward, true);
@@ -67,13 +58,10 @@ public class Shoulder extends SubsystemBase {
     leftRotator.restoreFactoryDefaults();
     leftRotator.setSmartCurrentLimit(25);
     leftRotator.setIdleMode(IdleMode.kBrake);
-    leftRotator.setClosedLoopRampRate(0.1);
-    leftRotator.setOpenLoopRampRate(0.1);
     leftRotator.follow(rightRotator, true);
 
     rightRotatorThroughBoreEncoder = rightRotator.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     rightRotatorThroughBoreEncoder.setInverted(true);
-    //rightRotatorThroughBoreEncoder.setPositionConversionFactor(ENCODER_POSITION_CONVERSION_FACTOR);
     rightRotatorThroughBoreEncoder.setZeroOffset(ENCODER_OFFSET);
 
     rightRotatorPIDController = rightRotator.getPIDController();
@@ -83,6 +71,7 @@ public class Shoulder extends SubsystemBase {
     rightRotatorPIDController.setD(0);
     rightRotatorPIDController.setFF(0);
     rightRotatorPIDController.setOutputRange(-1, 1);
+    SmartDashboard.putNumber("Launcher/tuning pos", Position.HOME.value);
   }
 
   public void setPosition(double targetPosition) {
