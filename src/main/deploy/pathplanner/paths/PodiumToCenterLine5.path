@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.33,
-        "y": 6.86
+        "x": 0.7418259386281802,
+        "y": 4.28945464526
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.443490905944021,
-        "y": 5.8068127510711225
+        "x": 1.4615983734337135,
+        "y": 3.3265158473444902
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.9692298247155735,
-        "y": 3.034716211612517
+        "x": 8.260529885988683,
+        "y": 0.7781323619519257
       },
       "prevControl": {
-        "x": 5.210678240842797,
-        "y": 2.972740679369368
-      },
-      "nextControl": {
-        "x": 0.858545792920969,
-        "y": 3.0930761387589114
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.7418259386281802,
-        "y": 4.338087917881997
-      },
-      "prevControl": {
-        "x": 0.5667461571889965,
-        "y": 4.270001336211203
+        "x": 7.260529885988683,
+        "y": 0.7781323619519257
       },
       "nextControl": null,
       "isLocked": false,
@@ -55,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -56.30993247402027,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "PodiumSideSpeaker",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -57.847704858717584,
     "velocity": 0
   },
   "useDefaultConstraints": true

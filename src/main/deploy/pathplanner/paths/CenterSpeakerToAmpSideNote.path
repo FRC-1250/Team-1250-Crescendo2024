@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.481051682482512,
+        "x": 1.4129651008117177,
         "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.188158463669059,
+        "x": 2.120071881998265,
         "y": 6.257106781186548
       },
       "isLocked": false,
@@ -29,19 +29,7 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Intake",
-      "minWaypointRelativePos": 0.6,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 0.75,
-        "maxAcceleration": 0.75,
-        "maxAngularVelocity": 135.0,
-        "maxAngularAcceleration": 135.0
-      }
-    }
-  ],
+  "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Intake",
@@ -68,7 +56,7 @@
     "maxAngularAcceleration": 135.0
   },
   "goalEndState": {
-    "velocity": 0.5,
+    "velocity": 1.0,
     "rotation": 40.0,
     "rotateFast": true
   },

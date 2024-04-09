@@ -30,16 +30,10 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "PodiumSideSpeakerToCenterLine5"
+                  "pathName": "PodiumDisrupt"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NoteSideStep"
           }
         }
       ]
