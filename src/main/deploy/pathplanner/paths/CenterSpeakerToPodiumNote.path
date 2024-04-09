@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.481051682482512,
+        "x": 1.4129651008117177,
         "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0967131578081695,
+        "x": 2.028626576137375,
         "y": 4.761989246393279
       },
       "isLocked": false,
@@ -29,19 +29,7 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Intake",
-      "minWaypointRelativePos": 0.6,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 0.75,
-        "maxAcceleration": 0.75,
-        "maxAngularVelocity": 135.0,
-        "maxAngularAcceleration": 135.0
-      }
-    }
-  ],
+  "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Intake",
