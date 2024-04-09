@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.SetShoulderDutyCycle;
 import frc.robot.commands.SetShoulderPosition;
+import frc.robot.commands.SetShoulderPositionShuffleBoard;
 import frc.robot.commands.FieldCentricAutoAim;
 import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
@@ -28,6 +30,7 @@ import frc.robot.commands.LimeLightLED;
 import frc.robot.commands.SetIndexDutyCycle;
 import frc.robot.commands.SetIntakeDutyCycle;
 import frc.robot.commands.SetLauncherDutyCycle;
+import frc.robot.commands.SetLauncherVelocityShuffleBoard;
 import frc.robot.commands.SetPositionAndShooterSpeed;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
@@ -75,6 +78,10 @@ public class RobotContainer {
   } 
 
   private void configureBindings() {
+    SmartDashboard.putData(new SetShoulderPositionShuffleBoard(shoulder));
+    SmartDashboard.putData(new SetLauncherVelocityShuffleBoard(launcher));
+    SmartDashboard.putData("Start indexer", new SetIndexDutyCycle(indexer, 1));
+    SmartDashboard.putData("Stop indexer", new SetIndexDutyCycle(indexer, 0));
     // Drive forward with -y, left with -x, rotate counter clockwise with -
     //systemLights.setDefaultCommand(new LightShow(systemLights, indexer::iscentered, shoulder::isAtHome)); 
     limelight.setDefaultCommand(new LimeLightLED(limelight, indexer::iscentered, shoulder::isAtHome));

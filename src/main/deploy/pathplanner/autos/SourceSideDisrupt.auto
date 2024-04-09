@@ -12,27 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "speakerShotPrep"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "speakerFireNote"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "intakeCenterNote"
-                }
-              },
               {
                 "type": "path",
                 "data": {
@@ -40,37 +22,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "SourceLineDisrupt"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "speakerShotPrep"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "DisruptToPodium"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "speakerFireNote"
           }
         }
       ]

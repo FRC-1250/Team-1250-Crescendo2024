@@ -22,7 +22,7 @@ public class Shoulder extends SubsystemBase {
     AMP(.358f),
     HORIZONTAL(.25f),
     SPEAKER_PODIUM(.158f),
-    SPEAKER(.085f),
+    SPEAKER(0.0959f),
     HOME(.055f),
     PID(.194f);
 
@@ -71,6 +71,7 @@ public class Shoulder extends SubsystemBase {
     rightRotatorPIDController.setD(0);
     rightRotatorPIDController.setFF(0);
     rightRotatorPIDController.setOutputRange(-1, 1);
+    SmartDashboard.putNumber("Launcher/tuning pos", Position.HOME.value);
   }
 
   public void setPosition(double targetPosition) {
