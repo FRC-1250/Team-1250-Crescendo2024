@@ -10,38 +10,7 @@
   "command": {
     "type": "sequential",
     "data": {
-      "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "speakerShotPrep"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "speakerFireNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AmpSideSpeakerToCenterLineNote1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CenterLineNote1ToAmpSideSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "speakerFireNote"
-          }
-        }
-      ]
+      "commands": []
     }
   },
   "folder": null,
