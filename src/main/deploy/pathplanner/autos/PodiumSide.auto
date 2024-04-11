@@ -5,7 +5,7 @@
       "x": 0.8099125202944064,
       "y": 4.338087917884098
     },
-    "rotation": -60.0
+    "rotation": -60.899223461603626
   },
   "command": {
     "type": "sequential",
@@ -18,22 +18,27 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "intakeCenterNote"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "PodiumDisrupt"
-                }
-              }
-            ]
+            "pathName": "PodiumToCenterLine5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Centerline5 to podiumsidespeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "speakerFireNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PodiumSideToCetnerline4"
           }
         }
       ]
