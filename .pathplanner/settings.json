@@ -5,6 +5,7 @@
   "pathFolders": [
     "AmpSideSpeaker",
     "CenterSpeaker",
+    "Source",
     "PodiumSideSpeaker"
   ],
   "autoFolders": [],

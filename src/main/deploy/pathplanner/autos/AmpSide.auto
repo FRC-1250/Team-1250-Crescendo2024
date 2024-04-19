@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7807325567257765,
-      "y": 6.711391621835377
+      "x": 0.7182860305880197,
+      "y": 6.691252303676235
     },
     "rotation": 60.0
   },
@@ -44,13 +44,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterLineNote1ToAmp"
+            "pathName": "CenterLineNote1ToAmpSideSpeaker"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "passingFireNote"
+            "name": "speakerFireNote"
           }
         }
       ]
