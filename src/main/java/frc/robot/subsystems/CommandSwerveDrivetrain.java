@@ -187,9 +187,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         SmartDashboard.putNumber("Drive/Module four/Speed", state.ModuleStates[3].speedMetersPerSecond);
 
         SmartDashboard.putNumber("Drive/Module one/Heading", state.ModuleStates[0].angle.getDegrees());
-        SmartDashboard.putNumber("Drive/Module two/Heading", state.ModuleStates[0].angle.getDegrees());
-        SmartDashboard.putNumber("Drive/Module three/Heading", state.ModuleStates[0].angle.getDegrees());
-        SmartDashboard.putNumber("Drive/Module four/Heading", state.ModuleStates[0].angle.getDegrees());
+        SmartDashboard.putNumber("Drive/Module two/Heading", state.ModuleStates[1].angle.getDegrees());
+        SmartDashboard.putNumber("Drive/Module three/Heading", state.ModuleStates[2].angle.getDegrees());
+        SmartDashboard.putNumber("Drive/Module four/Heading", state.ModuleStates[3].angle.getDegrees());
 
         var moduleOne = getModule(0);
         var moduleTwo = getModule(1);

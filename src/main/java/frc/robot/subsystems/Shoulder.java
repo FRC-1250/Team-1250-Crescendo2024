@@ -22,7 +22,7 @@ public class Shoulder extends SubsystemBase {
     AMP(.358f),
     HORIZONTAL(.25f),
     SPEAKER_PODIUM(.158f),
-    SPEAKER(0.0959f),
+    SPEAKER(0.1059f),
     HOME(.055f),
     PID(.194f);
 
@@ -96,6 +96,11 @@ public class Shoulder extends SubsystemBase {
 
   public boolean isAtHome() {
     return MathUtil.isNear(Position.HOME.value, getPosition(), CLOSED_LOOP_TOLERANCE);
+  }
+
+  public boolean isNearSetPoint(double targetPosition) {
+    return MathUtil.isNear(targetPosition, getPosition(), CLOSED_LOOP_TOLERANCE * 7.5);
+    //if we modify the scale value, we need to double check shooter positions to check for overlap till the bounce is fixed
   }
 
   @Override
