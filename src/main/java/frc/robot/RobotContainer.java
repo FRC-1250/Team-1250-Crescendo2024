@@ -130,6 +130,8 @@ public class RobotContainer {
     addPathAuto("SpeakerAmpSide", "AmpSide");
     addPathAuto("SpeakerPodiumSide", "PodiumSide");
     addPathAuto("SourceDisrupt", "SourceSideDisrupt");
+    addPathAuto("AmpESCAPE", "AmpESCAPE");
+    addPathAuto("PodiumESCAPE", "PodiumESCAPE");
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 

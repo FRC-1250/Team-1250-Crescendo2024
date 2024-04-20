@@ -36,7 +36,7 @@ public class Shoulder extends SubsystemBase {
   private final int LEFT_ROTATOR_CAN_ID = 30;
   private final int RIGHT_ROTATOR_CAN_ID = 31;
   private final double CLOSED_LOOP_TOLERANCE = 0.003; // Closed loop tolerance in degrees
-  private final double ENCODER_OFFSET = 0.134; // Offset value to normalize the encoder position to 0 when at home
+  private final double ENCODER_OFFSET = 0.21; // Offset value to normalize the encoder position to 0 when at home
 
   private final CANSparkMax leftRotator;
   private final CANSparkMax rightRotator;
