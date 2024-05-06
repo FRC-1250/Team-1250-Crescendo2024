@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7418259386281802,
-        "y": 4.28945464526
+        "x": 0.7193498096269378,
+        "y": 6.71763228238236
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7418259386281805,
-        "y": 2.557403837691123
+        "x": 1.6554976468348932,
+        "y": 7.273148581384882
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.260529885988683,
-        "y": 0.7781323619519257
+        "x": 2.787104922580773,
+        "y": 7.550906730886145
       },
       "prevControl": {
-        "x": 6.260529885988683,
-        "y": 0.7781323619519257
+        "x": 1.8200950687615665,
+        "y": 7.252573903644048
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,25 +30,7 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "Intake",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "intakeCenterNote"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.0292,
     "maxAcceleration": 2.5,
@@ -56,14 +38,14 @@
     "maxAngularAcceleration": 135.0
   },
   "goalEndState": {
-    "velocity": 1.0,
+    "velocity": 0,
     "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "PodiumSideSpeaker",
+  "folder": "AmpSideSpeaker",
   "previewStartingState": {
-    "rotation": -57.847704858717584,
+    "rotation": 61.07357416474633,
     "velocity": 0
   },
   "useDefaultConstraints": true

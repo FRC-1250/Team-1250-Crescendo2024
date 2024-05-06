@@ -8,27 +8,11 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6143482913532248,
-        "y": 2.715857461790112
+        "x": 1.8099125202944066,
+        "y": 2.6060371103152216
       },
       "isLocked": false,
       "linkedName": "PodiumSideSpeaker"
-    },
-    {
-      "anchor": {
-        "x": 4.24790704218,
-        "y": 1.9443070465088297
-      },
-      "prevControl": {
-        "x": 3.414632593676215,
-        "y": 2.1706285016580065
-      },
-      "nextControl": {
-        "x": 5.90773004258623,
-        "y": 1.4934909229417042
-      },
-      "isLocked": false,
-      "linkedName": null
     },
     {
       "anchor": {
@@ -36,8 +20,8 @@
         "y": 2.43809931228885
       },
       "prevControl": {
-        "x": 7.210660636860121,
-        "y": 2.0677551129538356
+        "x": 7.270256540513081,
+        "y": 0.7060485047199725
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
+      "name": "Intake",
       "waypointRelativePos": 0,
       "command": {
         "type": "sequential",
@@ -72,8 +56,8 @@
     "maxAngularAcceleration": 135.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0,
+    "velocity": 1.0,
+    "rotation": 55.0,
     "rotateFast": false
   },
   "reversed": false,

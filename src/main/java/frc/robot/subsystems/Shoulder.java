@@ -22,7 +22,7 @@ public class Shoulder extends SubsystemBase {
     AMP(.358f),
     HORIZONTAL(.25f),
     SPEAKER_PODIUM(.158f),
-    SPEAKER(0.0959f),
+    SPEAKER(0.1059f),
     HOME(.055f),
     PID(.194f);
 
@@ -36,7 +36,7 @@ public class Shoulder extends SubsystemBase {
   private final int LEFT_ROTATOR_CAN_ID = 30;
   private final int RIGHT_ROTATOR_CAN_ID = 31;
   private final double CLOSED_LOOP_TOLERANCE = 0.003; // Closed loop tolerance in degrees
-  private final double ENCODER_OFFSET = 0.134; // Offset value to normalize the encoder position to 0 when at home
+  private final double ENCODER_OFFSET = 0.21; // Offset value to normalize the encoder position to 0 when at home
 
   private final CANSparkMax leftRotator;
   private final CANSparkMax rightRotator;
@@ -96,6 +96,11 @@ public class Shoulder extends SubsystemBase {
 
   public boolean isAtHome() {
     return MathUtil.isNear(Position.HOME.value, getPosition(), CLOSED_LOOP_TOLERANCE);
+  }
+
+  public boolean isNearSetPoint(double targetPosition) {
+    return MathUtil.isNear(targetPosition, getPosition(), CLOSED_LOOP_TOLERANCE * 7.5);
+    //if we modify the scale value, we need to double check shooter positions to check for overlap till the bounce is fixed
   }
 
   @Override
