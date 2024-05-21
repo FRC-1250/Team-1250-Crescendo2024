@@ -189,8 +189,8 @@ public boolean isoperator() {
     }
     drivetrain.setDefaultCommand(drivetrain.applyRequestWithName(
         () -> drive
-            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed * driveInvert)
-            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * driveInvert)
+            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed * driveInvert * TunerConstants.ThrottleValue)
+            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * driveInvert * TunerConstants.ThrottleValue)
             .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate),
         "Default drive"));
 
