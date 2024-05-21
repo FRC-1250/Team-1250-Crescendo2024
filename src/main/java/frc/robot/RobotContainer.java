@@ -126,8 +126,8 @@ public boolean isoperator() {
     drivXboxController.b().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM));
     drivXboxController.leftTrigger().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER));
     drivXboxController.leftBumper().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP));
-    drivXboxController.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.5));
-    drivXboxController.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.5));
+    drivXboxController.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.1));
+    drivXboxController.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.1));
     drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, 0));
     drivXboxController.y().onTrue(new SetLauncherDutyCycle(launcher, 0));
     drivXboxController.y().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value)); 

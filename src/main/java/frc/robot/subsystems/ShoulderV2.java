@@ -5,13 +5,16 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.MathUtil;
@@ -63,11 +66,11 @@ public class ShoulderV2 extends SubsystemBase {
     talonFXConfiguration.Slot0.kD = 0;
 
     //How much power is being supplied to the motors 
-    talonFXConfiguration.CurrentLimits.SupplyCurrentLimit = 25;
+    talonFXConfiguration.CurrentLimits.SupplyCurrentLimit = 10;
     talonFXConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     //The mode for which the motor is set to when not recieving a command 
-    talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     talonFXConfiguration.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.25;
 
@@ -111,5 +114,6 @@ public class ShoulderV2 extends SubsystemBase {
     SmartDashboard.putNumber("Shoulder/Left duty cycle", leftRotator.get());
     SmartDashboard.putNumber("Shoulder/Right stator current", rightRotator.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Shoulder/Left stator current", leftRotator.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Shoulder/MagnetHealth", cancoder.getMagnetHealth().getValueAsDouble());
   }
 }
