@@ -100,21 +100,24 @@ public boolean isoperator() {
             .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * 0.5)
             .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate * 0.75),
             "Robot centric drive"));
-            
-    if (isoperator() == true){
+  
+    if (isoperator() == true) {
       operatorPS4Controller.R1().onTrue(new IntakeCenterNote(intake, shoulder, indexer, 1.0));
-    operatorPS4Controller.R2().whileTrue(new FireNote(indexer, launcher, shoulder));
-    operatorPS4Controller.cross().whileTrue(new SetIntakeDutyCycle(intake, -1));
-    operatorPS4Controller.cross().whileTrue(new SetIndexDutyCycle(indexer, 0.1));
-    operatorPS4Controller.cross().whileTrue(new SetLauncherDutyCycle(launcher, -0.5));
-    operatorPS4Controller.L2().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER));
-    operatorPS4Controller.L1().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP));
-    operatorPS4Controller.circle().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM));
-    operatorPS4Controller.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.5));
-    operatorPS4Controller.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.5));
-    operatorPS4Controller.triangle().onTrue(new SetIntakeDutyCycle(intake, 0));
-    operatorPS4Controller.triangle().onTrue(new SetLauncherDutyCycle(launcher, 0));
-    operatorPS4Controller.triangle().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));
+      operatorPS4Controller.R2().whileTrue(new FireNote(indexer, launcher, shoulder));
+      operatorPS4Controller.cross().whileTrue(new SetIntakeDutyCycle(intake, -1));
+      operatorPS4Controller.cross().whileTrue(new SetIndexDutyCycle(indexer, 0.1));
+      operatorPS4Controller.cross().whileTrue(new SetLauncherDutyCycle(launcher, -0.5));
+      //operatorPS4Controller.L2().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER));
+      operatorPS4Controller.L2().onTrue(new SetShoulderPosition(shoulder, Position.SPEAKER.value));
+      //operatorPS4Controller.L1().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP));
+      operatorPS4Controller.L1().onTrue(new SetShoulderPosition(shoulder, Position.AMP.value));
+       //operatorPS4Controller.circle().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM));
+      operatorPS4Controller.circle().onTrue(new SetShoulderPosition(shoulder, Position.SPEAKER_PODIUM.value));
+      operatorPS4Controller.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.5));
+      operatorPS4Controller.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.5));
+      operatorPS4Controller.triangle().onTrue(new SetIntakeDutyCycle(intake, 0));
+      operatorPS4Controller.triangle().onTrue(new SetLauncherDutyCycle(launcher, 0));
+      operatorPS4Controller.triangle().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));
     }
 
     if (isoperator() == false) {
