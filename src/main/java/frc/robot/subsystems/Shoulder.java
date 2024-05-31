@@ -20,8 +20,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.CANCoderPerformanceMonitor;
+import frc.robot.util.TalonFXPerformanceMonitor;
 
 public class Shoulder extends SubsystemBase {
 
@@ -52,6 +53,9 @@ public class Shoulder extends SubsystemBase {
   private final DutyCycleOut dutyCycleOut;
   private final PositionDutyCycle positionDutyCycle;
   private final Supplier<Double> positionSupplier;
+  private final CANCoderPerformanceMonitor canCoderPerformanceMonitor;
+  private final TalonFXPerformanceMonitor rightRotatorMonitor;
+  private final TalonFXPerformanceMonitor leftRotatorMonitor;
 
   public Shoulder() {
     CANcoderConfiguration configuration = new CANcoderConfiguration();
@@ -61,6 +65,7 @@ public class Shoulder extends SubsystemBase {
     cancoder = new CANcoder(CANCODER_CAN_ID, "rio");
     cancoder.getConfigurator().apply(configuration);
     positionSupplier = cancoder.getPosition().asSupplier();
+    canCoderPerformanceMonitor = new CANCoderPerformanceMonitor(cancoder, getSubsystem(), "CANCoder");
 
     TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration();
 
@@ -83,10 +88,12 @@ public class Shoulder extends SubsystemBase {
 
     rightRotator = new TalonFX(RIGHT_ROTATOR_CAN_ID, "rio");
     rightRotator.getConfigurator().apply(talonFXConfiguration);
+    rightRotatorMonitor = new TalonFXPerformanceMonitor(rightRotator, getSubsystem(), "RightRotator");
 
     leftRotator = new TalonFX(LEFT_ROTATOR_CAN_ID, "rio");
     leftRotator.getConfigurator().apply(talonFXConfiguration);
     leftRotator.setControl(new Follower(rightRotator.getDeviceID(), true));
+    leftRotatorMonitor = new TalonFXPerformanceMonitor(leftRotator, getSubsystem(), "LeftRotator");
 
     dutyCycleOut = new DutyCycleOut(0);
     positionDutyCycle = new PositionDutyCycle(0);
@@ -138,12 +145,8 @@ public class Shoulder extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Shoulder/Absoulte position", cancoder.getAbsolutePosition().getValueAsDouble());
-    SmartDashboard.putNumber("Shoulder/Degress position", cancoder.getPosition().getValueAsDouble() * 360);
-    SmartDashboard.putNumber("Shoulder/Right duty cycle", rightRotator.get());
-    SmartDashboard.putNumber("Shoulder/Left duty cycle", leftRotator.get());
-    SmartDashboard.putNumber("Shoulder/Right stator current", rightRotator.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Shoulder/Left stator current", leftRotator.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Shoulder/MagnetHealth", cancoder.getMagnetHealth().getValueAsDouble());
+    rightRotatorMonitor.telemeterize();
+    leftRotatorMonitor.telemeterize();
+    canCoderPerformanceMonitor.telemeterize();
   }
 }
