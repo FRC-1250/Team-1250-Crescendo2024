@@ -15,7 +15,7 @@ public class TunerConstants {
     // Both sets of gains need to be tuned to your individual robot.
     //https://www.swervedrivespecialties.com/products/mk4-swerve-module, L2
     public static final double MaxSpeed = 5.0292;
-    public static final double ThrottleValue = .15;
+    public static final double ThrottleValue = 1;
     // 3/4 of a rotation per second max angular velocity
     public static final double MaxAngularRate = 1.5 * Math.PI; 
     

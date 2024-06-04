@@ -75,7 +75,7 @@ public class Shoulder extends SubsystemBase {
     talonFXConfiguration.Feedback.SensorToMechanismRatio = 1;
 
     // PID for the Shoulder
-    talonFXConfiguration.Slot0.kP = 10;
+    talonFXConfiguration.Slot0.kP = 40;
     talonFXConfiguration.Slot0.kI = 0;
     talonFXConfiguration.Slot0.kD = 0;
 
@@ -109,7 +109,7 @@ public class Shoulder extends SubsystemBase {
 
   public void setPosition(double targetPosition) {
     rightRotator.setControl(positionDutyCycle.withPosition(targetPosition)
-        .withFeedForward(0.25)
+        .withFeedForward(0.1)
         .withSlot(0)
         .withLimitForwardMotion(isForwardLimit())
         .withLimitReverseMotion(isReverseLimit()));
