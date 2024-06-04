@@ -99,8 +99,6 @@ public class RobotContainer {
         "Robot centric drive"));
 
     if (isoperator() == true) {
-      operatorPS4Controller.R1().onTrue(new IntakeCenterNote(intake, shoulder, indexer, 1.0));
-      operatorPS4Controller.R2().whileTrue(new FireNote(indexer, launcher, shoulder));
       operatorPS4Controller.cross().whileTrue(new SetIntakeDutyCycle(intake, -1));
       operatorPS4Controller.cross().whileTrue(new SetIndexDutyCycle(indexer, 0.1));
       operatorPS4Controller.cross().whileTrue(new SetLauncherDutyCycle(launcher, -0.5));
