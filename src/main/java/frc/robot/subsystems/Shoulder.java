@@ -4,25 +4,33 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkAbsoluteEncoder;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkBase.SoftLimitDirection;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import java.util.function.Supplier;
+
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.CANCoderPerformanceMonitor;
+import frc.robot.util.TalonFXPerformanceMonitor;
 
 public class Shoulder extends SubsystemBase {
+
   public enum Position {
     AMP(.358f),
     HORIZONTAL(.25f),
     SPEAKER_PODIUM(.158f),
-    SPEAKER(0.1059f),
+    SPEAKER(.105f),
     HOME(.055f),
     PID(.194f);
 
@@ -35,81 +43,110 @@ public class Shoulder extends SubsystemBase {
 
   private final int LEFT_ROTATOR_CAN_ID = 30;
   private final int RIGHT_ROTATOR_CAN_ID = 31;
+  private final int CANCODER_CAN_ID = 32;
   private final double CLOSED_LOOP_TOLERANCE = 0.003; // Closed loop tolerance in degrees
-  private final double ENCODER_OFFSET = 0.21; // Offset value to normalize the encoder position to 0 when at home
-
-  private final CANSparkMax leftRotator;
-  private final CANSparkMax rightRotator;
-  private final SparkPIDController rightRotatorPIDController;
-  private final AbsoluteEncoder rightRotatorThroughBoreEncoder;
+  private final double ENCODER_OFFSET = 0.0233; // Offset value to normalize the encoder position to 0 when at home
+  private final NeutralOut BRAKE = new NeutralOut();
+  private final TalonFX leftRotator;
+  private final TalonFX rightRotator;
+  private final CANcoder cancoder;
+  private final DutyCycleOut dutyCycleOut;
+  private final PositionDutyCycle positionDutyCycle;
+  private final Supplier<Double> positionSupplier;
+  private final CANCoderPerformanceMonitor canCoderPerformanceMonitor;
+  private final TalonFXPerformanceMonitor rightRotatorMonitor;
+  private final TalonFXPerformanceMonitor leftRotatorMonitor;
 
   public Shoulder() {
-    rightRotator = new CANSparkMax(RIGHT_ROTATOR_CAN_ID, MotorType.kBrushless);
-    rightRotator.restoreFactoryDefaults();
-    rightRotator.setSmartCurrentLimit(25);
-    rightRotator.setIdleMode(IdleMode.kBrake);
-    rightRotator.setSoftLimit(SoftLimitDirection.kForward, Position.AMP.value);
-    rightRotator.setSoftLimit(SoftLimitDirection.kReverse, Position.HOME.value);
-    rightRotator.enableSoftLimit(SoftLimitDirection.kForward, true);
-    rightRotator.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    rightRotator.setInverted(false);
+    CANcoderConfiguration configuration = new CANcoderConfiguration();
+    configuration.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    configuration.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    configuration.MagnetSensor.MagnetOffset = ENCODER_OFFSET;
+    cancoder = new CANcoder(CANCODER_CAN_ID, "rio");
+    cancoder.getConfigurator().apply(configuration);
+    positionSupplier = cancoder.getPosition().asSupplier();
+    canCoderPerformanceMonitor = new CANCoderPerformanceMonitor(cancoder, getSubsystem(), "CANCoder");
 
-    leftRotator = new CANSparkMax(LEFT_ROTATOR_CAN_ID, MotorType.kBrushless);
-    leftRotator.restoreFactoryDefaults();
-    leftRotator.setSmartCurrentLimit(25);
-    leftRotator.setIdleMode(IdleMode.kBrake);
-    leftRotator.follow(rightRotator, true);
+    TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration();
 
-    rightRotatorThroughBoreEncoder = rightRotator.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-    rightRotatorThroughBoreEncoder.setInverted(true);
-    rightRotatorThroughBoreEncoder.setZeroOffset(ENCODER_OFFSET);
+    // Configure the CANCoder as our feedback device
+    talonFXConfiguration.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
+    talonFXConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    talonFXConfiguration.Feedback.SensorToMechanismRatio = 1;
 
-    rightRotatorPIDController = rightRotator.getPIDController();
-    rightRotatorPIDController.setFeedbackDevice(rightRotatorThroughBoreEncoder);
-    rightRotatorPIDController.setP(25);
-    rightRotatorPIDController.setI(0);
-    rightRotatorPIDController.setD(0);
-    rightRotatorPIDController.setFF(0);
-    rightRotatorPIDController.setOutputRange(-1, 1);
-    SmartDashboard.putNumber("Launcher/tuning pos", Position.HOME.value);
+    // PID for the Shoulder
+    talonFXConfiguration.Slot0.kP = 40;
+    talonFXConfiguration.Slot0.kI = 0;
+    talonFXConfiguration.Slot0.kD = 0;
+
+    // Maxmimum amps supplied to the motors
+    talonFXConfiguration.CurrentLimits.SupplyCurrentLimit = 25;
+    talonFXConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+    // The mode for which the motor is set to when not recieving a command
+    talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    rightRotator = new TalonFX(RIGHT_ROTATOR_CAN_ID, "rio");
+    rightRotator.getConfigurator().apply(talonFXConfiguration);
+    rightRotatorMonitor = new TalonFXPerformanceMonitor(rightRotator, getSubsystem(), "RightRotator");
+
+    leftRotator = new TalonFX(LEFT_ROTATOR_CAN_ID, "rio");
+    leftRotator.getConfigurator().apply(talonFXConfiguration);
+    leftRotator.setControl(new Follower(rightRotator.getDeviceID(), true));
+    leftRotatorMonitor = new TalonFXPerformanceMonitor(leftRotator, getSubsystem(), "LeftRotator");
+
+    dutyCycleOut = new DutyCycleOut(0);
+    positionDutyCycle = new PositionDutyCycle(0);
+  }
+
+  public boolean isForwardLimit() {
+    return MathUtil.isNear(Position.AMP.value, getPosition(), CLOSED_LOOP_TOLERANCE);
+  }
+
+  public boolean isReverseLimit() {
+    return MathUtil.isNear(Position.HOME.value, getPosition(), CLOSED_LOOP_TOLERANCE);
   }
 
   public void setPosition(double targetPosition) {
-    rightRotatorPIDController.setReference(targetPosition, ControlType.kPosition);
+    rightRotator.setControl(positionDutyCycle.withPosition(targetPosition)
+        .withFeedForward(0.1)
+        .withSlot(0)
+        .withLimitForwardMotion(isForwardLimit())
+        .withLimitReverseMotion(isReverseLimit()));
   }
 
   public void setDutyCycle(double percentOut) {
-    rightRotator.set(percentOut);
+    rightRotator.setControl(dutyCycleOut.withOutput(percentOut)
+        .withLimitForwardMotion(isForwardLimit())
+        .withLimitReverseMotion(isReverseLimit()));
   }
 
   public void stop() {
-    rightRotator.set(0);
+    rightRotator.setControl(BRAKE);
   }
 
   public double getPosition() {
-    return rightRotatorThroughBoreEncoder.getPosition();
+    return positionSupplier.get();
   }
 
   public boolean isAtSetPoint(double targetPosition) {
     return MathUtil.isNear(targetPosition, getPosition(), CLOSED_LOOP_TOLERANCE);
   }
 
+  public boolean isNearSetPoint(double targetPosition) {
+    return MathUtil.isNear(targetPosition, getPosition(), CLOSED_LOOP_TOLERANCE * 7.5);
+    // if we modify the scale value, we need to double check shooter positions to
+    // check for overlap till the bounce is fixed
+  }
+
   public boolean isAtHome() {
     return MathUtil.isNear(Position.HOME.value, getPosition(), CLOSED_LOOP_TOLERANCE);
   }
 
-  public boolean isNearSetPoint(double targetPosition) {
-    return MathUtil.isNear(targetPosition, getPosition(), CLOSED_LOOP_TOLERANCE * 7.5);
-    //if we modify the scale value, we need to double check shooter positions to check for overlap till the bounce is fixed
-  }
-
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Shoulder/Absoulte position", rightRotatorThroughBoreEncoder.getPosition());
-    SmartDashboard.putNumber("Shoulder/Degress position", rightRotatorThroughBoreEncoder.getPosition() * 360);
-    SmartDashboard.putNumber("Shoulder/Right duty cycle", rightRotator.get());
-    SmartDashboard.putNumber("Shoulder/Left duty cycle", leftRotator.get());
-    SmartDashboard.putNumber("Shoulder/Right stator current", rightRotator.getOutputCurrent());
-    SmartDashboard.putNumber("Shoulder/Left stator current", leftRotator.getOutputCurrent());
+    rightRotatorMonitor.telemeterize();
+    leftRotatorMonitor.telemeterize();
+    canCoderPerformanceMonitor.telemeterize();
   }
 }

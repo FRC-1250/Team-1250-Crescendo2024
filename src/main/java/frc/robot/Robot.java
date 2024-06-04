@@ -41,6 +41,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     checkDSUpdate();
     DataLogManager.start();
+    DriverStation.startDataLog(DataLogManager.getLog());
 
     CommandScheduler.getInstance().onCommandInitialize(
         command -> DataLogManager.log(
