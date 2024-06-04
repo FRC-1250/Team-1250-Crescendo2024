@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -77,13 +76,11 @@ public class RobotContainer {
     configureNamedCommands();
     configureAutoCommands();
     configureBindings();
-  } 
+  }
 
-public boolean isoperator() {
-  return true;
-}
-
-
+  public boolean isoperator() {
+    return true;
+  }
 
   private void configureBindings() {
     SmartDashboard.putData(new SetShoulderPositionShuffleBoard(shoulder));
@@ -91,16 +88,16 @@ public boolean isoperator() {
     SmartDashboard.putData("Start indexer", new SetIndexDutyCycle(indexer, 1));
     SmartDashboard.putData("Stop indexer", new SetIndexDutyCycle(indexer, 0));
     // Drive forward with -y, left with -x, rotate counter clockwise with -
-    //systemLights.setDefaultCommand(new LightShow(systemLights, indexer::iscentered, shoulder::isAtHome)); 
+  
     limelight.setDefaultCommand(new LimeLightLED(limelight, indexer::iscentered, shoulder::isAtHome));
-    
+
     drivXboxController.rightStick().whileTrue(drivetrain.applyRequestWithName(
-            () -> robotCentricDrive
+        () -> robotCentricDrive
             .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed * 0.5)
             .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * 0.5)
             .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate * 0.75),
-            "Robot centric drive"));
-  
+        "Robot centric drive"));
+
     if (isoperator() == true) {
       operatorPS4Controller.R1().onTrue(new IntakeCenterNote(intake, shoulder, indexer, 1.0));
       operatorPS4Controller.R2().whileTrue(new FireNote(indexer, launcher, shoulder));
@@ -108,36 +105,30 @@ public boolean isoperator() {
       operatorPS4Controller.cross().whileTrue(new SetIndexDutyCycle(indexer, 0.1));
       operatorPS4Controller.cross().whileTrue(new SetLauncherDutyCycle(launcher, -0.5));
       operatorPS4Controller.L2().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER));
-      //operatorPS4Controller.L2().onTrue(new SetShoulderPosition(shoulder, Position.SPEAKER.value));
       operatorPS4Controller.L1().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP));
-      //operatorPS4Controller.L1().onTrue(new SetShoulderPosition(shoulder, Position.AMP.value));
       operatorPS4Controller.circle().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM));
-      //operatorPS4Controller.circle().onTrue(new SetShoulderPosition(shoulder, Position.SPEAKER_PODIUM.value));
-      operatorPS4Controller.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.5));
-      operatorPS4Controller.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.5));
+      operatorPS4Controller.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.75));
+      operatorPS4Controller.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.75));
       operatorPS4Controller.triangle().onTrue(new SetIntakeDutyCycle(intake, 0));
       operatorPS4Controller.triangle().onTrue(new SetLauncherDutyCycle(launcher, 0));
       operatorPS4Controller.triangle().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));
     }
 
     if (isoperator() == false) {
-          drivXboxController.rightBumper().onTrue(new IntakeCenterNote(intake, shoulder, indexer, 1.0));
-    drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher, shoulder));
-    drivXboxController.a().whileTrue(new SetIntakeDutyCycle(intake, -1));
-    drivXboxController.a().whileTrue(new SetIndexDutyCycle(indexer, -.1));
-    drivXboxController.a().whileTrue(new SetLauncherDutyCycle(launcher, -.5));
-    drivXboxController.b().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM));
-    drivXboxController.leftTrigger().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER));
-    drivXboxController.leftBumper().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP));
-    drivXboxController.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.1));
-    drivXboxController.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.1));
-    drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, 0));
-    drivXboxController.y().onTrue(new SetLauncherDutyCycle(launcher, 0));
-    drivXboxController.y().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value)); 
+      drivXboxController.rightBumper().onTrue(new IntakeCenterNote(intake, shoulder, indexer, 1.0));
+      drivXboxController.rightTrigger().whileTrue(new FireNote(indexer, launcher, shoulder));
+      drivXboxController.a().whileTrue(new SetIntakeDutyCycle(intake, -1));
+      drivXboxController.a().whileTrue(new SetIndexDutyCycle(indexer, -.1));
+      drivXboxController.a().whileTrue(new SetLauncherDutyCycle(launcher, -.5));
+      drivXboxController.b().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER_PODIUM));
+      drivXboxController.leftTrigger().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.SPEAKER));
+      drivXboxController.leftBumper().onTrue(new SetPositionAndShooterSpeed(shoulder, launcher, Position.AMP));
+      drivXboxController.pov(0).whileTrue(new SetShoulderDutyCycle(shoulder, 0.75));
+      drivXboxController.pov(180).whileTrue(new SetShoulderDutyCycle(shoulder, -0.75));
+      drivXboxController.y().onTrue(new SetIntakeDutyCycle(intake, 0));
+      drivXboxController.y().onTrue(new SetLauncherDutyCycle(launcher, 0));
+      drivXboxController.y().onTrue(new SetShoulderPosition(shoulder, Position.HOME.value));
     }
-
-
-   
   }
 
   private void addPathAuto(String name, String pathName) {
