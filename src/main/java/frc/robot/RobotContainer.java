@@ -79,7 +79,7 @@ public class RobotContainer {
   }
 
   public boolean isoperator() {
-    return true;
+    return false;
   }
 
   private void configureBindings() {
