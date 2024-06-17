@@ -66,7 +66,7 @@ public class RobotContainer {
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   private final CommandXboxController drivXboxController = new CommandXboxController(0);
-  private final CommandPS4Controller operatorPS4Controller = new CommandPS4Controller(1);
+  private CommandPS4Controller operatorPS4Controller;
 
   public RobotContainer() {
     SmartDashboard.putData("Intake/Command", intake);
@@ -99,6 +99,7 @@ public class RobotContainer {
         "Robot centric drive"));
 
     if (isoperator() == true) {
+      operatorPS4Controller = new CommandPS4Controller(1);
       operatorPS4Controller.cross().whileTrue(new SetIntakeDutyCycle(intake, -1));
       operatorPS4Controller.cross().whileTrue(new SetIndexDutyCycle(indexer, 0.1));
       operatorPS4Controller.cross().whileTrue(new SetLauncherDutyCycle(launcher, -0.5));
