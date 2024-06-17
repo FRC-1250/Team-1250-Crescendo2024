@@ -16,6 +16,7 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.LimelightHelpers;
 import frc.robot.TunerConstants;
 import frc.robot.util.SwervePeformanceMonitor;
 
@@ -155,8 +157,27 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return m_odometry.getEstimatedPosition().getRotation().getDegrees();
     }
 
+    public void checkForVisionTarget() {
+        boolean doRejectUpdate = false;
+        LimelightHelpers.SetRobotOrientation("limelight", m_odometry.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        if (Math.abs(m_pigeon2.getRate()) > 720) {
+            doRejectUpdate = true;
+        }
+        if (mt2.tagCount == 0) {
+            doRejectUpdate = true;
+        }
+        if (!doRejectUpdate) {
+            m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+            m_odometry.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+        }
+    }
+
     @Override
     public void periodic() {
-      swerveMonitor.telemeterize(this.getState(), this.getCurrentCommand());
+        swerveMonitor.telemeterize(this.getState(), this.getCurrentCommand());
+        if (TunerConstants.ALLOW_VISION_ODOMETRY_CORRECTION) {
+            checkForVisionTarget();
+        }
     }
 }

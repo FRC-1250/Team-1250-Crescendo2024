@@ -145,4 +145,5 @@ public class TunerConstants {
 
     public static final PathConstraints MAX_PATH_CONSTRAINTS = new PathConstraints(5, 2.5, 270, 180);
     public static final PathConstraints LOW_PATH_CONSTRAINTS = new PathConstraints(0.75, 0.5, 135, 90);
+    public static final boolean ALLOW_VISION_ODOMETRY_CORRECTION = false;
 }
