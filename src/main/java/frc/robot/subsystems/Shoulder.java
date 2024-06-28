@@ -157,10 +157,10 @@ public class Shoulder extends SubsystemBase {
       setPositionAndWait(Position.AMP),
       setPositionAndWait(Position.HOME),
       // Attempt to reproduce ossilcation # 1
-      Commands.run(() -> setPosition(Position.AMP.value), this).withTimeout(0.3),
+      Commands.run(() -> setPosition(Position.AMP.value), this).withTimeout(0.5),
       Commands.run(() -> setPosition(Position.SPEAKER.value), this).until(() -> isAtSetPoint(Position.SPEAKER.value)),
       // Attempt to reproduce ossilcation # 2
-      Commands.run(() -> setPosition(Position.AMP.value), this).withTimeout(0.3),
+      Commands.run(() -> setPosition(Position.AMP.value), this).withTimeout(0.5),
       Commands.run(() -> setPosition(Position.HOME.value), this).until(() -> isAtSetPoint(Position.HOME.value))
     ).withName("PositionCycleTest");
   }
@@ -168,7 +168,7 @@ public class Shoulder extends SubsystemBase {
   public Command setPositionAndWait(Position position) {
     return Commands.sequence(
           Commands.run(() -> setPosition(position.value), this).until(() -> isAtSetPoint(position.value)),
-          Commands.waitSeconds(1)
+          Commands.waitSeconds(0.75)
     );
   }
 
