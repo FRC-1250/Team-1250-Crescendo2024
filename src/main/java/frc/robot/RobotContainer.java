@@ -9,8 +9,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -195,15 +193,7 @@ public class RobotContainer {
             .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * driveInvert),
         "Target lock"));
 
-    if (alliance == Alliance.Red) {
-      drivXboxController.start()
-          .onTrue(drivetrain.runOnce(() -> drivetrain.setOdometry(Rotation2d.fromDegrees(180), new Pose2d())));
-      drivetrain.setOdometry(Rotation2d.fromDegrees(180), new Pose2d());
-    } else {
-      drivXboxController.start()
-          .onTrue(drivetrain.runOnce(() -> drivetrain.setOdometry(Rotation2d.fromDegrees(0), new Pose2d())));
-      drivetrain.setOdometry(Rotation2d.fromDegrees(0), new Pose2d());
-    }
+    drivXboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
   }
 
   private Command fireNoteWithTimeoutV2(Position position) {

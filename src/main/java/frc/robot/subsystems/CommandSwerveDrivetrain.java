@@ -17,12 +17,12 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.LimelightHelpers;
@@ -39,6 +39,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
     private boolean allowVisionOdometryCorrection = false;
+
+     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
+     private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
+     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
+     private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
+     /* Keep track if we've ever applied the operator perspective before or not */
+     private boolean hasAppliedOperatorPerspective = false; 
 
     SwervePeformanceMonitor swerveMonitor;
 
@@ -133,12 +140,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
     }
 
-    public void setOdometry(Rotation2d angle, Pose2d location) {
-        m_yawGetter.waitForUpdate(1);
-        m_odometry.resetPosition(Rotation2d.fromDegrees(m_yawGetter.getValueAsDouble() - angle.getDegrees()),
-                m_modulePositions, location);
-    }
-
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
 
@@ -152,10 +153,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             updateSimState(deltaTime, RobotController.getBatteryVoltage());
         });
         m_simNotifier.startPeriodic(kSimLoopPeriod);
-    }
-
-    public double getHeading() {
-        return m_odometry.getEstimatedPosition().getRotation().getDegrees();
     }
 
     public void checkForVisionTarget() {
@@ -176,6 +173,15 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     @Override
     public void periodic() {
+         if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
+            DriverStation.getAlliance().ifPresent((allianceColor) -> {
+                setOperatorPerspectiveForward(
+                        allianceColor == Alliance.Red ? RedAlliancePerspectiveRotation
+                                : BlueAlliancePerspectiveRotation);
+                hasAppliedOperatorPerspective = true;
+            });
+        }
+
         swerveMonitor.telemeterize(this.getState(), this.getCurrentCommand());
         if (allowVisionOdometryCorrection) {
             checkForVisionTarget();
