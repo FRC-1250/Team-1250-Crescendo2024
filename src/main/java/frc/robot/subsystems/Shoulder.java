@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -20,6 +21,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.CANCoderPerformanceMonitor;
 import frc.robot.util.TalonFXPerformanceMonitor;
@@ -66,6 +69,7 @@ public class Shoulder extends SubsystemBase {
     cancoder.getConfigurator().apply(configuration);
     positionSupplier = cancoder.getPosition().asSupplier();
     canCoderPerformanceMonitor = new CANCoderPerformanceMonitor(cancoder, getSubsystem(), "CANCoder");
+    BaseStatusSignal.setUpdateFrequencyForAll(200, cancoder.getPosition(), cancoder.getVelocity());
 
     TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration();
 
@@ -75,9 +79,9 @@ public class Shoulder extends SubsystemBase {
     talonFXConfiguration.Feedback.SensorToMechanismRatio = 1;
 
     // PID for the Shoulder
-    talonFXConfiguration.Slot0.kP = 40;
+    talonFXConfiguration.Slot0.kP = 25;
     talonFXConfiguration.Slot0.kI = 0;
-    talonFXConfiguration.Slot0.kD = 0;
+    talonFXConfiguration.Slot0.kD = 0.01;
 
     // Maxmimum amps supplied to the motors
     talonFXConfiguration.CurrentLimits.SupplyCurrentLimit = 25;
@@ -85,6 +89,7 @@ public class Shoulder extends SubsystemBase {
 
     // The mode for which the motor is set to when not recieving a command
     talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    talonFXConfiguration.MotorOutput.DutyCycleNeutralDeadband = 0.03;
 
     rightRotator = new TalonFX(RIGHT_ROTATOR_CAN_ID, "rio");
     rightRotator.getConfigurator().apply(talonFXConfiguration);
@@ -109,7 +114,7 @@ public class Shoulder extends SubsystemBase {
 
   public void setPosition(double targetPosition) {
     rightRotator.setControl(positionDutyCycle.withPosition(targetPosition)
-        .withFeedForward(0.1)
+        .withFeedForward(0.07)
         .withSlot(0)
         .withLimitForwardMotion(isForwardLimit())
         .withLimitReverseMotion(isReverseLimit()));
@@ -141,6 +146,36 @@ public class Shoulder extends SubsystemBase {
 
   public boolean isAtHome() {
     return MathUtil.isNear(Position.HOME.value, getPosition(), CLOSED_LOOP_TOLERANCE);
+  }
+
+  public Command positionCycleTest() {
+    return Commands.sequence(
+      // Cycle positions
+      setPositionAndWait(Position.SPEAKER),
+      setPositionAndWait(Position.SPEAKER_PODIUM),
+      setPositionAndWait(Position.HORIZONTAL),
+      setPositionAndWait(Position.AMP),
+      setPositionAndWait(Position.HOME),
+      // Attempt to reproduce ossilcation # 1
+      Commands.run(() -> setPosition(Position.AMP.value), this).withTimeout(0.3),
+      Commands.run(() -> setPosition(Position.SPEAKER.value), this).until(() -> isAtSetPoint(Position.SPEAKER.value)),
+      // Attempt to reproduce ossilcation # 2
+      Commands.run(() -> setPosition(Position.AMP.value), this).withTimeout(0.3),
+      Commands.run(() -> setPosition(Position.HOME.value), this).until(() -> isAtSetPoint(Position.HOME.value))
+    ).withName("PositionCycleTest");
+  }
+
+  public Command setPositionAndWait(Position position) {
+    return Commands.sequence(
+          Commands.run(() -> setPosition(position.value), this).until(() -> isAtSetPoint(position.value)),
+          Commands.waitSeconds(1)
+    );
+  }
+
+  public Command positionStop() {
+    return Commands.sequence(
+      Commands.runOnce(() -> stop(), this)
+    ).withName("Stop");
   }
 
   @Override

@@ -85,6 +85,8 @@ public class RobotContainer {
   private void configureBindings() {
     SmartDashboard.putData(new SetShoulderPositionShuffleBoard(shoulder));
     SmartDashboard.putData(new SetLauncherVelocityShuffleBoard(launcher));
+    SmartDashboard.putData(shoulder.positionCycleTest());
+    SmartDashboard.putData(shoulder.positionStop());
     SmartDashboard.putData("Start indexer", new SetIndexDutyCycle(indexer, 1));
     SmartDashboard.putData("Stop indexer", new SetIndexDutyCycle(indexer, 0));
     // Drive forward with -y, left with -x, rotate counter clockwise with -
