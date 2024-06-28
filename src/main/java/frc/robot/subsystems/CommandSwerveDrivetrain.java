@@ -38,6 +38,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+    private boolean allowVisionOdometryCorrection = false;
 
     SwervePeformanceMonitor swerveMonitor;
 
@@ -176,7 +177,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     @Override
     public void periodic() {
         swerveMonitor.telemeterize(this.getState(), this.getCurrentCommand());
-        if (TunerConstants.ALLOW_VISION_ODOMETRY_CORRECTION) {
+        if (allowVisionOdometryCorrection) {
             checkForVisionTarget();
         }
     }
