@@ -17,7 +17,6 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
@@ -28,162 +27,110 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.vision.LimelightHelpers;
 import frc.robot.util.SwervePeformanceMonitor;
 
-/**
- * Class that extends the Phoenix SwerveDrivetrain class and implements
- * subsystem
- * so it can be used in command-based projects easily.
- */
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
-    private static final double kSimLoopPeriod = 0.005; // 5 ms
-    private Notifier m_simNotifier = null;
-    private double m_lastSimTime;
-    private boolean allowVisionOdometryCorrection = false;
+	private static final double kSimLoopPeriod = 0.005; // 5 ms
+	private boolean hasAppliedOperatorPerspective = false;
+	private Notifier m_simNotifier = null;
+	private double m_lastSimTime;
 
-     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
-     private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
-     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
-     private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
-     /* Keep track if we've ever applied the operator perspective before or not */
-     private boolean hasAppliedOperatorPerspective = false; 
+	private final SwervePeformanceMonitor swerveMonitor;
+	private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-    SwervePeformanceMonitor swerveMonitor;
+	public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
+		super(driveTrainConstants, modules);
+		configurePathPlanner();
+		if (Utils.isSimulation()) {
+			startSimThread();
+		}
+		swerveMonitor = new SwervePeformanceMonitor("Swerve", Modules);
+	}
 
-    private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
+	public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
+		return run(() -> this.setControl(requestSupplier.get())).withName("Drive");
+	}
 
-    public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
-            SwerveModuleConstants... modules) {
-        super(driveTrainConstants, OdometryUpdateFrequency, modules);
-        configurePathPlanner();
-        configureCurrentLimits();
-        if (Utils.isSimulation()) {
-            startSimThread();
-        }
-        swerveMonitor = new SwervePeformanceMonitor("Swerve", Modules);
-    }
+	public Command applyRequestWithName(Supplier<SwerveRequest> requestSupplier, String name) {
+		return applyRequest(requestSupplier).withName(name);
+	}
 
-    public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
-        super(driveTrainConstants, modules);
-        configurePathPlanner();
-        configureCurrentLimits();
-        if (Utils.isSimulation()) {
-            startSimThread();
-        }
-        swerveMonitor = new SwervePeformanceMonitor("Swerve", Modules);
-    }
+	public ChassisSpeeds getCurrentRobotChassisSpeeds() {
+		return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+	}
 
-    public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
-        return run(() -> this.setControl(requestSupplier.get())).withName("Drive");
-    }
+	private void configurePathPlanner() {
+		double driveBaseRadius = 0;
+		for (var moduleLocation : m_moduleLocations) {
+			driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+		}
 
-     public Command applyRequestWithName(Supplier<SwerveRequest> requestSupplier, String name) {
-        return applyRequest(requestSupplier).withName(name);
-    }
+		AutoBuilder.configureHolonomic(
+				() -> this.getState().Pose, // Supplier of current robot pose
+				this::seedFieldRelative, // Consumer for seeding pose against auto
+				this::getCurrentRobotChassisSpeeds,
+				(speeds) -> this.setControl(autoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the
+																																			// robot
+				new HolonomicPathFollowerConfig(
+						new PIDConstants(4, 0, 0),
+						new PIDConstants(3, 0, 0),
+						SwerveConfig.kSpeedAt12VoltsMps,
+						driveBaseRadius,
+						new ReplanningConfig()),
+				() -> {
+					var alliance = DriverStation.getAlliance();
+					if (alliance.isPresent()) {
+						return alliance.get() == DriverStation.Alliance.Red;
+					}
+					return false;
+				}, // Change this if the path needs to be flipped on red vs blue
+				this); // Subsystem for requirements
+	}
 
-    private void configureCurrentLimits() {
-        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-        ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs();
-        OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
+	private void checkForVisionTarget() {
+		boolean doRejectUpdate = false;
+		LimelightHelpers.SetRobotOrientation("limelight", m_odometry.getEstimatedPosition().getRotation().getDegrees(), 0,
+				0, 0, 0, 0);
+		LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+		if (Math.abs(m_pigeon2.getRate()) > 720) {
+			doRejectUpdate = true;
+		}
+		if (mt2.tagCount == 0) {
+			doRejectUpdate = true;
+		}
+		if (!doRejectUpdate) {
+			m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+			m_odometry.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+		}
+	}
 
-        for (int i = 0; i < Modules.length; i++) {
-            var driveConfigurator = Modules[i].getDriveMotor().getConfigurator();
-            driveConfigurator.refresh(openLoopRampsConfigs);
-            currentLimitsConfigs.SupplyCurrentLimitEnable = true;
-            currentLimitsConfigs.SupplyCurrentLimit = 30;
-            driveConfigurator.apply(openLoopRampsConfigs);
+	private void startSimThread() {
+		m_lastSimTime = Utils.getCurrentTimeSeconds();
 
-            driveConfigurator.refresh(openLoopRampsConfigs);
-            openLoopRampsConfigs.VoltageOpenLoopRampPeriod = 0.25;
-            driveConfigurator.apply(openLoopRampsConfigs);
+		/* Run simulation at a faster rate so PID gains behave more reasonably */
+		m_simNotifier = new Notifier(() -> {
+			final double currentTime = Utils.getCurrentTimeSeconds();
+			double deltaTime = currentTime - m_lastSimTime;
+			m_lastSimTime = currentTime;
 
-            driveConfigurator.refresh(closedLoopRampsConfigs);
-            closedLoopRampsConfigs.VoltageClosedLoopRampPeriod = 0.25;
-            driveConfigurator.apply(closedLoopRampsConfigs);
+			/* use the measured time delta, get battery voltage from WPILib */
+			updateSimState(deltaTime, RobotController.getBatteryVoltage());
+		});
+		m_simNotifier.startPeriodic(kSimLoopPeriod);
+	}
 
-            var steerConfigurator = Modules[i].getSteerMotor().getConfigurator();
-            steerConfigurator.refresh(currentLimitsConfigs);
-            currentLimitsConfigs.SupplyCurrentLimitEnable = true;
-            currentLimitsConfigs.SupplyCurrentLimit = 30;
-            steerConfigurator.apply(currentLimitsConfigs);
-        }
-    }
+	@Override
+	public void periodic() {
+		if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
+			DriverStation.getAlliance().ifPresent((allianceColor) -> {
+				setOperatorPerspectiveForward(
+						allianceColor == Alliance.Red ? SwerveConfig.RedAlliancePerspectiveRotation
+								: SwerveConfig.BlueAlliancePerspectiveRotation);
+				hasAppliedOperatorPerspective = true;
+			});
+		}
 
-    private void configurePathPlanner() {
-        double driveBaseRadius = 0;
-        for (var moduleLocation : m_moduleLocations) {
-            driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
-        }
-
-        AutoBuilder.configureHolonomic(
-                () -> this.getState().Pose, // Supplier of current robot pose
-                this::seedFieldRelative, // Consumer for seeding pose against auto
-                this::getCurrentRobotChassisSpeeds,
-                (speeds) -> this.setControl(autoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the
-                                                                             // robot
-                new HolonomicPathFollowerConfig(
-                        new PIDConstants(4, 0, 0),
-                        new PIDConstants(3, 0, 0),
-                        SwerveConfig.kSpeedAt12VoltsMps,
-                        driveBaseRadius,
-                        new ReplanningConfig()),
-                () -> {
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }
-                    return false;
-                }, // Change this if the path needs to be flipped on red vs blue
-                this); // Subsystem for requirements
-    }
-
-    public ChassisSpeeds getCurrentRobotChassisSpeeds() {
-        return m_kinematics.toChassisSpeeds(getState().ModuleStates);
-    }
-
-    private void startSimThread() {
-        m_lastSimTime = Utils.getCurrentTimeSeconds();
-
-        /* Run simulation at a faster rate so PID gains behave more reasonably */
-        m_simNotifier = new Notifier(() -> {
-            final double currentTime = Utils.getCurrentTimeSeconds();
-            double deltaTime = currentTime - m_lastSimTime;
-            m_lastSimTime = currentTime;
-
-            /* use the measured time delta, get battery voltage from WPILib */
-            updateSimState(deltaTime, RobotController.getBatteryVoltage());
-        });
-        m_simNotifier.startPeriodic(kSimLoopPeriod);
-    }
-
-    public void checkForVisionTarget() {
-        boolean doRejectUpdate = false;
-        LimelightHelpers.SetRobotOrientation("limelight", m_odometry.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-        if (Math.abs(m_pigeon2.getRate()) > 720) {
-            doRejectUpdate = true;
-        }
-        if (mt2.tagCount == 0) {
-            doRejectUpdate = true;
-        }
-        if (!doRejectUpdate) {
-            m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
-            m_odometry.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
-        }
-    }
-
-    @Override
-    public void periodic() {
-         if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
-            DriverStation.getAlliance().ifPresent((allianceColor) -> {
-                setOperatorPerspectiveForward(
-                        allianceColor == Alliance.Red ? RedAlliancePerspectiveRotation
-                                : BlueAlliancePerspectiveRotation);
-                hasAppliedOperatorPerspective = true;
-            });
-        }
-
-        swerveMonitor.telemeterize(this.getState(), this.getCurrentCommand());
-        if (allowVisionOdometryCorrection) {
-            checkForVisionTarget();
-        }
-    }
+		if (SwerveConfig.ALLOW_VISION_ODOMETRY_CORRECTION) {
+			checkForVisionTarget();
+		}
+		swerveMonitor.telemeterize(this.getState(), this.getCurrentCommand());
+	}
 }
