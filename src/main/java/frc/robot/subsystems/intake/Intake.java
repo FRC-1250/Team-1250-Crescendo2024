@@ -4,31 +4,28 @@
 
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.TalonFXPerformanceMonitor;
 
 public class Intake extends SubsystemBase {
-
-  private final int FRONT_ROLLER_CAN_ID = 40;
-  private final int REAR_ROLLER_CAN_ID = 41;
   private final TalonFX frontRoller;
   private final TalonFX rearRoller;
+  private final TalonFXPerformanceMonitor frontRollerMonitor;
+  private final TalonFXPerformanceMonitor rearRollerMonitor;
 
   public Intake() {
-    TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration();
-    talonFXConfiguration.CurrentLimits.SupplyCurrentLimit = 25;
-    talonFXConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
-    talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    setName(IntakeConfig.SUBSYTEM_NAME);
+    frontRoller = new TalonFX(IntakeConfig.FRONT_ROLLER_CAN_ID);
+    frontRoller.getConfigurator().apply(IntakeConfig.TALON_CONFIG);
+    frontRollerMonitor = new TalonFXPerformanceMonitor(frontRoller, getName(), IntakeConfig.FRONT_ROLLER_STRING);
 
-    frontRoller = new TalonFX(FRONT_ROLLER_CAN_ID, "rio");
-    frontRoller.getConfigurator().apply(talonFXConfiguration);
-
-    rearRoller = new TalonFX(REAR_ROLLER_CAN_ID, "rio");
-    rearRoller.getConfigurator().apply(talonFXConfiguration);
+    rearRoller = new TalonFX(IntakeConfig.REAR_ROLLER_CAN_ID);
+    rearRoller.getConfigurator().apply(IntakeConfig.TALON_CONFIG);
+    rearRollerMonitor = new TalonFXPerformanceMonitor(rearRoller, getName(), IntakeConfig.REAR_ROLLER_STRING);
   }
 
   public void setDutyCycleFrontRoller(double percentOut) {
@@ -39,11 +36,23 @@ public class Intake extends SubsystemBase {
     rearRoller.set(percentOut);
   }
 
+  public Command runIntake(double percentOut) {
+    return Commands.run(() -> {
+      frontRoller.set(percentOut);
+      rearRoller.set(percentOut);
+    }, this);
+  }
+
+  public Command stopIntake() {
+    return Commands.run(() -> {
+      frontRoller.set(0);
+      rearRoller.set(0);
+    }, this);
+  }
+
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Intake/Front duty cycle", frontRoller.get());
-    SmartDashboard.putNumber("Intake/Front stator current", frontRoller.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Intake/Rear duty cycle", rearRoller.get());
-    SmartDashboard.putNumber("Intake/Rear stator current", rearRoller.getStatorCurrent().getValueAsDouble());
+    frontRollerMonitor.telemeterize();
+    rearRollerMonitor.telemeterize();
   }
 }
