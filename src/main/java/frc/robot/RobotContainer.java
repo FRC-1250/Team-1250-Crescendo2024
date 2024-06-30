@@ -33,7 +33,7 @@ import frc.robot.commands.SetPositionAndShooterSpeed;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.SwerveConfig;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.launcher.launcher;
+import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.shoulder.Shoulder;
 import frc.robot.subsystems.shoulder.Shoulder.Position;
 import frc.robot.subsystems.superstructure.indexer;
@@ -42,7 +42,7 @@ import frc.robot.subsystems.vision.Limelight;
 public class RobotContainer {
   private final Intake intake = new Intake();
   private final Shoulder shoulder = new Shoulder();
-  private final launcher launcher = new launcher();
+  private final Launcher launcher = new Launcher();
   private final indexer indexer = new indexer();
   private final CommandSwerveDrivetrain drivetrain = SwerveConfig.DriveTrain;
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();

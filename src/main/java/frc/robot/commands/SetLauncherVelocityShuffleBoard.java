@@ -6,19 +6,19 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.launcher.launcher;
+import frc.robot.subsystems.launcher.Launcher;
 
 public class SetLauncherVelocityShuffleBoard extends InstantCommand {
-  private final launcher launcher;
+  private final Launcher launcher;
 
-  public SetLauncherVelocityShuffleBoard(launcher launcher) {
+  public SetLauncherVelocityShuffleBoard(Launcher launcher) {
     this.launcher = launcher;
     addRequirements(launcher);
   }
 
   @Override
   public void initialize() {
-    var rpm = SmartDashboard.getNumber("Launcher/tuning RPM", 0);
-    launcher.SetLauncherVelocity(rpm, rpm);
+    Double rpm = SmartDashboard.getNumber("Launcher/tuning RPM", 0);
+    launcher.setLauncherVelocity(rpm);
   }
 }

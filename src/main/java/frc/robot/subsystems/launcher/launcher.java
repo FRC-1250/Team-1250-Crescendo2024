@@ -4,65 +4,48 @@
 
 package frc.robot.subsystems.launcher;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.TalonFXPerformanceMonitor;
 
-public class launcher extends SubsystemBase {
-  private final int LEFT_LAUNCHER_CAN_ID = 20;
-  private final int RIGHT_LAUNCHER_CAN_ID = 21;
-  public final int FALCON_500_MAX_RPM = 6380;
-  public final int PODIUM_TARGET_RPM_LEFT = 5000;
-  public final int PODIUM_TARGET_RPM_RIGHT = 5000;
-  public final int SPEAKER_TARGET_RPM_LEFT = 3500;
-  public final int SPEAKER_TARGET_RPM_RIGHT = 3500;
-  public final int AMP_TARGET_RPM_LEFT = 1500;
-  public final int AMP_TARGET_RPM_RIGHT = 1500;
-
-  private final VelocityVoltage leftVelocityControl;
-  private final VelocityVoltage rightVelocityControl;
+public class Launcher extends SubsystemBase {
+  private final DigitalInput[] irArray = new DigitalInput[5];
   private final TalonFX rightLauncher;
   private final TalonFX leftLauncher;
+  private final TalonFX indexer;
+  private final VelocityVoltage leftVelocityControl;
+  private final VelocityVoltage rightVelocityControl;
+  private final TalonFXPerformanceMonitor rightLauncherMonitor;
+  private final TalonFXPerformanceMonitor leftLauncherMonitor;
+  private final TalonFXPerformanceMonitor indexerMonitor;
 
-  /** Creates a new shooter. */
+  public Launcher() {
+    rightLauncher = new TalonFX(LauncherConfig.RIGHT_LAUNCHER_CAN_ID, LauncherConfig.CAN_BUS);
+    rightLauncher.getConfigurator().apply(LauncherConfig.LAUNCHER_TALON_CONFIG);
+    rightLauncherMonitor = new TalonFXPerformanceMonitor(rightLauncher, LauncherConfig.SUBSYTEM_NAME,
+        LauncherConfig.RIGHT_LAUNCHER_STRING);
+    rightVelocityControl = new VelocityVoltage(0);
 
-  public launcher() {
-    TalonFXConfiguration configs = new TalonFXConfiguration();
-    configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    leftLauncher = new TalonFX(LauncherConfig.LEFT_LAUNCHER_CAN_ID, LauncherConfig.CAN_BUS);
+    leftLauncher.getConfigurator().apply(LauncherConfig.LAUNCHER_TALON_CONFIG);
+    leftLauncherMonitor = new TalonFXPerformanceMonitor(leftLauncher, LauncherConfig.SUBSYTEM_NAME,
+        LauncherConfig.LEFT_LAUNCHER_STRING);
+    leftVelocityControl = new VelocityVoltage(0);
 
-    //Configurations for the shooter wheels for speaker and amp shots 
-    configs.Slot0.kP = 0.11;
-    configs.Slot0.kI = 0;
-    configs.Slot0.kD = 0.0001;
-    configs.Slot0.kV = 0.115;
+    indexer = new TalonFX(LauncherConfig.INDEXER_CAN_ID, LauncherConfig.CAN_BUS);
+    indexer.getConfigurator().apply(LauncherConfig.INDEXER_TALON_CONFIG);
+    indexerMonitor = new TalonFXPerformanceMonitor(indexer, LauncherConfig.SUBSYTEM_NAME,
+        LauncherConfig.INDEXER_STRING);
 
-    //The configurations for the shooter wheels when shooting podium shot
-    configs.Slot1.kP = .11;
-    configs.Slot1.kI = 0;
-    configs.Slot1.kD = .0001;
-    configs.Slot1.kV = .12;
-
-    //Motor settings that are applied and given to the talons 
-    configs.CurrentLimits.SupplyCurrentLimit = 50;
-    configs.CurrentLimits.SupplyCurrentLimitEnable = true;
-    configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
-    rightLauncher = new TalonFX(RIGHT_LAUNCHER_CAN_ID, "rio");
-    rightLauncher.getConfigurator().apply(configs);
-    rightVelocityControl = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
-
-    leftLauncher = new TalonFX(LEFT_LAUNCHER_CAN_ID, "rio");
-    leftLauncher.getConfigurator().apply(configs);
-    leftVelocityControl = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
-    SmartDashboard.putNumber("Launcher/tuning RPM", 0);
+    for (int i = 0; i < irArray.length; i++) {
+      irArray[i] = new DigitalInput(i);
+    }
   }
 
-  public void SetDutyOutlaunch(double percent) {
+  public void setDutyCycleLauncher(double percent) {
     rightLauncher.set(percent);
     leftLauncher.set(percent);
   }
@@ -75,16 +58,77 @@ public class launcher extends SubsystemBase {
     return leftLauncher.getVelocity().getValue() * 60;
   }
 
-  public void SetLauncherVelocity(double right, double left) {
-    rightLauncher.setControl(rightVelocityControl.withVelocity(right / 60));
-    leftLauncher.setControl(leftVelocityControl.withVelocity(left / 60));
+  public void setLauncherVelocity(double value) {
+    rightLauncher.setControl(rightVelocityControl.withVelocity(value / 60));
+    leftLauncher.setControl(leftVelocityControl.withVelocity(value / 60));
+  }
+
+  public void setDutyCycleIndexer(double percent) {
+    indexer.set(percent);
+  }
+
+  public void centerNote() {
+    boolean barrelsensor = pollIrArraySensor(0);
+    boolean intakeside = pollIrArraySensor(1);
+    boolean indexerclose = pollIrArraySensor(2);
+    boolean indexerfar = pollIrArraySensor(3);
+    boolean shooterside = pollIrArraySensor(4);
+
+    if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == false
+        && barrelsensor == false) {
+      // was .3
+      setDutyCycleIndexer(.4);
+    } else if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == false
+        && barrelsensor == true) {
+      setDutyCycleIndexer(.05);
+    } else if (intakeside == true && indexerclose == false && indexerfar == false && shooterside == false) {
+      setDutyCycleIndexer(.05); // all point ones after this were .05
+    } else if (intakeside == true && indexerclose == true && indexerfar == false && shooterside == false) {
+      setDutyCycleIndexer(.05);
+    } else if (intakeside == true && indexerclose == true && indexerfar == true && shooterside == false) {
+      setDutyCycleIndexer(.05);
+    } else if (intakeside == false && indexerclose == true && indexerfar == false && shooterside == false) {
+      setDutyCycleIndexer(.05);
+    } else if (intakeside == false && indexerclose == false && indexerfar == true && shooterside == false) {
+      setDutyCycleIndexer(-.05);
+    } else if (intakeside == false && indexerclose == true && indexerfar == true && shooterside == false) {
+      setDutyCycleIndexer(0);
+    } else if (intakeside == false && indexerclose == true && indexerfar == true && shooterside == true) {
+      setDutyCycleIndexer(-0.05);
+    } else if (intakeside == false && indexerclose == false && indexerfar == true && shooterside == true) {
+      setDutyCycleIndexer(-0.05);
+    } else if (intakeside == false && indexerclose == false && indexerfar == false && shooterside == true) {
+      setDutyCycleIndexer(-0.2);
+    }
+  }
+
+  public boolean hasNote() {
+    return pollIrArraySensor(0);
+  }
+
+  public boolean isNoteCentered() {
+    boolean intakeside = pollIrArraySensor(1);
+    boolean indexerclose = pollIrArraySensor(2);
+    boolean indexerfar = pollIrArraySensor(3);
+    boolean shooterside = pollIrArraySensor(4);
+
+    return (intakeside == false && indexerclose == true && indexerfar == true && shooterside == false);
+  }
+
+  private boolean pollIrArraySensor(int index) {
+    if (index < irArray.length && index > -1) {
+      // The IR sensors being used return "true" when not tripped. Flip the result for
+      // standard usage. i.e. when sensor is tripped, it returns true
+      return !irArray[index].get();
+    } else {
+      return false;
+    }
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Launcher/Right RPM", getRightLauncherRPM());
-    SmartDashboard.putNumber("Launcher/Right stator current", rightLauncher.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Launcher/Left RPM", getLeftLauncherRPM());
-    SmartDashboard.putNumber("Launcher/Left stator current", leftLauncher.getStatorCurrent().getValueAsDouble());
+    leftLauncherMonitor.telemeterize();
+    rightLauncherMonitor.telemeterize();
+    indexerMonitor.telemeterize();
   }
 }

@@ -5,13 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.launcher.launcher;
+import frc.robot.subsystems.launcher.Launcher;
 
 public class SetLauncherDutyCycle extends Command {
-  private final launcher launcher;
+  private final Launcher launcher;
   private double percentOut;
 
-  public SetLauncherDutyCycle(launcher launcher, double percentOut) {
+  public SetLauncherDutyCycle(Launcher launcher, double percentOut) {
     this.launcher = launcher;
     this.percentOut = percentOut;
     addRequirements(launcher);
@@ -19,14 +19,14 @@ public class SetLauncherDutyCycle extends Command {
 
   @Override
   public void execute() {
-    launcher.SetDutyOutlaunch(percentOut);
+    launcher.setDutyCycleLauncher(percentOut);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     if (interrupted) {
-      launcher.SetDutyOutlaunch(0);
+      launcher.setDutyCycleLauncher(0);
     }
   }
 }

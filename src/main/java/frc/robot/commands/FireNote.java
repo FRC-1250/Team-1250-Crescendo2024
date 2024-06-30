@@ -6,14 +6,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.launcher.launcher;
+import frc.robot.subsystems.launcher.ELauncherSpeed;
+import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.shoulder.Shoulder;
 import frc.robot.subsystems.shoulder.Shoulder.Position;
 import frc.robot.subsystems.superstructure.indexer;
 import edu.wpi.first.wpilibj.Timer;
 
 public class FireNote extends Command {
-  private final launcher launcher;
+  private final Launcher launcher;
   private final indexer indexer;
   private final Shoulder shoulder;
   private final int CLOSED_LOOP_TOLERANCE = 100;
@@ -21,7 +22,7 @@ public class FireNote extends Command {
   private final Timer timer = new Timer();
 
   /** Creates a new FireNote. */
-  public FireNote(indexer indexer, launcher launcher, Shoulder shoulder) {
+  public FireNote(indexer indexer, Launcher launcher, Shoulder shoulder) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.launcher = launcher;
     this.indexer = indexer; 
@@ -39,24 +40,20 @@ public class FireNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    var targetRPMleft = 0; 
-    var targetRPMright = 0; 
+    double targetRPM = 0; 
 
     if (shoulder.isNearSetPoint(Position.SPEAKER.value)) {
-      targetRPMright = launcher.SPEAKER_TARGET_RPM_RIGHT;
-      targetRPMleft = launcher.SPEAKER_TARGET_RPM_LEFT; 
+      targetRPM = ELauncherSpeed.SPEAKER.value;
     } else if (shoulder.isNearSetPoint(Position.SPEAKER_PODIUM.value)) {
-      targetRPMright = launcher.PODIUM_TARGET_RPM_RIGHT;
-      targetRPMleft = launcher.PODIUM_TARGET_RPM_LEFT;
+      targetRPM = ELauncherSpeed.PODIUM.value;
     } else {
-      targetRPMleft = launcher.AMP_TARGET_RPM_LEFT;
-      targetRPMright = launcher.AMP_TARGET_RPM_RIGHT;
+      targetRPM = ELauncherSpeed.AMP.value;
     }
 
-    launcher.SetLauncherVelocity(targetRPMright, targetRPMleft);
+    launcher.setLauncherVelocity(targetRPM);
 
-    if ((MathUtil.isNear(targetRPMleft, launcher.getLeftLauncherRPM(), CLOSED_LOOP_TOLERANCE)
-        && MathUtil.isNear(targetRPMright, launcher.getRightLauncherRPM(), CLOSED_LOOP_TOLERANCE))
+    if ((MathUtil.isNear(targetRPM, launcher.getLeftLauncherRPM(), CLOSED_LOOP_TOLERANCE)
+        && MathUtil.isNear(targetRPM, launcher.getRightLauncherRPM(), CLOSED_LOOP_TOLERANCE))
         || timer.hasElapsed(TRIGGER_TIME_OVERRIDE)) {
       indexer.setDutyoutIndex(1);
     }
@@ -66,7 +63,7 @@ public class FireNote extends Command {
   @Override
   public void end(boolean interrupted) {
     indexer.setDutyoutIndex(0);
-    launcher.SetDutyOutlaunch(0);
+    launcher.setDutyCycleLauncher(0);
   }
 
   // Returns true when the command should end.

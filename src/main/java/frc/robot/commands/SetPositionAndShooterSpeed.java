@@ -5,16 +5,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.launcher.launcher;
+import frc.robot.subsystems.launcher.ELauncherSpeed;
+import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherConfig;
 import frc.robot.subsystems.shoulder.Shoulder;
 import frc.robot.subsystems.shoulder.Shoulder.Position;
 
 public class SetPositionAndShooterSpeed extends Command {
   private final Shoulder shoulder;
-  private final launcher launcher;
+  private final Launcher launcher;
   private final Position targetPosition;
   /** Creates a new SetPositionAndShooterSpeed. */
-  public SetPositionAndShooterSpeed(Shoulder shoulder, launcher launcher, Position targetPosition) {
+  public SetPositionAndShooterSpeed(Shoulder shoulder, Launcher launcher, Position targetPosition) {
     this.launcher = launcher;
     this.shoulder = shoulder;
     this.targetPosition = targetPosition;
@@ -34,11 +36,11 @@ public class SetPositionAndShooterSpeed extends Command {
   @Override
   public void execute() {
     if (targetPosition == Position.SPEAKER) {
-      launcher.SetLauncherVelocity(launcher.SPEAKER_TARGET_RPM_RIGHT, launcher.SPEAKER_TARGET_RPM_LEFT);
+      launcher.setLauncherVelocity(ELauncherSpeed.SPEAKER.value);
     } else if ( targetPosition == Position.SPEAKER_PODIUM) { 
-      launcher.SetLauncherVelocity(launcher.PODIUM_TARGET_RPM_RIGHT, launcher.PODIUM_TARGET_RPM_LEFT);
+      launcher.setLauncherVelocity(ELauncherSpeed.PODIUM.value);
     }else if (targetPosition == Position.AMP) {
-      launcher.SetLauncherVelocity(launcher.AMP_TARGET_RPM_RIGHT, launcher.AMP_TARGET_RPM_LEFT);
+      launcher.setLauncherVelocity(ELauncherSpeed.AMP.value);
     }
     shoulder.setPosition(targetPosition.value);
   }
