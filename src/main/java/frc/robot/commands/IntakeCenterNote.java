@@ -7,10 +7,10 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.superstructure.Intake;
-import frc.robot.subsystems.superstructure.Shoulder;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shoulder.Shoulder;
+import frc.robot.subsystems.shoulder.Shoulder.Position;
 import frc.robot.subsystems.superstructure.indexer;
-import frc.robot.subsystems.superstructure.Shoulder.Position;
 
 public class IntakeCenterNote extends Command {
   /** Creates a new CenterFireNote. */

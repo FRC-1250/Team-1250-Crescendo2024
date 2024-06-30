@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.superstructure.Shoulder;
+import frc.robot.subsystems.shoulder.Shoulder;
 
 public class SetShoulderDutyCycle extends Command {
   /** Creates a new SetShoulderDutyCycle. */

@@ -122,7 +122,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 new HolonomicPathFollowerConfig(
                         new PIDConstants(4, 0, 0),
                         new PIDConstants(3, 0, 0),
-                        TunerConstants.kSpeedAt12VoltsMps,
+                        SwerveConfig.kSpeedAt12VoltsMps,
                         driveBaseRadius,
                         new ReplanningConfig()),
                 () -> {

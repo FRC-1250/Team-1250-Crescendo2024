@@ -14,7 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.subsystems.drive.TunerConstants;
+import frc.robot.subsystems.drive.SwerveConfig;
 import frc.robot.subsystems.vision.Limelight;
 
 /** Add your docs here. */
@@ -61,11 +61,11 @@ public class FieldCentricAutoAim implements SwerveRequest {
         double toApplyOmega = xOffset * kP;
 
         if(Math.abs(xOffset) > 15) {
-          toApplyOmega = toApplyOmega * TunerConstants.MaxAngularRate;
+          toApplyOmega = toApplyOmega * SwerveConfig.MaxAngularRate;
         } else if (Math.abs(xOffset) > 8) {
-          toApplyOmega = toApplyOmega * TunerConstants.MaxAngularRate / 1.25;
+          toApplyOmega = toApplyOmega * SwerveConfig.MaxAngularRate / 1.25;
         } else {
-          toApplyOmega = toApplyOmega * TunerConstants.MaxAngularRate / 1.5;
+          toApplyOmega = toApplyOmega * SwerveConfig.MaxAngularRate / 1.5;
         }
 
         if (Math.sqrt(toApplyX * toApplyX + toApplyY * toApplyY) < Deadband) {

@@ -31,12 +31,12 @@ import frc.robot.commands.SetLauncherDutyCycle;
 import frc.robot.commands.SetLauncherVelocityShuffleBoard;
 import frc.robot.commands.SetPositionAndShooterSpeed;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
-import frc.robot.subsystems.drive.TunerConstants;
-import frc.robot.subsystems.superstructure.Intake;
-import frc.robot.subsystems.superstructure.Shoulder;
+import frc.robot.subsystems.drive.SwerveConfig;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.launcher.launcher;
+import frc.robot.subsystems.shoulder.Shoulder;
+import frc.robot.subsystems.shoulder.Shoulder.Position;
 import frc.robot.subsystems.superstructure.indexer;
-import frc.robot.subsystems.superstructure.launcher;
-import frc.robot.subsystems.superstructure.Shoulder.Position;
 import frc.robot.subsystems.vision.Limelight;
 
 public class RobotContainer {
@@ -44,24 +44,24 @@ public class RobotContainer {
   private final Shoulder shoulder = new Shoulder();
   private final launcher launcher = new launcher();
   private final indexer indexer = new indexer();
-  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
+  private final CommandSwerveDrivetrain drivetrain = SwerveConfig.DriveTrain;
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
   private final Limelight limelight = new Limelight();
 
   // Field centric driving in closed loop with 10% deadband
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(TunerConstants.MaxSpeed * 0.1)
-      .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.1)
+      .withDeadband(SwerveConfig.MaxSpeed * 0.1)
+      .withRotationalDeadband(SwerveConfig.MaxAngularRate * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   private final SwerveRequest.RobotCentric robotCentricDrive = new SwerveRequest.RobotCentric()
-      .withDeadband(TunerConstants.MaxSpeed * 0.1)
-      .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.1)
+      .withDeadband(SwerveConfig.MaxSpeed * 0.1)
+      .withRotationalDeadband(SwerveConfig.MaxAngularRate * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   private final FieldCentricAutoAim fieldCentricAutoAim = new FieldCentricAutoAim(limelight)
-      .withDeadband(TunerConstants.MaxSpeed * 0.1)
-      .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.025)
+      .withDeadband(SwerveConfig.MaxSpeed * 0.1)
+      .withRotationalDeadband(SwerveConfig.MaxAngularRate * 0.025)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   private final CommandXboxController drivXboxController = new CommandXboxController(0);
@@ -94,9 +94,9 @@ public class RobotContainer {
 
     drivXboxController.rightStick().whileTrue(drivetrain.applyRequestWithName(
         () -> robotCentricDrive
-            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed * 0.5)
-            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * 0.5)
-            .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate * 0.75),
+            .withVelocityX(-drivXboxController.getLeftY() * SwerveConfig.MaxSpeed * 0.5)
+            .withVelocityY(-drivXboxController.getLeftX() * SwerveConfig.MaxSpeed * 0.5)
+            .withRotationalRate(-drivXboxController.getRightX() * SwerveConfig.MaxAngularRate * 0.75),
         "Robot centric drive"));
 
     if (isoperator() == true) {
@@ -183,15 +183,15 @@ public class RobotContainer {
     }
     drivetrain.setDefaultCommand(drivetrain.applyRequestWithName(
         () -> drive
-            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed * driveInvert * TunerConstants.ThrottleValue)
-            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * driveInvert * TunerConstants.ThrottleValue)
-            .withRotationalRate(-drivXboxController.getRightX() * TunerConstants.MaxAngularRate),
+            .withVelocityX(-drivXboxController.getLeftY() * SwerveConfig.MaxSpeed * driveInvert * SwerveConfig.ThrottleValue)
+            .withVelocityY(-drivXboxController.getLeftX() * SwerveConfig.MaxSpeed * driveInvert * SwerveConfig.ThrottleValue)
+            .withRotationalRate(-drivXboxController.getRightX() * SwerveConfig.MaxAngularRate),
         "Default drive"));
 
     drivXboxController.x().whileTrue(drivetrain.applyRequestWithName(
         () -> fieldCentricAutoAim
-            .withVelocityX(-drivXboxController.getLeftY() * TunerConstants.MaxSpeed * driveInvert)
-            .withVelocityY(-drivXboxController.getLeftX() * TunerConstants.MaxSpeed * driveInvert),
+            .withVelocityX(-drivXboxController.getLeftY() * SwerveConfig.MaxSpeed * driveInvert)
+            .withVelocityY(-drivXboxController.getLeftX() * SwerveConfig.MaxSpeed * driveInvert),
         "Target lock"));
 
     drivXboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));

@@ -10,7 +10,7 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.util.Units;
 
-public class TunerConstants {
+public class SwerveConfig {
     // Both sets of gains need to be tuned to your individual robot.
     //https://www.swervedrivespecialties.com/products/mk4-swerve-module, L2
     public static final double MaxSpeed = 5.0292;
