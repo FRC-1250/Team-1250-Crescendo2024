@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.superstructure.Intake;
 
 public class SetIntakeDutyCycle extends Command {
   private final Intake intake;

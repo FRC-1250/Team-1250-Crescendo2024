@@ -6,10 +6,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shoulder;
-import frc.robot.subsystems.indexer;
-import frc.robot.subsystems.launcher;
-import frc.robot.subsystems.Shoulder.Position;
+import frc.robot.subsystems.superstructure.Shoulder;
+import frc.robot.subsystems.superstructure.indexer;
+import frc.robot.subsystems.superstructure.launcher;
+import frc.robot.subsystems.superstructure.Shoulder.Position;
 import edu.wpi.first.wpilibj.Timer;
 
 public class FireNote extends Command {

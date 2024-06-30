@@ -13,8 +13,8 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.SystemLights;
+import frc.robot.subsystems.leds.SystemLights;
+import frc.robot.subsystems.vision.Limelight;
 
 public class LimeLightLED extends Command {
 

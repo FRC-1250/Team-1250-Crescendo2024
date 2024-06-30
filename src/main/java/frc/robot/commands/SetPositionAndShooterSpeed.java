@@ -5,9 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shoulder;
-import frc.robot.subsystems.launcher;
-import frc.robot.subsystems.Shoulder.Position;
+import frc.robot.subsystems.superstructure.Shoulder;
+import frc.robot.subsystems.superstructure.launcher;
+import frc.robot.subsystems.superstructure.Shoulder.Position;
 
 public class SetPositionAndShooterSpeed extends Command {
   private final Shoulder shoulder;

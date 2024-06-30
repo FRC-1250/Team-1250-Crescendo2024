@@ -14,8 +14,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.TunerConstants;
-import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.drive.TunerConstants;
+import frc.robot.subsystems.vision.Limelight;
 
 /** Add your docs here. */
 public class FieldCentricAutoAim implements SwerveRequest {

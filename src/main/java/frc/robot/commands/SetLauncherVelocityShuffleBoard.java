@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.launcher;
+import frc.robot.subsystems.superstructure.launcher;
 
 public class SetLauncherVelocityShuffleBoard extends InstantCommand {
   private final launcher launcher;

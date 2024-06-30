@@ -6,8 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Shoulder;
-import frc.robot.subsystems.Shoulder.Position;
+import frc.robot.subsystems.superstructure.Shoulder;
+import frc.robot.subsystems.superstructure.Shoulder.Position;
 
 public class SetShoulderPositionShuffleBoard extends InstantCommand {
   private final Shoulder shoulder;
