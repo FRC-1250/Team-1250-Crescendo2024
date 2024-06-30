@@ -29,7 +29,7 @@ public class SetShoulderPosition extends Command {
 
   @Override
   public void execute() {
-    shoulder.setPosition(targetPosition);
+    shoulder.setPositionDutyCycle(targetPosition);
   }
 
   public void end(boolean interrupted) {

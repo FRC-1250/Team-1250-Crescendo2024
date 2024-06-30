@@ -7,18 +7,11 @@ package frc.robot.subsystems.shoulder;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,28 +21,6 @@ import frc.robot.util.CANCoderPerformanceMonitor;
 import frc.robot.util.TalonFXPerformanceMonitor;
 
 public class Shoulder extends SubsystemBase {
-
-  public enum Position {
-    AMP(.358f),
-    HORIZONTAL(.25f),
-    SPEAKER_PODIUM(.158f),
-    SPEAKER(.105f),
-    HOME(.055f),
-    PID(.194f);
-
-    public final float value; // Default value is rotations
-
-    Position(float value) {
-      this.value = value;
-    }
-  }
-
-  private final int LEFT_ROTATOR_CAN_ID = 30;
-  private final int RIGHT_ROTATOR_CAN_ID = 31;
-  private final int CANCODER_CAN_ID = 32;
-  private final double CLOSED_LOOP_TOLERANCE = 0.003; // Closed loop tolerance in degrees
-  private final double ENCODER_OFFSET = 0.0233; // Offset value to normalize the encoder position to 0 when at home
-  private final NeutralOut BRAKE = new NeutralOut();
   private final TalonFX leftRotator;
   private final TalonFX rightRotator;
   private final CANcoder cancoder;
@@ -61,121 +32,23 @@ public class Shoulder extends SubsystemBase {
   private final TalonFXPerformanceMonitor leftRotatorMonitor;
 
   public Shoulder() {
-    CANcoderConfiguration configuration = new CANcoderConfiguration();
-    configuration.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
-    configuration.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    configuration.MagnetSensor.MagnetOffset = ENCODER_OFFSET;
-    cancoder = new CANcoder(CANCODER_CAN_ID, "rio");
-    cancoder.getConfigurator().apply(configuration);
+    cancoder = new CANcoder(ShoulderConfig.CANCODER_CAN_ID, ShoulderConfig.CAN_BUS);
+    cancoder.getConfigurator().apply(ShoulderConfig.CANCODER_CONFIGS);
     positionSupplier = cancoder.getPosition().asSupplier();
-    canCoderPerformanceMonitor = new CANCoderPerformanceMonitor(cancoder, getSubsystem(), "CANCoder");
+    canCoderPerformanceMonitor = new CANCoderPerformanceMonitor(cancoder, ShoulderConfig.SUBSYSTEM_NAME, ShoulderConfig.CANCODER_STRING);
     BaseStatusSignal.setUpdateFrequencyForAll(200, cancoder.getPosition(), cancoder.getVelocity());
 
-    TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration();
+    rightRotator = new TalonFX(ShoulderConfig.RIGHT_ROTATOR_CAN_ID, ShoulderConfig.CAN_BUS);
+    rightRotator.getConfigurator().apply(ShoulderConfig.TALON_FX_CONFIGURATION);
+    rightRotatorMonitor = new TalonFXPerformanceMonitor(rightRotator, ShoulderConfig.SUBSYSTEM_NAME, ShoulderConfig.RIGHT_ROTATOR_STRING);
 
-    // Configure the CANCoder as our feedback device
-    talonFXConfiguration.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
-    talonFXConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-    talonFXConfiguration.Feedback.SensorToMechanismRatio = 1;
-
-    // PID for the Shoulder
-    talonFXConfiguration.Slot0.kP = 25;
-    talonFXConfiguration.Slot0.kI = 0;
-    talonFXConfiguration.Slot0.kD = 0.01;
-
-    // Maxmimum amps supplied to the motors
-    talonFXConfiguration.CurrentLimits.SupplyCurrentLimit = 25;
-    talonFXConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
-
-    // The mode for which the motor is set to when not recieving a command
-    talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    talonFXConfiguration.MotorOutput.DutyCycleNeutralDeadband = 0.03;
-
-    rightRotator = new TalonFX(RIGHT_ROTATOR_CAN_ID, "rio");
-    rightRotator.getConfigurator().apply(talonFXConfiguration);
-    rightRotatorMonitor = new TalonFXPerformanceMonitor(rightRotator, getSubsystem(), "RightRotator");
-
-    leftRotator = new TalonFX(LEFT_ROTATOR_CAN_ID, "rio");
-    leftRotator.getConfigurator().apply(talonFXConfiguration);
+    leftRotator = new TalonFX(ShoulderConfig.LEFT_ROTATOR_CAN_ID, ShoulderConfig.CAN_BUS);
+    leftRotator.getConfigurator().apply(ShoulderConfig.TALON_FX_CONFIGURATION);
     leftRotator.setControl(new Follower(rightRotator.getDeviceID(), true));
-    leftRotatorMonitor = new TalonFXPerformanceMonitor(leftRotator, getSubsystem(), "LeftRotator");
+    leftRotatorMonitor = new TalonFXPerformanceMonitor(leftRotator, ShoulderConfig.SUBSYSTEM_NAME, ShoulderConfig.LEFT_ROTATOR_STRING);
 
     dutyCycleOut = new DutyCycleOut(0);
     positionDutyCycle = new PositionDutyCycle(0);
-  }
-
-  public boolean isForwardLimit() {
-    return MathUtil.isNear(Position.AMP.value, getPosition(), CLOSED_LOOP_TOLERANCE);
-  }
-
-  public boolean isReverseLimit() {
-    return MathUtil.isNear(Position.HOME.value, getPosition(), CLOSED_LOOP_TOLERANCE);
-  }
-
-  public void setPosition(double targetPosition) {
-    rightRotator.setControl(positionDutyCycle.withPosition(targetPosition)
-        .withFeedForward(0.07)
-        .withSlot(0)
-        .withLimitForwardMotion(isForwardLimit())
-        .withLimitReverseMotion(isReverseLimit()));
-  }
-
-  public void setDutyCycle(double percentOut) {
-    rightRotator.setControl(dutyCycleOut.withOutput(percentOut)
-        .withLimitForwardMotion(isForwardLimit())
-        .withLimitReverseMotion(isReverseLimit()));
-  }
-
-  public void stop() {
-    rightRotator.setControl(BRAKE);
-  }
-
-  public double getPosition() {
-    return positionSupplier.get();
-  }
-
-  public boolean isAtSetPoint(double targetPosition) {
-    return MathUtil.isNear(targetPosition, getPosition(), CLOSED_LOOP_TOLERANCE);
-  }
-
-  public boolean isNearSetPoint(double targetPosition) {
-    return MathUtil.isNear(targetPosition, getPosition(), CLOSED_LOOP_TOLERANCE * 7.5);
-    // if we modify the scale value, we need to double check shooter positions to
-    // check for overlap till the bounce is fixed
-  }
-
-  public boolean isAtHome() {
-    return MathUtil.isNear(Position.HOME.value, getPosition(), CLOSED_LOOP_TOLERANCE);
-  }
-
-  public Command positionCycleTest() {
-    return Commands.sequence(
-      // Cycle positions
-      setPositionAndWait(Position.SPEAKER),
-      setPositionAndWait(Position.SPEAKER_PODIUM),
-      setPositionAndWait(Position.HORIZONTAL),
-      setPositionAndWait(Position.AMP),
-      setPositionAndWait(Position.HOME),
-      // Attempt to reproduce ossilcation # 1
-      Commands.run(() -> setPosition(Position.AMP.value), this).withTimeout(0.5),
-      Commands.run(() -> setPosition(Position.SPEAKER.value), this).until(() -> isAtSetPoint(Position.SPEAKER.value)),
-      // Attempt to reproduce ossilcation # 2
-      Commands.run(() -> setPosition(Position.AMP.value), this).withTimeout(0.5),
-      Commands.run(() -> setPosition(Position.HOME.value), this).until(() -> isAtSetPoint(Position.HOME.value))
-    ).withName("PositionCycleTest");
-  }
-
-  public Command setPositionAndWait(Position position) {
-    return Commands.sequence(
-          Commands.run(() -> setPosition(position.value), this).until(() -> isAtSetPoint(position.value)),
-          Commands.waitSeconds(0.75)
-    );
-  }
-
-  public Command positionStop() {
-    return Commands.sequence(
-      Commands.runOnce(() -> stop(), this)
-    ).withName("Stop");
   }
 
   @Override
@@ -183,5 +56,66 @@ public class Shoulder extends SubsystemBase {
     rightRotatorMonitor.telemeterize();
     leftRotatorMonitor.telemeterize();
     canCoderPerformanceMonitor.telemeterize();
+  }
+
+  public Command setPositionDutyCycle(EShoulerPosition position) {
+    return Commands.run(
+        () -> {
+          rightRotator.setControl(positionDutyCycle.withPosition(position.value)
+              .withFeedForward(0.07)
+              .withSlot(0)
+              .withLimitForwardMotion(isForwardLimit())
+              .withLimitReverseMotion(isReverseLimit()));
+        }, this)
+        .until(() -> isAtSetPoint(position.value)).withName("SetPosition: " + position.toString());
+  }
+
+  public Command waitUntilNearSetpoint(EShoulerPosition position) {
+    return Commands.waitUntil(() -> isNearSetPoint(position.value));
+  }
+
+  public Command setPositionAndWait(EShoulerPosition position) {
+    return Commands.sequence(
+        setPositionDutyCycle(position),
+        Commands.waitSeconds(0.75)).withName("SetPosition " + position.toString());
+  }
+
+  public Command positionCycleTest() {
+    return Commands.sequence(
+        setPositionAndWait(EShoulerPosition.SPEAKER),
+        setPositionAndWait(EShoulerPosition.SPEAKER_PODIUM),
+        setPositionAndWait(EShoulerPosition.HORIZONTAL),
+        setPositionAndWait(EShoulerPosition.AMP),
+        setPositionAndWait(EShoulerPosition.HOME))
+        .withName("PositionCycleTest");
+  }
+
+  public Command setSpeed(double percentOut) {
+    return Commands.run(
+        () -> {
+          rightRotator.setControl(dutyCycleOut.withOutput(percentOut)
+              .withLimitForwardMotion(isForwardLimit())
+              .withLimitReverseMotion(isReverseLimit()));
+        }, this).withName("SetDutyCycle");
+  }
+
+  private double getPosition() {
+    return positionSupplier.get();
+  }
+
+  private boolean isAtSetPoint(double targetPosition) {
+    return MathUtil.isNear(targetPosition, getPosition(), ShoulderConfig.CLOSED_LOOP_TOLERANCE);
+  }
+
+  private boolean isNearSetPoint(double targetPosition) {
+    return MathUtil.isNear(targetPosition, getPosition(), ShoulderConfig.CLOSED_LOOP_TOLERANCE_WIDE);
+  }
+
+  private boolean isForwardLimit() {
+    return MathUtil.isNear(EShoulerPosition.AMP.value, getPosition(), ShoulderConfig.CLOSED_LOOP_TOLERANCE);
+  }
+
+  private boolean isReverseLimit() {
+    return MathUtil.isNear(EShoulerPosition.HOME.value, getPosition(), ShoulderConfig.CLOSED_LOOP_TOLERANCE);
   }
 }

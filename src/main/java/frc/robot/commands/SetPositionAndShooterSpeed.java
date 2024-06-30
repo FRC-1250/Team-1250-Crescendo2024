@@ -42,7 +42,7 @@ public class SetPositionAndShooterSpeed extends Command {
     }else if (targetPosition == Position.AMP) {
       launcher.setLauncherVelocity(ELauncherSpeed.AMP.value);
     }
-    shoulder.setPosition(targetPosition.value);
+    shoulder.setPositionDutyCycle(targetPosition.value);
   }
 
   // Called once the command ends or is interrupted.

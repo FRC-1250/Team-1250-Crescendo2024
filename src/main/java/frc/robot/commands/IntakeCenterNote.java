@@ -44,7 +44,7 @@ public class IntakeCenterNote extends Command {
     intake.setDutyCycleRearRoller(percentOut);
     indexer.centernote();
     }
-      shoulder.setPosition(Position.HOME.value);
+      shoulder.setPositionDutyCycle(Position.HOME.value);
       if (indexer.iscentered()) {
         timer.start();
       } else {

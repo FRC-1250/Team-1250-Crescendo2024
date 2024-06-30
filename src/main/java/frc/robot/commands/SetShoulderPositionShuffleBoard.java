@@ -25,6 +25,6 @@ public class SetShoulderPositionShuffleBoard extends InstantCommand {
     } else if (pos >= Position.AMP.value) {
       pos = Position.AMP.value;
     }
-    shoulder.setPosition(pos);
+    shoulder.setPositionDutyCycle(pos);
   }
 }
