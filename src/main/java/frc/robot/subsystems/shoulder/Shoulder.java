@@ -35,17 +35,20 @@ public class Shoulder extends SubsystemBase {
     cancoder = new CANcoder(ShoulderConfig.CANCODER_CAN_ID, ShoulderConfig.CAN_BUS);
     cancoder.getConfigurator().apply(ShoulderConfig.CANCODER_CONFIGS);
     positionSupplier = cancoder.getPosition().asSupplier();
-    canCoderPerformanceMonitor = new CANCoderPerformanceMonitor(cancoder, ShoulderConfig.SUBSYSTEM_NAME, ShoulderConfig.CANCODER_STRING);
+    canCoderPerformanceMonitor = new CANCoderPerformanceMonitor(cancoder, ShoulderConfig.SUBSYSTEM_NAME,
+        ShoulderConfig.CANCODER_STRING);
     BaseStatusSignal.setUpdateFrequencyForAll(200, cancoder.getPosition(), cancoder.getVelocity());
 
     rightRotator = new TalonFX(ShoulderConfig.RIGHT_ROTATOR_CAN_ID, ShoulderConfig.CAN_BUS);
     rightRotator.getConfigurator().apply(ShoulderConfig.TALON_FX_CONFIGURATION);
-    rightRotatorMonitor = new TalonFXPerformanceMonitor(rightRotator, ShoulderConfig.SUBSYSTEM_NAME, ShoulderConfig.RIGHT_ROTATOR_STRING);
+    rightRotatorMonitor = new TalonFXPerformanceMonitor(rightRotator, ShoulderConfig.SUBSYSTEM_NAME,
+        ShoulderConfig.RIGHT_ROTATOR_STRING);
 
     leftRotator = new TalonFX(ShoulderConfig.LEFT_ROTATOR_CAN_ID, ShoulderConfig.CAN_BUS);
     leftRotator.getConfigurator().apply(ShoulderConfig.TALON_FX_CONFIGURATION);
     leftRotator.setControl(new Follower(rightRotator.getDeviceID(), true));
-    leftRotatorMonitor = new TalonFXPerformanceMonitor(leftRotator, ShoulderConfig.SUBSYSTEM_NAME, ShoulderConfig.LEFT_ROTATOR_STRING);
+    leftRotatorMonitor = new TalonFXPerformanceMonitor(leftRotator, ShoulderConfig.SUBSYSTEM_NAME,
+        ShoulderConfig.LEFT_ROTATOR_STRING);
 
     dutyCycleOut = new DutyCycleOut(0);
     positionDutyCycle = new PositionDutyCycle(0);
@@ -58,26 +61,34 @@ public class Shoulder extends SubsystemBase {
     canCoderPerformanceMonitor.telemeterize();
   }
 
-  public Command setPositionDutyCycle(EShoulerPosition position) {
-    return Commands.run(
+  public Command setPositionDutyCycle(double rotations) {
+    return Commands.runOnce(
         () -> {
-          rightRotator.setControl(positionDutyCycle.withPosition(position.value)
+          rightRotator.setControl(positionDutyCycle.withPosition(rotations)
               .withFeedForward(0.07)
               .withSlot(0)
               .withLimitForwardMotion(isForwardLimit())
               .withLimitReverseMotion(isReverseLimit()));
         }, this)
-        .until(() -> isAtSetPoint(position.value)).withName("SetPosition: " + position.toString());
+        .withName("SetPosition: " + rotations);
   }
 
-  public Command waitUntilNearSetpoint(EShoulerPosition position) {
-    return Commands.waitUntil(() -> isNearSetPoint(position.value));
+  public Command setPositionDutyCycle(EShoulerPosition position) {
+    return setPositionDutyCycle(position.value);
+  }
+
+  public Command waitUntilAtSetpoint() {
+    return Commands.waitUntil(() -> isAtSetPoint()).withTimeout(ShoulderConfig.POSITION_CLOSED_LOOP_TIME_OVERRIDE);
+  }
+
+  public Command waitUntilNearSetpoint() {
+    return Commands.waitUntil(() -> isNearSetPoint()).withTimeout(ShoulderConfig.POSITION_CLOSED_LOOP_TIME_OVERRIDE);
   }
 
   public Command setPositionAndWait(EShoulerPosition position) {
     return Commands.sequence(
         setPositionDutyCycle(position),
-        Commands.waitSeconds(0.75)).withName("SetPosition " + position.toString());
+        Commands.waitSeconds(0.75)).withName("SetPosition: " + position.toString());
   }
 
   public Command positionCycleTest() {
@@ -90,7 +101,7 @@ public class Shoulder extends SubsystemBase {
         .withName("PositionCycleTest");
   }
 
-  public Command setSpeed(double percentOut) {
+  public Command setDutyCycle(double percentOut) {
     return Commands.run(
         () -> {
           rightRotator.setControl(dutyCycleOut.withOutput(percentOut)
@@ -99,16 +110,26 @@ public class Shoulder extends SubsystemBase {
         }, this).withName("SetDutyCycle");
   }
 
+  public boolean isAtPoint(EShoulerPosition position) {
+    return MathUtil.isNear(position.value, getPosition(), ShoulderConfig.CLOSED_LOOP_TOLERANCE);
+  }
+
+  public boolean isNearPoint(EShoulerPosition position) {
+    return MathUtil.isNear(position.value, getPosition(), ShoulderConfig.CLOSED_LOOP_TOLERANCE_WIDE);
+  }
+
   private double getPosition() {
     return positionSupplier.get();
   }
 
-  private boolean isAtSetPoint(double targetPosition) {
-    return MathUtil.isNear(targetPosition, getPosition(), ShoulderConfig.CLOSED_LOOP_TOLERANCE);
+  private boolean isAtSetPoint() {
+    return MathUtil.isNear(rightRotator.getClosedLoopReference().getValueAsDouble(), getPosition(),
+        ShoulderConfig.CLOSED_LOOP_TOLERANCE);
   }
 
-  private boolean isNearSetPoint(double targetPosition) {
-    return MathUtil.isNear(targetPosition, getPosition(), ShoulderConfig.CLOSED_LOOP_TOLERANCE_WIDE);
+  private boolean isNearSetPoint() {
+    return MathUtil.isNear(rightRotator.getClosedLoopReference().getValueAsDouble(), getPosition(),
+        ShoulderConfig.CLOSED_LOOP_TOLERANCE_WIDE);
   }
 
   private boolean isForwardLimit() {

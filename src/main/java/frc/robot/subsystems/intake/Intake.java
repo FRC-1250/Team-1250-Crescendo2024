@@ -18,35 +18,19 @@ public class Intake extends SubsystemBase {
   private final TalonFXPerformanceMonitor rearRollerMonitor;
 
   public Intake() {
-    setName(IntakeConfig.SUBSYTEM_NAME);
     frontRoller = new TalonFX(IntakeConfig.FRONT_ROLLER_CAN_ID);
     frontRoller.getConfigurator().apply(IntakeConfig.TALON_CONFIG);
-    frontRollerMonitor = new TalonFXPerformanceMonitor(frontRoller, getName(), IntakeConfig.FRONT_ROLLER_STRING);
+    frontRollerMonitor = new TalonFXPerformanceMonitor(frontRoller, IntakeConfig.SUBSYTEM_NAME, IntakeConfig.FRONT_ROLLER_STRING);
 
     rearRoller = new TalonFX(IntakeConfig.REAR_ROLLER_CAN_ID);
     rearRoller.getConfigurator().apply(IntakeConfig.TALON_CONFIG);
-    rearRollerMonitor = new TalonFXPerformanceMonitor(rearRoller, getName(), IntakeConfig.REAR_ROLLER_STRING);
+    rearRollerMonitor = new TalonFXPerformanceMonitor(rearRoller, IntakeConfig.SUBSYTEM_NAME, IntakeConfig.REAR_ROLLER_STRING);
   }
 
-  public void setDutyCycleFrontRoller(double percentOut) {
-    frontRoller.set(percentOut);
-  }
-
-  public void setDutyCycleRearRoller(double percentOut) {
-    rearRoller.set(percentOut);
-  }
-
-  public Command runIntake(double percentOut) {
-    return Commands.run(() -> {
+  public Command setDutyCycle(double percentOut) {
+    return Commands.runOnce(() -> {
       frontRoller.set(percentOut);
       rearRoller.set(percentOut);
-    }, this);
-  }
-
-  public Command stopIntake() {
-    return Commands.run(() -> {
-      frontRoller.set(0);
-      rearRoller.set(0);
     }, this);
   }
 

@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+
 public class TalonFXPerformanceMonitor {
 
   private final List<DoublePerformanceCounter> doubleCounters;
@@ -121,12 +123,16 @@ public class TalonFXPerformanceMonitor {
   }
 
   public void telemeterize() {
-    for (DoublePerformanceCounter doublePerformanceCounter : doubleCounters) {
-      doublePerformanceCounter.push();
-    }
+      try {
+          for (DoublePerformanceCounter doublePerformanceCounter : doubleCounters) {
+              doublePerformanceCounter.push();
+          }
 
-    for (BooleanPerformanceCounter booleanPerformanceCounter : booleanCounters) {
-      booleanPerformanceCounter.push();
-    }
+          for (BooleanPerformanceCounter booleanPerformanceCounter : booleanCounters) {
+              booleanPerformanceCounter.push();
+          }
+      } catch (Exception e) {
+          DataLogManager.log(String.format("GatorBot: Not able to process TALON telemetry: %s", e.getMessage()));
+      }
   }
 }

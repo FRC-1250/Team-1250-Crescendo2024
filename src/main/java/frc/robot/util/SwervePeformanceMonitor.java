@@ -16,6 +16,7 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class SwervePeformanceMonitor {
@@ -89,34 +90,38 @@ public class SwervePeformanceMonitor {
   }
 
   public void telemeterize(SwerveDriveState state, Command currentCommand) {
-    currentStatesPublisher.accept(currentStateSupplier.get());
-    targetStatesPublisher.accept(targetStateSupplier.get());
+    try {
+      currentStatesPublisher.accept(currentStateSupplier.get());
+      targetStatesPublisher.accept(targetStateSupplier.get());
 
-    poses.set(new double[] { state.Pose.getX(), state.Pose.getY(), state.Pose.getRotation().getDegrees() });
+      poses.set(new double[] { state.Pose.getX(), state.Pose.getY(), state.Pose.getRotation().getDegrees() });
 
-    double currentTime = Utils.getCurrentTimeSeconds();
-    double diffTime = currentTime - lastTimestamp;
-    lastTimestamp = currentTime;
-    Translation2d distanceDiff = state.Pose.minus(lastPose).getTranslation();
-    lastPose = state.Pose;
+      double currentTime = Utils.getCurrentTimeSeconds();
+      double diffTime = currentTime - lastTimestamp;
+      lastTimestamp = currentTime;
+      Translation2d distanceDiff = state.Pose.minus(lastPose).getTranslation();
+      lastPose = state.Pose;
 
-    Translation2d velocities = distanceDiff.div(diffTime);
+      Translation2d velocities = distanceDiff.div(diffTime);
 
-    speed.set(velocities.getNorm());
-    velocityX.set(velocities.getX());
-    velocityY.set(velocities.getY());
-    odomFreq.set(1.0 / state.OdometryPeriod);
+      speed.set(velocities.getNorm());
+      velocityX.set(velocities.getX());
+      velocityY.set(velocities.getY());
+      odomFreq.set(1.0 / state.OdometryPeriod);
 
-    for (int i = 0; i < cancoders.size(); i++) {
-      cancoders.get(i).telemeterize();
-      driveMotors.get(i).telemeterize();
-      steeringMotors.get(i).telemeterize();
-    }
+      for (int i = 0; i < cancoders.size(); i++) {
+        cancoders.get(i).telemeterize();
+        driveMotors.get(i).telemeterize();
+        steeringMotors.get(i).telemeterize();
+      }
 
-    if (currentCommand != null) {
-      command.set(currentCommand.getName());
-    } else {
-      command.set("None");
+      if (currentCommand != null) {
+        command.set(currentCommand.getName());
+      } else {
+        command.set("None");
+      }
+    } catch (Exception e) {
+       DataLogManager.log(String.format("GatorBot: Not able to process SWERVE telemetry: %s", e.getMessage()));
     }
   }
 }

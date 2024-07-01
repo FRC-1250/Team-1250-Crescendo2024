@@ -3,6 +3,7 @@ package frc.robot.subsystems.shoulder;
 public enum EShoulerPosition {
   AMP(.358f),
   HORIZONTAL(.25f),
+  PASS(.175f),
   SPEAKER_PODIUM(.158f),
   SPEAKER(.105f),
   HOME(.055f),

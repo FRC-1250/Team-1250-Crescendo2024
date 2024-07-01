@@ -24,6 +24,7 @@ public class ShoulderConfig {
 
   public static final double CLOSED_LOOP_TOLERANCE = 0.003; //1.08 degrees
   public static final double CLOSED_LOOP_TOLERANCE_WIDE = 0.0225; //8.1 degrees
+  public static final double POSITION_CLOSED_LOOP_TIME_OVERRIDE = 1.2;
 
   private static final double ENCODER_OFFSET = 0.0233;
   private static final MagnetSensorConfigs MAGNET_SENSOR_CONFIGS = new MagnetSensorConfigs()

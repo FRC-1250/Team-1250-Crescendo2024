@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+
 public class CANCoderPerformanceMonitor {
 
   private final List<DoublePerformanceCounter> doubleCounters;
@@ -90,12 +92,16 @@ public class CANCoderPerformanceMonitor {
   }
 
   public void telemeterize() {
-    for (DoublePerformanceCounter counter : doubleCounters) {
-      counter.push();
-    }
+    try {
+      for (DoublePerformanceCounter counter : doubleCounters) {
+        counter.push();
+      }
 
-    for (BooleanPerformanceCounter counter : booleanCounters) {
-      counter.push();
+      for (BooleanPerformanceCounter counter : booleanCounters) {
+        counter.push();
+      }
+    } catch (Exception e) {
+          DataLogManager.log(String.format("GatorBot: Not able to process CANCODER telemetry: %s", e.getMessage()));
     }
   }
 }
