@@ -26,7 +26,7 @@ public class FieldCentricAutoAim implements SwerveRequest {
     public double RotationalDeadband = 0;
     public SwerveModule.DriveRequestType DriveRequestType = SwerveModule.DriveRequestType.OpenLoopVoltage;
     public SwerveModule.SteerRequestType SteerRequestType = SwerveModule.SteerRequestType.MotionMagic;
-    private long fid;
+    private double fid;
     private Optional<Alliance> alliance;
     private final Limelight limelight;
     private double xOffset;
@@ -37,20 +37,20 @@ public class FieldCentricAutoAim implements SwerveRequest {
     }
 
     public StatusCode apply(SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
-        fid = limelight.getfid();
+        fid = limelight.getFiducialID();
         alliance = DriverStation.getAlliance();
 
         if (fid == -1 || alliance.isEmpty()) {
             xOffset = 0;
         } else if (alliance.get() == Alliance.Blue) {
             if (fid == 7 || fid == 6) {
-                xOffset = -limelight.getXOffset();
+                xOffset = -limelight.getTX();
             } else {
                 xOffset = 0;
             }
         } else if (alliance.get() == Alliance.Red) {
             if (fid == 4 || fid == 5) {
-                xOffset = -limelight.getXOffset();
+                xOffset = -limelight.getTX();
             } else {
                 xOffset = 0;
             }

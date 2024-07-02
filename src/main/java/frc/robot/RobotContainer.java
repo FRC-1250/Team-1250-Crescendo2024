@@ -14,18 +14,24 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.FieldCentricAutoAim;
-import frc.robot.commands.SuperStructureCommandFactory;
+import frc.robot.commands.CommandFactory;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.SwerveConfig;
 import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerConfig;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeConfig;
 import frc.robot.subsystems.launcher.ELauncherSpeed;
 import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherConfig;
+import frc.robot.subsystems.leds.SystemLights;
 import frc.robot.subsystems.shoulder.EShoulerPosition;
 import frc.robot.subsystems.shoulder.Shoulder;
+import frc.robot.subsystems.shoulder.ShoulderConfig;
 import frc.robot.subsystems.vision.Limelight;
 
 public class RobotContainer {
@@ -33,11 +39,12 @@ public class RobotContainer {
   private final Shoulder shoulder = new Shoulder();
   private final Launcher launcher = new Launcher();
   private final Indexer indexer = new Indexer();
+  private final SystemLights systemLights = new SystemLights();
+  private final Limelight limelight = new Limelight();
   private final CommandSwerveDrivetrain drivetrain = SwerveConfig.DriveTrain;
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-  private final Limelight limelight = new Limelight();
-  private final SuperStructureCommandFactory cmdFactory = new SuperStructureCommandFactory(intake, shoulder, launcher,
-      indexer, drivetrain, limelight);
+  private final CommandFactory cmdFactory = new CommandFactory(intake, shoulder, launcher,
+      indexer, systemLights, limelight, drivetrain);
 
   // Field centric driving in closed loop with 10% deadband
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -58,17 +65,10 @@ public class RobotContainer {
   private final CommandXboxController xboxController = new CommandXboxController(0);
 
   public RobotContainer() {
-    extracted();
     configureNamedCommands();
     configureAutoCommands();
     configureBindings();
-  }
-
-  private void extracted() {
-    SmartDashboard.putData("Intake/Command", intake);
-    SmartDashboard.putData("Shoulder/Command", shoulder);
-    SmartDashboard.putData("Launcher/Command", launcher);
-    SmartDashboard.putData("Indexer/Command", indexer);
+    addSubsystemsToNT();
   }
 
   public Command getAutonomousCommand() {
@@ -105,14 +105,20 @@ public class RobotContainer {
         "Robot centric drive"));
   }
 
+  private void addSubsystemsToNT() {
+    SmartDashboard.putData(IntakeConfig.SUBSYTEM_NAME + "/Command", intake);
+    SmartDashboard.putData(ShoulderConfig.SUBSYSTEM_NAME + "/Command", shoulder);
+    SmartDashboard.putData(LauncherConfig.SUBSYTEM_NAME + "/Command", launcher);
+    SmartDashboard.putData(IndexerConfig.SUBSYTEM_NAME + "/Command", indexer);
+  }
+
   private Command getPathAuto(String pathName) {
     return new PathPlannerAuto(pathName);
   }
 
   private void configureBindings() {
-    // Drive forward with -y, left with -x, rotate counter clockwise with -
-
-    limelight.setDefaultCommand(cmdFactory.limelightLEDSignal());
+    CommandScheduler.getInstance().schedule(cmdFactory.visionOdometryUpdate());
+    systemLights.setDefaultCommand(cmdFactory.lightSignals());
     xboxController.leftBumper().onTrue(cmdFactory.prepFireNote(ELauncherSpeed.AMP, EShoulerPosition.AMP));
     xboxController.leftTrigger().onTrue(cmdFactory.prepFireNote(ELauncherSpeed.SPEAKER, EShoulerPosition.SPEAKER));
     xboxController.rightBumper().onTrue(cmdFactory.intakeNote());

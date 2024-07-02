@@ -14,6 +14,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
@@ -21,7 +22,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.vision.LimelightHelpers;
+import frc.robot.subsystems.vision.Limelight;
+import frc.robot.subsystems.vision.PoseEstimate;
 import frc.robot.util.SwervePeformanceMonitor;
 
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
@@ -82,11 +84,19 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 				this); // Subsystem for requirements
 	}
 
-	private void checkForVisionTarget() {
+	public SwerveDrivePoseEstimator getOdom() {
+		return m_odometry;
+	}
+
+	public double getPidgeonRate() {
+		return m_pigeon2.getRate();
+	}
+
+	public void updateOmodetryWithLimelight(Limelight limelight) {
 		boolean doRejectUpdate = false;
-		LimelightHelpers.SetRobotOrientation("limelight", m_odometry.getEstimatedPosition().getRotation().getDegrees(), 0,
+		limelight.SetRobotOrientation(m_odometry.getEstimatedPosition().getRotation().getDegrees(), 0,
 				0, 0, 0, 0);
-		LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+		PoseEstimate mt2 = limelight.getBotPoseEstimate_wpiBlue_MegaTag2();
 		if (Math.abs(m_pigeon2.getRate()) > 720) {
 			doRejectUpdate = true;
 		}
@@ -125,9 +135,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 			});
 		}
 
-		if (SwerveConfig.ALLOW_VISION_ODOMETRY_CORRECTION) {
-			checkForVisionTarget();
-		}
 		swerveMonitor.telemeterize(this.getState(), this.getCurrentCommand());
 	}
 }

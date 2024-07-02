@@ -7,25 +7,31 @@ import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.launcher.ELauncherSpeed;
 import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.leds.EColorProfile;
+import frc.robot.subsystems.leds.SystemLights;
 import frc.robot.subsystems.shoulder.EShoulerPosition;
 import frc.robot.subsystems.shoulder.Shoulder;
 import frc.robot.subsystems.vision.Limelight;
 
-public class SuperStructureCommandFactory {
+public class CommandFactory {
 
   private final Intake intake;
   private final Shoulder shoulder;
   private final Launcher launcher;
   private final Indexer indexer;
+  private final SystemLights systemLights;
   private final Limelight limelight;
+  private final CommandSwerveDrivetrain commandSwerveDrivetrain;
 
-  public SuperStructureCommandFactory(Intake intake, Shoulder shoulder, Launcher launcher, Indexer indexer,
-      CommandSwerveDrivetrain drivetrain, Limelight limelight) {
+  public CommandFactory(Intake intake, Shoulder shoulder, Launcher launcher, Indexer indexer,
+      SystemLights systemLights, Limelight limelight, CommandSwerveDrivetrain commandSwerveDrivetrain) {
     this.intake = intake;
     this.shoulder = shoulder;
     this.launcher = launcher;
     this.indexer = indexer;
+    this.systemLights = systemLights;
     this.limelight = limelight;
+    this.commandSwerveDrivetrain = commandSwerveDrivetrain;
   }
 
   public final Command autoFiringSequence(ELauncherSpeed launcherSpeed, EShoulerPosition shoulerPosition) {
@@ -72,16 +78,16 @@ public class SuperStructureCommandFactory {
         intake.setDutyCycle(0));
   }
 
-  public final Command limelightLEDSignal() {
+  public final Command lightSignals() {
     return Commands.run(() -> {
       if (indexer.isNoteStaged()) {
-        limelight.setLEDMode(2);
+        systemLights.setLeds(EColorProfile.RED);
       } else if (shoulder.isNearPoint(EShoulerPosition.HOME)) {
-        limelight.setLEDMode(3);
+        systemLights.setLeds(EColorProfile.BLUE);
       } else {
-        limelight.setLEDMode(1);
+        systemLights.setLeds(EColorProfile.GREEN);
       }
-    }, limelight);
+    }, systemLights);
   }
 
   public final Command unjam() {
@@ -96,5 +102,12 @@ public class SuperStructureCommandFactory {
         intake.setDutyCycle(0),
         indexer.setDutyCycle(0),
         launcher.setDutyCycle(0));
+  }
+
+  public final Command visionOdometryUpdate() {
+    return Commands.run(
+        () -> {
+          commandSwerveDrivetrain.updateOmodetryWithLimelight(limelight);
+        });
   }
 }

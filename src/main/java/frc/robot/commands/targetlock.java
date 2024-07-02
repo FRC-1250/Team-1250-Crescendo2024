@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.vision.Limelight;
 
-public class TargetLock implements SwerveRequest {
+public class Targetlock implements SwerveRequest {
   public double VelocityX = 0;
   public double VelocityY = 0;
   public double Deadband = 0;
@@ -26,7 +26,7 @@ public class TargetLock implements SwerveRequest {
   public SwerveModule.DriveRequestType DriveRequestType = SwerveModule.DriveRequestType.OpenLoopVoltage;
   public SwerveModule.SteerRequestType SteerRequestType = SwerveModule.SteerRequestType.MotionMagic;
   public PhoenixPIDController headingController = new PhoenixPIDController(4, 0, 0);
-  private long fid;
+  private double fid;
   private Optional<Alliance> alliance;
   private final Limelight limelight;
   private final Supplier<Double> headingSupplier;
@@ -41,7 +41,7 @@ public class TargetLock implements SwerveRequest {
    * @param velocityX Velocity in the X direction, in m/s
    * @return this request
    */
-  public TargetLock withVelocityX(double velocityX) {
+  public Targetlock withVelocityX(double velocityX) {
     this.VelocityX = velocityX;
     return this;
   }
@@ -54,7 +54,7 @@ public class TargetLock implements SwerveRequest {
    * @param velocityY Velocity in the Y direction, in m/s
    * @return this request
    */
-  public TargetLock withVelocityY(double velocityY) {
+  public Targetlock withVelocityY(double velocityY) {
     this.VelocityY = velocityY;
     return this;
   }
@@ -65,7 +65,7 @@ public class TargetLock implements SwerveRequest {
    * @param deadband Allowable deadband of the request
    * @return this request
    */
-  public TargetLock withDeadband(double deadband) {
+  public Targetlock withDeadband(double deadband) {
     this.Deadband = deadband;
     return this;
   }
@@ -76,7 +76,7 @@ public class TargetLock implements SwerveRequest {
    * @param rotationalDeadband Rotational deadband of the request
    * @return this request
    */
-  public TargetLock withRotationalDeadband(double rotationalDeadband) {
+  public Targetlock withRotationalDeadband(double rotationalDeadband) {
     this.RotationalDeadband = rotationalDeadband;
     return this;
   }
@@ -88,7 +88,7 @@ public class TargetLock implements SwerveRequest {
    *                         motor
    * @return this request
    */
-  public TargetLock withDriveRequestType(SwerveModule.DriveRequestType driveRequestType) {
+  public Targetlock withDriveRequestType(SwerveModule.DriveRequestType driveRequestType) {
     this.DriveRequestType = driveRequestType;
     return this;
   }
@@ -100,19 +100,19 @@ public class TargetLock implements SwerveRequest {
    *                         motor
    * @return this request
    */
-  public TargetLock withSteerRequestType(SwerveModule.SteerRequestType steerRequestType) {
+  public Targetlock withSteerRequestType(SwerveModule.SteerRequestType steerRequestType) {
     this.SteerRequestType = steerRequestType;
     return this;
   }
 
-  public TargetLock(Limelight limelight, Supplier<Double> headingSupplier) {
+  public Targetlock(Limelight limelight, Supplier<Double> headingSupplier) {
     this.limelight = limelight;
     this.headingSupplier = headingSupplier;
   }
 
   @Override
   public StatusCode apply(SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
-    fid = limelight.getfid();
+    fid = limelight.getFiducialID();
     if (fid == -1) {
       angle = headingSupplier.get();
     } else {
