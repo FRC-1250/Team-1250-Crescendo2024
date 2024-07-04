@@ -11,19 +11,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Limelight extends SubsystemBase {
-
-  private final String name;
-
-  public Limelight() {
-    this("limelight");
-  }
-
-  public Limelight(String limelightTable) {
-    name = limelightTable;
-  }
+public class LimelightHelper {
 
   /**
    * Gets the Pose2d and timestamp for use with WPILib pose estimator
@@ -31,11 +20,11 @@ public class Limelight extends SubsystemBase {
    * alliance
    * 
    */
-  public PoseEstimate getBotPoseEstimate_wpiBlue_MegaTag2() {
-    return getBotPoseEstimate("botpose_orb_wpiblue");
+  public static PoseEstimate getBotPoseEstimate_wpiBlue_MegaTag2(String tableName) {
+    return getBotPoseEstimate(tableName, "botpose_orb_wpiblue");
   }
 
-  public void SetRobotOrientation(double yaw, double yawRate,
+  public static void SetRobotOrientation(String tableName, double yaw, double yawRate,
       double pitch, double pitchRate,
       double roll, double rollRate) {
 
@@ -46,35 +35,35 @@ public class Limelight extends SubsystemBase {
     entries[3] = pitchRate;
     entries[4] = roll;
     entries[5] = rollRate;
-    setLimelightNTDoubleArray(name, "robot_orientation_set", entries);
+    setLimelightNTDoubleArray(tableName, "robot_orientation_set", entries);
   }
 
-  public double getTX() {
-    return getLimelightNTDouble(name, "tx");
+  public static double getTX(String tableName) {
+    return getLimelightNTDouble(tableName, "tx");
   }
 
-  public double getTY() {
-    return getLimelightNTDouble(name, "ty");
+  public static double getTY(String tableName) {
+    return getLimelightNTDouble(tableName, "ty");
   }
 
-  public double getTA() {
-    return getLimelightNTDouble(name, "ta");
+  public static double getTA(String tableName) {
+    return getLimelightNTDouble(tableName, "ta");
   }
 
-  public double getFiducialID() {
-    return getLimelightNTDouble(name, "tid");
+  public static double getFiducialID(String tableName) {
+    return getLimelightNTDouble(tableName, "tid");
   }
 
-  public boolean getTV() {
-    return 1.0 == getLimelightNTDouble(name, "tv");
+  public static boolean getTV(String tableName) {
+    return 1.0 == getLimelightNTDouble(tableName, "tv");
   }
 
-  public void setPipelineIndex(int pipelineIndex) {
-    setLimelightNTDouble(name, "pipeline", pipelineIndex);
+  public static void setPipelineIndex(String tableName, int pipelineIndex) {
+    setLimelightNTDouble(tableName, "pipeline", pipelineIndex);
   }
 
-  public void setPriorityTagID(int ID) {
-    setLimelightNTDouble(name, "priorityid", ID);
+  public static void setPriorityTagID(String tableName,int ID) {
+    setLimelightNTDouble(tableName, "priorityid", ID);
   }
 
   /**
@@ -82,59 +71,43 @@ public class Limelight extends SubsystemBase {
    * code.
    */
 
-  public void setLEDMode_PipelineControl() {
-    setLimelightNTDouble(name, "ledMode", 0);
+  public static void setLEDMode_PipelineControl(String tableName) {
+    setLimelightNTDouble(tableName, "ledMode", 0);
   }
 
-  public void setLEDMode_ForceOff() {
-    setLimelightNTDouble(name, "ledMode", 1);
+  public static void setLEDMode_ForceOff(String tableName) {
+    setLimelightNTDouble(tableName, "ledMode", 1);
   }
 
-  public void setLEDMode_ForceBlink() {
-    setLimelightNTDouble(name, "ledMode", 2);
+  public static void setLEDMode_ForceBlink(String tableName) {
+    setLimelightNTDouble(tableName, "ledMode", 2);
   }
 
-  public void setLEDMode_ForceOn() {
-    setLimelightNTDouble(name, "ledMode", 3);
+  public static void setLEDMode_ForceOn(String tableName) {
+    setLimelightNTDouble(tableName, "ledMode", 3);
   }
 
-  @Override
-  public void periodic() {
-  }
-
-  private double[] getLimelightNTDoubleArray(String tableName, String entryName) {
-    return getLimelightNTTableEntry(tableName, entryName).getDoubleArray(new double[0]);
-  }
-
-  private String getLimelightNTString(String tableName, String entryName) {
-    return getLimelightNTTableEntry(tableName, entryName).getString("");
-  }
-
-  private String[] getLimelightNTStringArray(String tableName, String entryName) {
-    return getLimelightNTTableEntry(tableName, entryName).getStringArray(new String[0]);
-  }
-
-  private NetworkTable getLimelightNTTable(String tableName) {
+  private static NetworkTable getLimelightNTTable(String tableName) {
     return NetworkTableInstance.getDefault().getTable(sanitizeName(tableName));
   }
 
-  private NetworkTableEntry getLimelightNTTableEntry(String tableName, String entryName) {
+  private static NetworkTableEntry getLimelightNTTableEntry(String tableName, String entryName) {
     return getLimelightNTTable(tableName).getEntry(entryName);
   }
 
-  private double getLimelightNTDouble(String tableName, String entryName) {
+  private static double getLimelightNTDouble(String tableName, String entryName) {
     return getLimelightNTTableEntry(tableName, entryName).getDouble(0.0);
   }
 
-  private void setLimelightNTDouble(String tableName, String entryName, double val) {
+  private static void setLimelightNTDouble(String tableName, String entryName, double val) {
     getLimelightNTTableEntry(tableName, entryName).setDouble(val);
   }
 
-  private void setLimelightNTDoubleArray(String tableName, String entryName, double[] val) {
+  private static void setLimelightNTDoubleArray(String tableName, String entryName, double[] val) {
     getLimelightNTTableEntry(tableName, entryName).setDoubleArray(val);
   }
 
-  private Pose2d toPose2D(double[] inData) {
+  private static Pose2d toPose2D(double[] inData) {
     if (inData.length < 6) {
       // System.err.println("Bad LL 2D Pose Data!");
       return new Pose2d();
@@ -144,15 +117,15 @@ public class Limelight extends SubsystemBase {
     return new Pose2d(tran2d, r2d);
   }
 
-  private double extractArrayEntry(double[] inData, int position) {
+  private static double extractArrayEntry(double[] inData, int position) {
     if (inData.length < position + 1) {
       return 0;
     }
     return inData[position];
   }
 
-  private PoseEstimate getBotPoseEstimate(String entryName) {
-    var poseEntry = getLimelightNTTableEntry(name, entryName);
+  private static PoseEstimate getBotPoseEstimate(String tableName, String entryName) {
+    var poseEntry = getLimelightNTTableEntry(tableName, entryName);
     var poseArray = poseEntry.getDoubleArray(new double[0]);
     var pose = toPose2D(poseArray);
     double latency = extractArrayEntry(poseArray, 6);
@@ -185,10 +158,10 @@ public class Limelight extends SubsystemBase {
     return new PoseEstimate(pose, timestamp, latency, tagCount, tagSpan, tagDist, tagArea, rawFiducials);
   }
 
-  private String sanitizeName(String name) {
-    if (name == "" || name == null) {
+  private static String sanitizeName(String tableName) {
+    if (tableName == "" || tableName == null) {
       return "limelight";
     }
-    return name;
+    return tableName;
   }
 }

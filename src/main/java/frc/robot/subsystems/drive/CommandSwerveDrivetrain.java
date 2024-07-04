@@ -22,7 +22,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.vision.Limelight;
+import frc.robot.subsystems.vision.LimelightConfig;
+import frc.robot.subsystems.vision.LimelightHelper;
 import frc.robot.subsystems.vision.PoseEstimate;
 import frc.robot.util.SwervePeformanceMonitor;
 
@@ -92,11 +93,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 		return m_pigeon2.getRate();
 	}
 
-	public void updateOmodetryWithLimelight(Limelight limelight) {
+	public void updateOmodetryWithLimelight() {
 		boolean doRejectUpdate = false;
-		limelight.SetRobotOrientation(m_odometry.getEstimatedPosition().getRotation().getDegrees(), 0,
+		LimelightHelper.SetRobotOrientation(LimelightConfig.PRIMARY ,m_odometry.getEstimatedPosition().getRotation().getDegrees(), 0,
 				0, 0, 0, 0);
-		PoseEstimate mt2 = limelight.getBotPoseEstimate_wpiBlue_MegaTag2();
+		PoseEstimate mt2 = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2(LimelightConfig.PRIMARY);
 		if (Math.abs(m_pigeon2.getRate()) > 720) {
 			doRejectUpdate = true;
 		}

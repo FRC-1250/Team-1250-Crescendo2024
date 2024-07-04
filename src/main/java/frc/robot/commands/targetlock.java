@@ -16,7 +16,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.subsystems.vision.Limelight;
+import frc.robot.subsystems.vision.LimelightConfig;
+import frc.robot.subsystems.vision.LimelightHelper;
 
 public class Targetlock implements SwerveRequest {
   public double VelocityX = 0;
@@ -28,7 +29,6 @@ public class Targetlock implements SwerveRequest {
   public PhoenixPIDController headingController = new PhoenixPIDController(4, 0, 0);
   private double fid;
   private Optional<Alliance> alliance;
-  private final Limelight limelight;
   private final Supplier<Double> headingSupplier;
   private double angle;
 
@@ -105,14 +105,13 @@ public class Targetlock implements SwerveRequest {
     return this;
   }
 
-  public Targetlock(Limelight limelight, Supplier<Double> headingSupplier) {
-    this.limelight = limelight;
+  public Targetlock(Supplier<Double> headingSupplier) {
     this.headingSupplier = headingSupplier;
   }
 
   @Override
   public StatusCode apply(SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
-    fid = limelight.getFiducialID();
+    fid = LimelightHelper.getFiducialID(LimelightConfig.PRIMARY);
     if (fid == -1) {
       angle = headingSupplier.get();
     } else {

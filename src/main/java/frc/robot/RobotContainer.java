@@ -32,7 +32,6 @@ import frc.robot.subsystems.leds.SystemLights;
 import frc.robot.subsystems.shoulder.EShoulerPosition;
 import frc.robot.subsystems.shoulder.Shoulder;
 import frc.robot.subsystems.shoulder.ShoulderConfig;
-import frc.robot.subsystems.vision.Limelight;
 
 public class RobotContainer {
   private final Intake intake = new Intake();
@@ -40,11 +39,10 @@ public class RobotContainer {
   private final Launcher launcher = new Launcher();
   private final Indexer indexer = new Indexer();
   private final SystemLights systemLights = new SystemLights();
-  private final Limelight limelight = new Limelight();
   private final CommandSwerveDrivetrain drivetrain = SwerveConfig.DriveTrain;
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
   private final CommandFactory cmdFactory = new CommandFactory(intake, shoulder, launcher,
-      indexer, systemLights, limelight, drivetrain);
+      indexer, systemLights, drivetrain);
 
   // Field centric driving in closed loop with 10% deadband
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -57,7 +55,7 @@ public class RobotContainer {
       .withRotationalDeadband(SwerveConfig.MaxAngularRate * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-  private final FieldCentricAutoAim fieldCentricAutoAim = new FieldCentricAutoAim(limelight)
+  private final FieldCentricAutoAim fieldCentricAutoAim = new FieldCentricAutoAim()
       .withDeadband(SwerveConfig.MaxSpeed * 0.1)
       .withRotationalDeadband(SwerveConfig.MaxAngularRate * 0.025)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -69,6 +67,7 @@ public class RobotContainer {
     configureAutoCommands();
     configureBindings();
     addSubsystemsToNT();
+    CommandScheduler.getInstance().schedule(cmdFactory.visionOdometryUpdate());
   }
 
   public Command getAutonomousCommand() {
@@ -117,7 +116,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    CommandScheduler.getInstance().schedule(cmdFactory.visionOdometryUpdate());
     systemLights.setDefaultCommand(cmdFactory.lightSignals());
     xboxController.leftBumper().onTrue(cmdFactory.prepFireNote(ELauncherSpeed.AMP, EShoulerPosition.AMP));
     xboxController.leftTrigger().onTrue(cmdFactory.prepFireNote(ELauncherSpeed.SPEAKER, EShoulerPosition.SPEAKER));

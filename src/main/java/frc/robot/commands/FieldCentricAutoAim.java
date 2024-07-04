@@ -15,7 +15,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.drive.SwerveConfig;
-import frc.robot.subsystems.vision.Limelight;
+import frc.robot.subsystems.vision.LimelightConfig;
+import frc.robot.subsystems.vision.LimelightHelper;
 
 /** Add your docs here. */
 public class FieldCentricAutoAim implements SwerveRequest {
@@ -28,29 +29,26 @@ public class FieldCentricAutoAim implements SwerveRequest {
     public SwerveModule.SteerRequestType SteerRequestType = SwerveModule.SteerRequestType.MotionMagic;
     private double fid;
     private Optional<Alliance> alliance;
-    private final Limelight limelight;
     private double xOffset;
     private final double kP = 0.02;
 
-    public FieldCentricAutoAim(Limelight limelight) {
-        this.limelight = limelight;
-    }
+    public FieldCentricAutoAim() {}
 
     public StatusCode apply(SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
-        fid = limelight.getFiducialID();
+        fid = LimelightHelper.getFiducialID(LimelightConfig.PRIMARY);
         alliance = DriverStation.getAlliance();
 
         if (fid == -1 || alliance.isEmpty()) {
             xOffset = 0;
         } else if (alliance.get() == Alliance.Blue) {
             if (fid == 7 || fid == 6) {
-                xOffset = -limelight.getTX();
+                xOffset = -LimelightHelper.getTX(LimelightConfig.PRIMARY);
             } else {
                 xOffset = 0;
             }
         } else if (alliance.get() == Alliance.Red) {
             if (fid == 4 || fid == 5) {
-                xOffset = -limelight.getTX();
+                xOffset = -LimelightHelper.getTX(LimelightConfig.PRIMARY);
             } else {
                 xOffset = 0;
             }

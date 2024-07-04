@@ -11,7 +11,6 @@ import frc.robot.subsystems.leds.EColorProfile;
 import frc.robot.subsystems.leds.SystemLights;
 import frc.robot.subsystems.shoulder.EShoulerPosition;
 import frc.robot.subsystems.shoulder.Shoulder;
-import frc.robot.subsystems.vision.Limelight;
 
 public class CommandFactory {
 
@@ -20,17 +19,15 @@ public class CommandFactory {
   private final Launcher launcher;
   private final Indexer indexer;
   private final SystemLights systemLights;
-  private final Limelight limelight;
   private final CommandSwerveDrivetrain commandSwerveDrivetrain;
 
   public CommandFactory(Intake intake, Shoulder shoulder, Launcher launcher, Indexer indexer,
-      SystemLights systemLights, Limelight limelight, CommandSwerveDrivetrain commandSwerveDrivetrain) {
+      SystemLights systemLights, CommandSwerveDrivetrain commandSwerveDrivetrain) {
     this.intake = intake;
     this.shoulder = shoulder;
     this.launcher = launcher;
     this.indexer = indexer;
     this.systemLights = systemLights;
-    this.limelight = limelight;
     this.commandSwerveDrivetrain = commandSwerveDrivetrain;
   }
 
@@ -107,7 +104,7 @@ public class CommandFactory {
   public final Command visionOdometryUpdate() {
     return Commands.run(
         () -> {
-          commandSwerveDrivetrain.updateOmodetryWithLimelight(limelight);
+          commandSwerveDrivetrain.updateOmodetryWithLimelight();
         });
   }
 }
