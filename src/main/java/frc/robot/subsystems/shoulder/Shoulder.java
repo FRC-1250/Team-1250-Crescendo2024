@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -25,7 +25,7 @@ public class Shoulder extends SubsystemBase {
   private final TalonFX rightRotator;
   private final CANcoder cancoder;
   private final DutyCycleOut dutyCycleOut;
-  private final PositionDutyCycle positionDutyCycle;
+  private final MotionMagicDutyCycle motionMagicDutyCycle;
   private final Supplier<Double> positionSupplier;
   private final CANCoderPerformanceMonitor canCoderPerformanceMonitor;
   private final TalonFXPerformanceMonitor rightRotatorMonitor;
@@ -51,7 +51,7 @@ public class Shoulder extends SubsystemBase {
         ShoulderConfig.LEFT_ROTATOR_STRING);
 
     dutyCycleOut = new DutyCycleOut(0);
-    positionDutyCycle = new PositionDutyCycle(0);
+    motionMagicDutyCycle = new MotionMagicDutyCycle(0);
   }
 
   @Override
@@ -61,44 +61,24 @@ public class Shoulder extends SubsystemBase {
     canCoderPerformanceMonitor.telemeterize();
   }
 
-  public Command setPositionDutyCycle(double rotations) {
+  public Command setMotionMagicDutyCycle(double rotations) {
     return Commands.runOnce(
         () -> {
-          rightRotator.setControl(positionDutyCycle.withPosition(rotations)
-              .withFeedForward(0.07)
-              .withSlot(0)
+          rightRotator.setControl(motionMagicDutyCycle.withPosition(rotations)
+              .withFeedForward(0.1)
               .withLimitForwardMotion(isForwardLimit())
               .withLimitReverseMotion(isReverseLimit()));
         }, this)
         .withName("SetPosition: " + rotations);
   }
 
-  public Command setPositionDutyCycle(EShoulerPosition position) {
-    return setPositionDutyCycle(position.value);
+  public Command setMotionMagicDutyCycle(EShoulerPosition position) {
+    return setMotionMagicDutyCycle(position.value);
   }
 
-  public Command waitUntilAtSetpoint() {
-    return Commands.waitUntil(() -> isAtSetPoint()).withTimeout(ShoulderConfig.POSITION_CLOSED_LOOP_TIME_OVERRIDE);
-  }
-
-  public Command waitUntilNearSetpoint() {
-    return Commands.waitUntil(() -> isNearSetPoint()).withTimeout(ShoulderConfig.POSITION_CLOSED_LOOP_TIME_OVERRIDE);
-  }
-
-  public Command setPositionAndWait(EShoulerPosition position) {
-    return Commands.sequence(
-        setPositionDutyCycle(position),
+  public Command setMotionMagicAndWait(EShoulerPosition position) {
+    return Commands.sequence(setMotionMagicDutyCycle(position),
         Commands.waitSeconds(0.75)).withName("SetPosition: " + position.toString());
-  }
-
-  public Command positionCycleTest() {
-    return Commands.sequence(
-        setPositionAndWait(EShoulerPosition.SPEAKER),
-        setPositionAndWait(EShoulerPosition.SPEAKER_PODIUM),
-        setPositionAndWait(EShoulerPosition.HORIZONTAL),
-        setPositionAndWait(EShoulerPosition.AMP),
-        setPositionAndWait(EShoulerPosition.HOME))
-        .withName("PositionCycleTest");
   }
 
   public Command setDutyCycle(double percentOut) {
@@ -116,6 +96,24 @@ public class Shoulder extends SubsystemBase {
 
   public boolean isNearPoint(EShoulerPosition position) {
     return MathUtil.isNear(position.value, getPosition(), ShoulderConfig.CLOSED_LOOP_TOLERANCE_WIDE);
+  }
+
+  public Command waitUntilAtSetpoint() {
+    return Commands.waitUntil(() -> isAtSetPoint()).withTimeout(ShoulderConfig.POSITION_CLOSED_LOOP_TIME_OVERRIDE);
+  }
+
+  public Command waitUntilNearSetpoint() {
+    return Commands.waitUntil(() -> isNearSetPoint()).withTimeout(ShoulderConfig.POSITION_CLOSED_LOOP_TIME_OVERRIDE);
+  }
+
+  public Command positionCycleTest() {
+    return Commands.sequence(
+        setMotionMagicDutyCycle(EShoulerPosition.SPEAKER),
+        setMotionMagicDutyCycle(EShoulerPosition.SPEAKER_PODIUM),
+        setMotionMagicDutyCycle(EShoulerPosition.HORIZONTAL),
+        setMotionMagicDutyCycle(EShoulerPosition.AMP),
+        setMotionMagicDutyCycle(EShoulerPosition.HOME))
+        .withName("PositionCycleTest");
   }
 
   private double getPosition() {

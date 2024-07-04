@@ -39,7 +39,7 @@ public class CommandFactory {
 
   public final Command prepFireNote(ELauncherSpeed launcherSpeed, EShoulerPosition shoulerPosition) {
     return Commands.parallel(
-        shoulder.setPositionDutyCycle(shoulerPosition),
+        shoulder.setMotionMagicDutyCycle(shoulerPosition),
         launcher.setVelocityVoltage(launcherSpeed));
   }
 
@@ -58,7 +58,7 @@ public class CommandFactory {
   }
 
   public final Command intakeNote() {
-    return shoulder.setPositionDutyCycle(EShoulerPosition.HOME)
+    return shoulder.setMotionMagicDutyCycle(EShoulerPosition.HOME)
         .andThen(Commands.deadline(
             indexer.stageNote(),
             intake.setDutyCycle(1))
@@ -69,7 +69,7 @@ public class CommandFactory {
 
   public final Command startingConfiguration() {
     return Commands.parallel(
-        shoulder.setPositionDutyCycle(EShoulerPosition.HOME),
+        shoulder.setMotionMagicDutyCycle(EShoulerPosition.HOME),
         launcher.setVelocityVoltage(ELauncherSpeed.IDLE),
         indexer.setDutyCycle(0),
         intake.setDutyCycle(0));
