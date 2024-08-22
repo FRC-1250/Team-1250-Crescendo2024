@@ -34,11 +34,11 @@ public class SetPositionAndShooterSpeed extends Command {
   @Override
   public void execute() {
     if (targetPosition == Position.SPEAKER) {
-      launcher.SetLauncherVelocity(launcher.SPEAKER_TARGET_RPM_RIGHT, launcher.SPEAKER_TARGET_RPM_LEFT);
+      launcher.SetLauncherVelocity(launcher.SPEAKER_TARGET_RPM, launcher.SPEAKER_TARGET_RPM);
     } else if ( targetPosition == Position.SPEAKER_PODIUM) { 
-      launcher.SetLauncherVelocity(launcher.PODIUM_TARGET_RPM_RIGHT, launcher.PODIUM_TARGET_RPM_LEFT);
+      launcher.SetLauncherVelocity(launcher.PODIUM_TARGET_RPM, launcher.PODIUM_TARGET_RPM);
     }else if (targetPosition == Position.AMP) {
-      launcher.SetLauncherVelocity(launcher.AMP_TARGET_RPM_RIGHT, launcher.AMP_TARGET_RPM_LEFT);
+      launcher.SetLauncherVelocity(launcher.AMP_TARGET_RPM, launcher.AMP_TARGET_RPM);
     }
     shoulder.setPosition(targetPosition.value);
   }

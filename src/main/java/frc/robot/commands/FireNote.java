@@ -43,14 +43,14 @@ public class FireNote extends Command {
     var targetRPMright = 0; 
 
     if (shoulder.isNearSetPoint(Position.SPEAKER.value)) {
-      targetRPMright = launcher.SPEAKER_TARGET_RPM_RIGHT;
-      targetRPMleft = launcher.SPEAKER_TARGET_RPM_LEFT; 
+      targetRPMright = launcher.SPEAKER_TARGET_RPM;
+      targetRPMleft = launcher.SPEAKER_TARGET_RPM; 
     } else if (shoulder.isNearSetPoint(Position.SPEAKER_PODIUM.value)) {
-      targetRPMright = launcher.PODIUM_TARGET_RPM_RIGHT;
-      targetRPMleft = launcher.PODIUM_TARGET_RPM_LEFT;
+      targetRPMright = launcher.PODIUM_TARGET_RPM;
+      targetRPMleft = launcher.PODIUM_TARGET_RPM;
     } else {
-      targetRPMleft = launcher.AMP_TARGET_RPM_LEFT;
-      targetRPMright = launcher.AMP_TARGET_RPM_RIGHT;
+      targetRPMleft = launcher.AMP_TARGET_RPM;
+      targetRPMright = launcher.AMP_TARGET_RPM;
     }
 
     launcher.SetLauncherVelocity(targetRPMright, targetRPMleft);

@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class indexer extends SubsystemBase {
   private int LINDEX = 22;
-  private int RINDEX = 23;
+  private int RINDEX = 23; //can be removed now
   DigitalInput[] irArray = new DigitalInput[5];
 
 

@@ -16,13 +16,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class launcher extends SubsystemBase {
   private final int LEFT_LAUNCHER_CAN_ID = 20;
   private final int RIGHT_LAUNCHER_CAN_ID = 21;
+
+  //Rpms for different shots
   public final int FALCON_500_MAX_RPM = 6380;
-  public final int PODIUM_TARGET_RPM_LEFT = 5000;
-  public final int PODIUM_TARGET_RPM_RIGHT = 5000;
-  public final int SPEAKER_TARGET_RPM_LEFT = 3500;
-  public final int SPEAKER_TARGET_RPM_RIGHT = 3500;
-  public final int AMP_TARGET_RPM_LEFT = 1500;
-  public final int AMP_TARGET_RPM_RIGHT = 1500;
+  public final int PODIUM_TARGET_RPM = 5000;
+  public final int SPEAKER_TARGET_RPM = 3500;
+  public final int AMP_TARGET_RPM = 1500;
 
   private final VelocityVoltage leftVelocityControl;
   private final VelocityVoltage rightVelocityControl;
@@ -35,7 +34,7 @@ public class launcher extends SubsystemBase {
     TalonFXConfiguration configs = new TalonFXConfiguration();
     configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    //Configurations for the shooter wheels for speaker and amp shots 
+    //Configurations for the shooter wheels for SPEAKER and PODIUMS shots 
     configs.Slot0.kP = 0.11;
     configs.Slot0.kI = 0;
     configs.Slot0.kD = 0.0001;
