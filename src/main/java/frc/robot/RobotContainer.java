@@ -127,6 +127,7 @@ public class RobotContainer {
     xboxController.pov(180).whileTrue(shoulder.setDutyCycle(-0.75)).onFalse(shoulder.setDutyCycle(0));
     xboxController.y().onTrue(cmdFactory.startingConfiguration());
     xboxController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+     SmartDashboard.putData("Intake Test", cmdFactory.intakeNote());
   }
 
   private void addPathAuto(String name, String pathName) {
@@ -146,6 +147,7 @@ public class RobotContainer {
     autoChooser.addOption("FireNoteOnly",
         cmdFactory.autoFiringSequence(ELauncherSpeed.SPEAKER, EShoulerPosition.SPEAKER));
     addPathAuto("SpeakerCenter", "Center");
+    addPathAuto("TestDrive", "TestDrive");
     addPathAuto("SpeakerCenterWithPodiumNote", "CenterWithPodiumNote");
     addPathAuto("SpeakerCenterWithAmpNote", "CenterWithAmpNote");
     addPathAuto("SpeakerALLNOTE", "CenterAllNote");

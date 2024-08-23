@@ -58,13 +58,8 @@ public class CommandFactory {
   }
 
   public final Command intakeNote() {
-    return shoulder.setMotionMagicDutyCycle(EShoulerPosition.HOME)
-        .andThen(Commands.deadline(
-            indexer.stageNote(),
-            intake.setDutyCycle(1))
-            .andThen(Commands.parallel(
-                indexer.centerNote(),
-                intake.setDutyCycle(0))));
+    return
+   indexer.centerNote();
   }
 
   public final Command startingConfiguration() {
