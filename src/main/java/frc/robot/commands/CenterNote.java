@@ -5,13 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.indexer;
+import frc.robot.subsystems.Indexer;
 
 public class CenterNote extends Command {
   /** Creates a new Sensor. */
-  private final indexer indexer;
+  private final Indexer indexer;
 
-  public CenterNote(indexer indexer) {
+  public CenterNote(Indexer indexer) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.indexer = indexer;
   }

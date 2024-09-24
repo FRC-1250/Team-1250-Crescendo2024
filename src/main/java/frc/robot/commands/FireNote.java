@@ -7,23 +7,23 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shoulder;
-import frc.robot.subsystems.indexer;
-import frc.robot.subsystems.launcher;
+import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Shoulder.Position;
 import edu.wpi.first.wpilibj.Timer;
 
 public class FireNote extends Command {
-  private final launcher launcher;
-  private final indexer indexer;
+  private final Launcher launcher;
+  private final Indexer indexer;
   private final Shoulder shoulder;
   private final int CLOSED_LOOP_TOLERANCE = 100;
   private final double TRIGGER_TIME_OVERRIDE = 0.5;
   private final Timer timer = new Timer();
 
   /** Creates a new FireNote. */
-  public FireNote(indexer indexer, launcher launcher, Shoulder shoulder) {
+  public FireNote(Indexer indexer, Launcher launcher, Shoulder shoulder) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.launcher = launcher;
+    this.launcher= launcher;
     this.indexer = indexer; 
     this.shoulder = shoulder;
     addRequirements(launcher, indexer, shoulder);

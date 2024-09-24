@@ -5,13 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.indexer;
+import frc.robot.subsystems.Indexer;
 
 public class SetIndexDutyCycle extends Command {
-  private final indexer indexer;
+  private final Indexer indexer;
   private double percentOut;
 
-  public SetIndexDutyCycle(indexer indexer, double percentOut) {
+  public SetIndexDutyCycle(Indexer indexer, double percentOut) {
     this.indexer = indexer;
     this.percentOut = percentOut;
     addRequirements(indexer);

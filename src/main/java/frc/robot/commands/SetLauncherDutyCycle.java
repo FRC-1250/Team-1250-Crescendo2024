@@ -5,13 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.launcher;
+import frc.robot.subsystems.Launcher;
 
 public class SetLauncherDutyCycle extends Command {
-  private final launcher launcher;
+  private final Launcher launcher;
   private double percentOut;
 
-  public SetLauncherDutyCycle(launcher launcher, double percentOut) {
+  public SetLauncherDutyCycle(Launcher launcher, double percentOut) {
     this.launcher = launcher;
     this.percentOut = percentOut;
     addRequirements(launcher);
