@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class indexer extends SubsystemBase {
+public class Indexer extends SubsystemBase {
   private int LINDEX = 22;
   private int RINDEX = 23; //can be removed now
   DigitalInput[] irArray = new DigitalInput[5];
@@ -25,7 +25,7 @@ public class indexer extends SubsystemBase {
   private final TalonFX leftindexer;
 
   /** Creates a new indexer. */
-  public indexer() {
+  public Indexer() {
     for (int i = 0; i < irArray.length; i++) {
       irArray[i] = new DigitalInput(i);
     }

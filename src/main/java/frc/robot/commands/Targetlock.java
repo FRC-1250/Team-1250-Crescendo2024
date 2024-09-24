@@ -18,7 +18,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
-public class targetlock implements SwerveRequest {
+public class Targetlock implements SwerveRequest {
   public double VelocityX = 0;
   public double VelocityY = 0;
   public double Deadband = 0;
@@ -32,7 +32,7 @@ public class targetlock implements SwerveRequest {
   private final Supplier<Double> headingSupplier;
   private double angle;
 
-  /** Creates a new targetlock. */
+  /** Creates a new Targetlock. */
   /**
    * Sets the velocity in the X direction, in m/s.
    * X is defined as forward according to WPILib convention,
@@ -41,7 +41,7 @@ public class targetlock implements SwerveRequest {
    * @param velocityX Velocity in the X direction, in m/s
    * @return this request
    */
-  public targetlock withVelocityX(double velocityX) {
+  public Targetlock withVelocityX(double velocityX) {
     this.VelocityX = velocityX;
     return this;
   }
@@ -54,7 +54,7 @@ public class targetlock implements SwerveRequest {
    * @param velocityY Velocity in the Y direction, in m/s
    * @return this request
    */
-  public targetlock withVelocityY(double velocityY) {
+  public Targetlock withVelocityY(double velocityY) {
     this.VelocityY = velocityY;
     return this;
   }
@@ -65,7 +65,7 @@ public class targetlock implements SwerveRequest {
    * @param deadband Allowable deadband of the request
    * @return this request
    */
-  public targetlock withDeadband(double deadband) {
+  public Targetlock withDeadband(double deadband) {
     this.Deadband = deadband;
     return this;
   }
@@ -76,7 +76,7 @@ public class targetlock implements SwerveRequest {
    * @param rotationalDeadband Rotational deadband of the request
    * @return this request
    */
-  public targetlock withRotationalDeadband(double rotationalDeadband) {
+  public Targetlock withRotationalDeadband(double rotationalDeadband) {
     this.RotationalDeadband = rotationalDeadband;
     return this;
   }
@@ -88,7 +88,7 @@ public class targetlock implements SwerveRequest {
    *                         motor
    * @return this request
    */
-  public targetlock withDriveRequestType(SwerveModule.DriveRequestType driveRequestType) {
+  public Targetlock withDriveRequestType(SwerveModule.DriveRequestType driveRequestType) {
     this.DriveRequestType = driveRequestType;
     return this;
   }
@@ -100,12 +100,12 @@ public class targetlock implements SwerveRequest {
    *                         motor
    * @return this request
    */
-  public targetlock withSteerRequestType(SwerveModule.SteerRequestType steerRequestType) {
+  public Targetlock withSteerRequestType(SwerveModule.SteerRequestType steerRequestType) {
     this.SteerRequestType = steerRequestType;
     return this;
   }
 
-  public targetlock(Limelight limelight, Supplier<Double> headingSupplier) {
+  public Targetlock(Limelight limelight, Supplier<Double> headingSupplier) {
     this.limelight = limelight;
     this.headingSupplier = headingSupplier;
   }

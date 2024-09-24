@@ -6,15 +6,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shoulder;
-import frc.robot.subsystems.launcher;
+import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Shoulder.Position;
 
 public class SetPositionAndShooterSpeed extends Command {
   private final Shoulder shoulder;
-  private final launcher launcher;
+  private final Launcher launcher;
   private final Position targetPosition;
   /** Creates a new SetPositionAndShooterSpeed. */
-  public SetPositionAndShooterSpeed(Shoulder shoulder, launcher launcher, Position targetPosition) {
+  public SetPositionAndShooterSpeed(Shoulder shoulder, Launcher launcher, Position targetPosition) {
     this.launcher = launcher;
     this.shoulder = shoulder;
     this.targetPosition = targetPosition;

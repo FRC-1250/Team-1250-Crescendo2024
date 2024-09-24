@@ -8,19 +8,19 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.indexer;
+import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shoulder.Position;
 import frc.robot.subsystems.Shoulder;
 
 public class IntakeCenterNote extends Command {
   /** Creates a new CenterFireNote. */
-  private final indexer indexer;
+  private final Indexer indexer;
   private final Intake intake;
   private double percentOut;
   private final Shoulder shoulder;
   Timer timer = new Timer();
 
-  public IntakeCenterNote(Intake intake, Shoulder shoulder, indexer indexer, Double percentOut) {
+  public IntakeCenterNote(Intake intake, Shoulder shoulder, Indexer indexer, Double percentOut) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.indexer = indexer;

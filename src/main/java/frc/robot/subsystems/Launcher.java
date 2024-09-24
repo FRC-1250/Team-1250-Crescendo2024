@@ -13,7 +13,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class launcher extends SubsystemBase {
+public class Launcher extends SubsystemBase {
   private final int LEFT_LAUNCHER_CAN_ID = 20;
   private final int RIGHT_LAUNCHER_CAN_ID = 21;
 
@@ -30,7 +30,7 @@ public class launcher extends SubsystemBase {
 
   /** Creates a new shooter. */
 
-  public launcher() {
+  public Launcher() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
     configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
