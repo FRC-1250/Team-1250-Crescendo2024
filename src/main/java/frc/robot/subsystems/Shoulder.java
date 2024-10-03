@@ -122,6 +122,7 @@ public class Shoulder extends SubsystemBase {
 
   public void setDutyCycle(double percentOut) {
     rightRotator.setControl(dutyCycleOut.withOutput(percentOut)
+        .withEnableFOC(true)
         .withLimitForwardMotion(isForwardLimit())
         .withLimitReverseMotion(isReverseLimit()));
   }
