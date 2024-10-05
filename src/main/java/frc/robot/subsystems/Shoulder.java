@@ -179,10 +179,14 @@ public class Shoulder extends SubsystemBase {
     ).withName("Stop");
   }
 
-  @Override
-  public void periodic() {
+  public void telemeterize() {
     rightRotatorMonitor.telemeterize();
     leftRotatorMonitor.telemeterize();
     canCoderPerformanceMonitor.telemeterize();
+  }
+
+  @Override
+  public void periodic() {
+   
   }
 }

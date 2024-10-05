@@ -59,6 +59,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        this.registerTelemetry(m_telemetryFunction);
         swerveMonitor = new SwervePeformanceMonitor("Swerve", Modules);
     }
 
@@ -171,6 +172,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         }
     }
 
+    public void telemeterize() {
+        swerveMonitor.telemeterize(this.getState(), this.getCurrentCommand());
+    }
+
     @Override
     public void periodic() {
          if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
@@ -182,7 +187,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             });
         }
 
-        swerveMonitor.telemeterize(this.getState(), this.getCurrentCommand());
         if (allowVisionOdometryCorrection) {
             checkForVisionTarget();
         }

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.TalonFXPerformanceMonitor;
 
 public class Indexer extends SubsystemBase {
   private int LINDEX = 22;
@@ -23,6 +24,7 @@ public class Indexer extends SubsystemBase {
 
 
   private final TalonFX leftindexer;
+  private final TalonFXPerformanceMonitor indexerMonitor;
 
   /** Creates a new indexer. */
   public Indexer() {
@@ -36,9 +38,9 @@ public class Indexer extends SubsystemBase {
     configs.CurrentLimits.SupplyCurrentLimit = 20;
     configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-
     leftindexer = new TalonFX(LINDEX, "rio");
     leftindexer.getConfigurator().apply(configs);
+    indexerMonitor = new TalonFXPerformanceMonitor(leftindexer, getSubsystem(), "LeftIndexer");
   }
 
   public void setDutyoutIndex(double percent) {
@@ -102,11 +104,14 @@ public class Indexer extends SubsystemBase {
 
   }
 
-  @Override
-  public void periodic() {
-    SmartDashboard.putNumber("Indexer/Left duty cycle", leftindexer.get());
-    SmartDashboard.putNumber("Indexer/Left stator current", leftindexer.getStatorCurrent().getValueAsDouble());
+  public void telemeterize() {
+    indexerMonitor.telemeterize();
     SmartDashboard.putBoolean("Indexer/Note centered", iscentered());
     SmartDashboard.putBoolean("Indexer/Barrel sensor", pollIrArraySensor(0));
+  }
+
+  @Override
+  public void periodic() {
+    
   }
 }

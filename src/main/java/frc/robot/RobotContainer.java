@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import java.util.concurrent.TimeUnit;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +35,7 @@ import frc.robot.commands.SetPositionAndShooterSpeed;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shoulder;
+import frc.robot.subsystems.TelemetryThread;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -46,6 +49,7 @@ public class RobotContainer {
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
   private final Limelight limelight = new Limelight();
+  private final TelemetryThread tt = new TelemetryThread(10, TimeUnit.MILLISECONDS);
 
   // Field centric driving in closed loop with 10% deadband
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -74,6 +78,17 @@ public class RobotContainer {
     configureNamedCommands();
     configureAutoCommands();
     configureBindings();
+
+    if (Robot.isReal()) {
+      tt.addTask(() -> drivetrain.telemeterize());
+      tt.addTask(() -> shoulder.telemeterize());
+      tt.addTask(() -> launcher.telemeterize());
+      tt.addTask(() -> indexer.telemeterize());
+      tt.addTask(() -> intake.telemeterize());
+      tt.startTasks();
+    } else {
+      DriverStation.silenceJoystickConnectionWarning(true);
+    }
   }
 
   public boolean isoperator() {

@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.TalonFXPerformanceMonitor;
 
 public class Launcher extends SubsystemBase {
   private final int LEFT_LAUNCHER_CAN_ID = 20;
@@ -27,6 +28,8 @@ public class Launcher extends SubsystemBase {
   private final VelocityVoltage rightVelocityControl;
   private final TalonFX rightLauncher;
   private final TalonFX leftLauncher;
+  private final TalonFXPerformanceMonitor rightLauncherMonitor;
+  private final TalonFXPerformanceMonitor leftLauncherMonitor;
 
   /** Creates a new shooter. */
 
@@ -53,10 +56,12 @@ public class Launcher extends SubsystemBase {
 
     rightLauncher = new TalonFX(RIGHT_LAUNCHER_CAN_ID, "rio");
     rightLauncher.getConfigurator().apply(configs);
+    rightLauncherMonitor = new TalonFXPerformanceMonitor(rightLauncher, getSubsystem(), "RightLauncher");
     rightVelocityControl = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
 
     leftLauncher = new TalonFX(LEFT_LAUNCHER_CAN_ID, "rio");
     leftLauncher.getConfigurator().apply(configs);
+    leftLauncherMonitor = new TalonFXPerformanceMonitor(leftLauncher, getSubsystem(), "LeftLauncher");
     leftVelocityControl = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
     SmartDashboard.putNumber("Launcher/tuning RPM", 0);
   }
@@ -79,11 +84,13 @@ public class Launcher extends SubsystemBase {
     leftLauncher.setControl(leftVelocityControl.withVelocity(left / 60));
   }
 
+  public void telemeterize() {
+    rightLauncherMonitor.telemeterize();
+    leftLauncherMonitor.telemeterize();
+  }
+
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Launcher/Right RPM", getRightLauncherRPM());
-    SmartDashboard.putNumber("Launcher/Right stator current", rightLauncher.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Launcher/Left RPM", getLeftLauncherRPM());
-    SmartDashboard.putNumber("Launcher/Left stator current", leftLauncher.getStatorCurrent().getValueAsDouble());
+
   }
 }
