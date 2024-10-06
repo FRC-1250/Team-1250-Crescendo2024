@@ -7,8 +7,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
-public class TelemetryThread {
+import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.util.CANCoderPerformanceMonitor;
+import frc.robot.util.SwervePeformanceMonitor;
+import frc.robot.util.TalonFXPerformanceMonitor;
+
+public class TelemetryManager {
   private ScheduledExecutorService scheduler;
   private final List<Runnable> tasks = Collections.synchronizedList(new ArrayList<>()); // Synchronized for potential //
                                                                                         // safety.
@@ -16,36 +26,30 @@ public class TelemetryThread {
   private final long period;
   private final TimeUnit timeUnit;
 
+  private static TelemetryManager instance;
+
   // Constructor with configurable period and time unit
-  public TelemetryThread(long period, TimeUnit timeUnit) {
+  private TelemetryManager(long period, TimeUnit timeUnit) {
     this.period = period;
     this.timeUnit = timeUnit;
+    startTasks();
+  }
+
+  public synchronized static TelemetryManager getInstance() {
+    if (instance == null) {
+      instance = new TelemetryManager(10, TimeUnit.MILLISECONDS);
+    }
+    return instance;
   }
 
   // Starts task execution
-  public void startTasks() {
+  private void startTasks() {
     if (isRunning.compareAndSet(false, true)) {
       scheduler = Executors.newSingleThreadScheduledExecutor(); // Ensure a new scheduler on restart
-      scheduler.scheduleAtFixedRate(this::runTasks, 0, period, timeUnit);
+      scheduler.scheduleAtFixedRate(this::runTasks, 1000, period, timeUnit);
       System.out.println("Tasks started.");
     } else {
       System.out.println("Tasks are already running.");
-    }
-  }
-
-  // Stops task execution gracefully
-  public void stopTasks() {
-    if (isRunning.compareAndSet(true, false)) {
-      scheduler.shutdown();
-      try {
-        if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
-          scheduler.shutdownNow();
-        }
-      } catch (InterruptedException e) {
-        scheduler.shutdownNow();
-        Thread.currentThread().interrupt();
-      }
-      System.out.println("Tasks stopped.");
     }
   }
 
@@ -57,24 +61,24 @@ public class TelemetryThread {
     synchronized (tasks) { // Ensures thread-safety for tasks access.
       long duration = 0; // Calculate duration
       for (Runnable task : tasks) {
-        long startTime = System.currentTimeMillis(); // Capture start time in nanoseconds
+        long startTime = System.currentTimeMillis();
         try {
           task.run();
         } catch (Exception e) {
           handleTaskError(task, e);
         } finally {
-          long endTime = System.currentTimeMillis(); // Capture end time in nanoseconds
-          duration = duration + (startTime - endTime);
+          long endTime = System.currentTimeMillis();
+          duration = startTime - endTime;
         }
       }
-      if (duration > 10) {
-        System.out.println("Task ran for " + (duration / 1_000_000_000) + " s");
+      if (duration > 1) {
+        System.out.println("Task ran for " + duration + " ms");
       }
     }
   }
 
   // Adds a new task (prevents duplicates)
-  public void addTask(Runnable task) {
+  private void addTask(Runnable task) {
     synchronized (tasks) { // Optional, ensure task is only added by one thread at a time.
       if (!tasks.contains(task)) {
         tasks.add(task);
@@ -85,15 +89,34 @@ public class TelemetryThread {
     }
   }
 
-  // Removes a task
-  public void removeTask(Runnable task) {
-    synchronized (tasks) {
-      if (tasks.remove(task)) {
-        System.out.println("Removed a task.");
+  public void addTalonFX(TalonFXPerformanceMonitor tfxpm) {
+    addTask(() -> {
+      tfxpm.telemeterize();
+    });
+  }
+
+  public void addCANCoder(CANCoderPerformanceMonitor ccpm) {
+    addTask(() -> {
+      ccpm.telemeterize();
+    });
+  }
+
+  public void addSwerveModule(SwervePeformanceMonitor spm, Supplier<SwerveDriveState> sds, Supplier<Command> c) {
+    addTask(() -> {
+      spm.telemeterize(sds, c);
+    });
+  }
+
+  public void addSubsystemCommand(Subsystem subsystem) {
+    addTask(() -> {
+      var path = subsystem.getName() + "/Command";
+      var cmd = subsystem.getCurrentCommand();
+      if (cmd != null) {
+        SmartDashboard.putString(path, cmd.getName());
       } else {
-        System.out.println("Task not found in the list.");
+        SmartDashboard.putString(path, "None");
       }
-    }
+    });
   }
 
   // Custom error handler for tasks

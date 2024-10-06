@@ -34,7 +34,7 @@ import frc.robot.util.SwervePeformanceMonitor;
  * subsystem
  * so it can be used in command-based projects easily.
  */
-public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
+public class Swerve extends SwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -47,11 +47,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
      /* Keep track if we've ever applied the operator perspective before or not */
      private boolean hasAppliedOperatorPerspective = false; 
 
-    SwervePeformanceMonitor swerveMonitor;
-
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-    public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
+    public Swerve(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         configurePathPlanner();
@@ -59,18 +57,16 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        this.registerTelemetry(m_telemetryFunction);
-        swerveMonitor = new SwervePeformanceMonitor("Swerve", Modules);
     }
 
-    public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
+    public Swerve(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         configurePathPlanner();
         configureCurrentLimits();
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        swerveMonitor = new SwervePeformanceMonitor("Swerve", Modules);
+        TelemetryManager.getInstance().addSwerveModule(new SwervePeformanceMonitor("Swerve", Modules), () -> this.getState(), () -> this.getCurrentCommand());
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -170,10 +166,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
             m_odometry.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
         }
-    }
-
-    public void telemeterize() {
-        swerveMonitor.telemeterize(this.getState(), this.getCurrentCommand());
     }
 
     @Override
