@@ -4,27 +4,21 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.TalonFXPerformanceMonitor;
 
 public class Indexer extends SubsystemBase {
   private int LINDEX = 22;
-  private int RINDEX = 23; //can be removed now
   DigitalInput[] irArray = new DigitalInput[5];
 
-
   private final TalonFX leftindexer;
-  private final TalonFXPerformanceMonitor indexerMonitor;
 
   /** Creates a new indexer. */
   public Indexer() {
@@ -40,7 +34,7 @@ public class Indexer extends SubsystemBase {
 
     leftindexer = new TalonFX(LINDEX, "rio");
     leftindexer.getConfigurator().apply(configs);
-    indexerMonitor = new TalonFXPerformanceMonitor(leftindexer, getSubsystem(), "LeftIndexer");
+    TelemetryManager.getInstance().addTalonFX(new TalonFXPerformanceMonitor(leftindexer, getSubsystem(), "LeftIndexer"));
   }
 
   public void setDutyoutIndex(double percent) {
@@ -105,7 +99,6 @@ public class Indexer extends SubsystemBase {
   }
 
   public void telemeterize() {
-    indexerMonitor.telemeterize();
     SmartDashboard.putBoolean("Indexer/Note centered", iscentered());
     SmartDashboard.putBoolean("Indexer/Barrel sensor", pollIrArraySensor(0));
   }

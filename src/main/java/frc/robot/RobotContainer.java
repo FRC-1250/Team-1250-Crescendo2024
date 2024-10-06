@@ -35,10 +35,10 @@ import frc.robot.commands.SetPositionAndShooterSpeed;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shoulder;
-import frc.robot.subsystems.TelemetryThread;
+import frc.robot.subsystems.TelemetryManager;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Launcher;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Shoulder.Position;
 
 public class RobotContainer {
@@ -46,10 +46,9 @@ public class RobotContainer {
   private final Shoulder shoulder = new Shoulder();
   private final Launcher launcher= new Launcher();
   private final Indexer indexer = new Indexer();
-  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
+  private final Swerve drivetrain = TunerConstants.DriveTrain;
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
   private final Limelight limelight = new Limelight();
-  private final TelemetryThread tt = new TelemetryThread(10, TimeUnit.MILLISECONDS);
 
   // Field centric driving in closed loop with 10% deadband
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -71,22 +70,18 @@ public class RobotContainer {
   private CommandPS4Controller operatorPS4Controller;
 
   public RobotContainer() {
-    SmartDashboard.putData("Intake/Command", intake);
-    SmartDashboard.putData("Shoulder/Command", shoulder);
-    SmartDashboard.putData("Launcher/Command", launcher);
-    SmartDashboard.putData("Indexer/Command", indexer);
+    var ins = TelemetryManager.getInstance();
+    ins.addSubsystemCommand(drivetrain);
+    ins.addSubsystemCommand(indexer);
+    ins.addSubsystemCommand(intake);
+    ins.addSubsystemCommand(launcher);
+    ins.addSubsystemCommand(shoulder);
+
     configureNamedCommands();
     configureAutoCommands();
     configureBindings();
 
-    if (Robot.isReal()) {
-      tt.addTask(() -> drivetrain.telemeterize());
-      tt.addTask(() -> shoulder.telemeterize());
-      tt.addTask(() -> launcher.telemeterize());
-      tt.addTask(() -> indexer.telemeterize());
-      tt.addTask(() -> intake.telemeterize());
-      tt.startTasks();
-    } else {
+    if (Robot.isSimulation()) {
       DriverStation.silenceJoystickConnectionWarning(true);
     }
   }
@@ -96,14 +91,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    SmartDashboard.putData(new SetShoulderPositionShuffleBoard(shoulder));
-    SmartDashboard.putData(new SetLauncherVelocityShuffleBoard(launcher));
-    SmartDashboard.putData(shoulder.positionCycleTest());
-    SmartDashboard.putData(shoulder.positionStop());
-    SmartDashboard.putData("Start indexer", new SetIndexDutyCycle(indexer, 1));
-    SmartDashboard.putData("Stop indexer", new SetIndexDutyCycle(indexer, 0));
     // Drive forward with -y, left with -x, rotate counter clockwise with -
-  
     limelight.setDefaultCommand(new LimeLightLED(limelight, indexer::iscentered, shoulder::isAtHome));
 
     drivXboxController.rightStick().whileTrue(drivetrain.applyRequestWithName(

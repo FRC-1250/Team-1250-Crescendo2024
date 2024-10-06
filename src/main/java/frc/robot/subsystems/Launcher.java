@@ -28,11 +28,8 @@ public class Launcher extends SubsystemBase {
   private final VelocityVoltage rightVelocityControl;
   private final TalonFX rightLauncher;
   private final TalonFX leftLauncher;
-  private final TalonFXPerformanceMonitor rightLauncherMonitor;
-  private final TalonFXPerformanceMonitor leftLauncherMonitor;
 
   /** Creates a new shooter. */
-
   public Launcher() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
     configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -56,12 +53,12 @@ public class Launcher extends SubsystemBase {
 
     rightLauncher = new TalonFX(RIGHT_LAUNCHER_CAN_ID, "rio");
     rightLauncher.getConfigurator().apply(configs);
-    rightLauncherMonitor = new TalonFXPerformanceMonitor(rightLauncher, getSubsystem(), "RightLauncher");
+    TelemetryManager.getInstance().addTalonFX(new TalonFXPerformanceMonitor(rightLauncher, getSubsystem(), "RightLauncher"));
     rightVelocityControl = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
 
     leftLauncher = new TalonFX(LEFT_LAUNCHER_CAN_ID, "rio");
     leftLauncher.getConfigurator().apply(configs);
-    leftLauncherMonitor = new TalonFXPerformanceMonitor(leftLauncher, getSubsystem(), "LeftLauncher");
+    TelemetryManager.getInstance().addTalonFX(new TalonFXPerformanceMonitor(leftLauncher, getSubsystem(), "LeftLauncher"));
     leftVelocityControl = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
     SmartDashboard.putNumber("Launcher/tuning RPM", 0);
   }
@@ -82,11 +79,6 @@ public class Launcher extends SubsystemBase {
   public void SetLauncherVelocity(double right, double left) {
     rightLauncher.setControl(rightVelocityControl.withVelocity(right / 60));
     leftLauncher.setControl(leftVelocityControl.withVelocity(left / 60));
-  }
-
-  public void telemeterize() {
-    rightLauncherMonitor.telemeterize();
-    leftLauncherMonitor.telemeterize();
   }
 
   @Override

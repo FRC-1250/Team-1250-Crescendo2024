@@ -56,9 +56,6 @@ public class Shoulder extends SubsystemBase {
   private final DutyCycleOut dutyCycleOut;
   private final PositionDutyCycle positionDutyCycle;
   private final Supplier<Double> positionSupplier;
-  private final CANCoderPerformanceMonitor canCoderPerformanceMonitor;
-  private final TalonFXPerformanceMonitor rightRotatorMonitor;
-  private final TalonFXPerformanceMonitor leftRotatorMonitor;
 
   public Shoulder() {
     CANcoderConfiguration configuration = new CANcoderConfiguration();
@@ -68,7 +65,7 @@ public class Shoulder extends SubsystemBase {
     cancoder = new CANcoder(CANCODER_CAN_ID, "rio");
     cancoder.getConfigurator().apply(configuration);
     positionSupplier = cancoder.getPosition().asSupplier();
-    canCoderPerformanceMonitor = new CANCoderPerformanceMonitor(cancoder, getSubsystem(), "CANCoder");
+    TelemetryManager.getInstance().addCANCoder(new CANCoderPerformanceMonitor(cancoder, getSubsystem(), "Sensor"));
     BaseStatusSignal.setUpdateFrequencyForAll(200, cancoder.getPosition(), cancoder.getVelocity());
 
     TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration();
@@ -93,12 +90,12 @@ public class Shoulder extends SubsystemBase {
 
     rightRotator = new TalonFX(RIGHT_ROTATOR_CAN_ID, "rio");
     rightRotator.getConfigurator().apply(talonFXConfiguration);
-    rightRotatorMonitor = new TalonFXPerformanceMonitor(rightRotator, getSubsystem(), "RightRotator");
+    TelemetryManager.getInstance().addTalonFX(new TalonFXPerformanceMonitor(rightRotator, getSubsystem(), "RightRotator"));
 
     leftRotator = new TalonFX(LEFT_ROTATOR_CAN_ID, "rio");
     leftRotator.getConfigurator().apply(talonFXConfiguration);
     leftRotator.setControl(new Follower(rightRotator.getDeviceID(), true));
-    leftRotatorMonitor = new TalonFXPerformanceMonitor(leftRotator, getSubsystem(), "LeftRotator");
+    TelemetryManager.getInstance().addTalonFX(new TalonFXPerformanceMonitor(leftRotator, getSubsystem(), "LeftRotator"));
 
     dutyCycleOut = new DutyCycleOut(0);
     positionDutyCycle = new PositionDutyCycle(0);
@@ -177,12 +174,6 @@ public class Shoulder extends SubsystemBase {
     return Commands.sequence(
       Commands.runOnce(() -> stop(), this)
     ).withName("Stop");
-  }
-
-  public void telemeterize() {
-    rightRotatorMonitor.telemeterize();
-    leftRotatorMonitor.telemeterize();
-    canCoderPerformanceMonitor.telemeterize();
   }
 
   @Override
