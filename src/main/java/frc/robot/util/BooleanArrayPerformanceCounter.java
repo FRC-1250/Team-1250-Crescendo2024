@@ -4,19 +4,19 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class DoublePerformanceCounter extends PerformanceCounter {
-  private final Supplier<Double> supplier;
+public class BooleanArrayPerformanceCounter extends PerformanceCounter {
+  private final Supplier<Boolean[]> supplier;
 
-  public DoublePerformanceCounter(
+  public BooleanArrayPerformanceCounter(
       String subsystemName,
       String deviceName,
       String counterName,
-      Supplier<Double> supplier) {
+      Supplier<Boolean[]> supplier) {
     super(subsystemName, deviceName, counterName);
     this.supplier = supplier;
   }
 
   public void push() {
-    SmartDashboard.putNumber(dashboardPath, supplier.get());
+    SmartDashboard.putBooleanArray(dashboardPath, supplier.get());
   }
 }

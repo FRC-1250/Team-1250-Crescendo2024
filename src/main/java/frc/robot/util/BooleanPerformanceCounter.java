@@ -2,31 +2,21 @@ package frc.robot.util;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class BooleanPerformanceCounter {
-  private final BooleanPublisher publisher;
+public class BooleanPerformanceCounter extends PerformanceCounter {
   private final Supplier<Boolean> supplier;
-  private final String counterName;
 
   public BooleanPerformanceCounter(
       String subsystemName,
       String deviceName,
       String counterName,
       Supplier<Boolean> supplier) {
-    this.publisher = NetworkTableInstance.getDefault().getTable(subsystemName + "/" + deviceName)
-        .getBooleanTopic(counterName).publish();
+    super(subsystemName, deviceName, counterName);
     this.supplier = supplier;
-    this.counterName = counterName;
   }
 
   public void push() {
-    publisher.set(supplier.get());
+    SmartDashboard.putBoolean(dashboardPath, supplier.get());
   }
-
-  public String getCounterName() {
-    return counterName;
-  }
-
 }

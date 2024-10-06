@@ -11,11 +11,9 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.DoubleArrayPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class SwervePeformanceMonitor {
@@ -24,14 +22,6 @@ public class SwervePeformanceMonitor {
   private final List<CANCoderPerformanceMonitor> cancoders;
   private final List<TalonFXPerformanceMonitor> driveMotors;
   private final List<TalonFXPerformanceMonitor> steeringMotors;
-
-  private final DoublePublisher velocityX;
-  private final DoublePublisher velocityY;
-  private final DoublePublisher speed;
-  private final DoublePublisher odomFreq;
-  private final DoubleArrayPublisher poses;
-  private final StringPublisher command;
-  private final StringPublisher moduleOrder;
 
   private final Supplier<SwerveModuleState[]> currentStateSupplier;
   private final Supplier<SwerveModuleState[]> targetStateSupplier;
@@ -47,21 +37,14 @@ public class SwervePeformanceMonitor {
 
     for (int i = 0; i < swerveModules.length; i++) {
       cancoders.add(new CANCoderPerformanceMonitor(swerveModules[i].getCANcoder(), subsystemName,
-          String.format("module %d/sensor", i)));
+          String.format("Module%d/Sensor", i)));
       driveMotors.add(new TalonFXPerformanceMonitor(swerveModules[i].getDriveMotor(), subsystemName,
-          String.format("module %d/drive", i)));
+          String.format("Module%d/Drive", i)));
       steeringMotors.add(new TalonFXPerformanceMonitor(swerveModules[i].getDriveMotor(), subsystemName,
-          String.format("module %d/steer", i)));
+          String.format("Module%d/Steer", i)));
     }
 
-    velocityX = NetworkTableInstance.getDefault().getTable(subsystemName).getDoubleTopic("VelocityX").publish();
-    velocityY = NetworkTableInstance.getDefault().getTable(subsystemName).getDoubleTopic("VelocityY").publish();
-    speed = NetworkTableInstance.getDefault().getTable(subsystemName).getDoubleTopic("Speed").publish();
-    odomFreq = NetworkTableInstance.getDefault().getTable(subsystemName).getDoubleTopic("OdometryFrequency").publish();
-    poses = NetworkTableInstance.getDefault().getTable(subsystemName).getDoubleArrayTopic("Pose").publish();
-    command = NetworkTableInstance.getDefault().getTable(subsystemName).getStringTopic("Command").publish();
-    moduleOrder = NetworkTableInstance.getDefault().getTable(subsystemName).getStringTopic("ModuleOrder").publish();
-    moduleOrder.accept("FL, FR, BL, BR");
+    SmartDashboard.putString("Swerve/ModuleOrder", "FL, FR, BL, BR");
 
     currentStateSupplier = () -> {
       SwerveModuleState[] states = new SwerveModuleState[4];
@@ -72,7 +55,7 @@ public class SwervePeformanceMonitor {
     };
 
     currentStatesPublisher = NetworkTableInstance.getDefault()
-        .getTable(subsystemName)
+        .getTable("SmartDashboard").getSubTable(subsystemName)
         .getStructArrayTopic("CurrentModuleStates", SwerveModuleState.struct).publish();
 
     targetStateSupplier = () -> {
@@ -84,16 +67,19 @@ public class SwervePeformanceMonitor {
     };
 
     targetStatesPublisher = NetworkTableInstance.getDefault()
-        .getTable(subsystemName)
+        .getTable("SmartDashboard").getSubTable(subsystemName)
         .getStructArrayTopic("TargetModuleStates", SwerveModuleState.struct).publish();
+  }
+
+  public void telemeterize(Supplier<SwerveDriveState> sds, Supplier<Command> c) {
+    telemeterize(sds.get(), c.get());
   }
 
   public void telemeterize(SwerveDriveState state, Command currentCommand) {
     currentStatesPublisher.accept(currentStateSupplier.get());
     targetStatesPublisher.accept(targetStateSupplier.get());
 
-    poses.set(new double[] { state.Pose.getX(), state.Pose.getY(), state.Pose.getRotation().getDegrees() });
-
+    SmartDashboard.putNumberArray("Swerve/Pose", new double[] { state.Pose.getX(), state.Pose.getY(), state.Pose.getRotation().getDegrees() });
     double currentTime = Utils.getCurrentTimeSeconds();
     double diffTime = currentTime - lastTimestamp;
     lastTimestamp = currentTime;
@@ -102,21 +88,15 @@ public class SwervePeformanceMonitor {
 
     Translation2d velocities = distanceDiff.div(diffTime);
 
-    speed.set(velocities.getNorm());
-    velocityX.set(velocities.getX());
-    velocityY.set(velocities.getY());
-    odomFreq.set(1.0 / state.OdometryPeriod);
+    SmartDashboard.putNumber("Swerve/Speed", velocities.getNorm());
+    SmartDashboard.putNumber("Swerve/VelocityX", velocities.getX());
+    SmartDashboard.putNumber("Swerve/VelocityY", velocities.getY());
+    SmartDashboard.putNumber("Swerve/OdomFreq", 1.0 / state.OdometryPeriod);
 
     for (int i = 0; i < cancoders.size(); i++) {
       cancoders.get(i).telemeterize();
       driveMotors.get(i).telemeterize();
       steeringMotors.get(i).telemeterize();
-    }
-
-    if (currentCommand != null) {
-      command.set(currentCommand.getName());
-    } else {
-      command.set("None");
     }
   }
 }
