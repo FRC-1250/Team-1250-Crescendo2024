@@ -105,7 +105,7 @@ public class Shoulder extends SubsystemBase {
   }
 
   public boolean isForwardLimit() {
-    return MathUtil.isNear(Position.AMP.value, getPosition(), CLOSED_LOOP_TOLERANCE);
+    return MathUtil.isNear(Position.AMP.value, getPosition(), CLOSED_LOOP_TOLERANCE)||(getPosition()>=Position.AMP.value);
   }
 
   public boolean isReverseLimit() {
