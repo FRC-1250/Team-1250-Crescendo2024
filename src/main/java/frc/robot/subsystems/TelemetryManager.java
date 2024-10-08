@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.util.CANCoderPerformanceMonitor;
+import frc.robot.util.PigeonIMUPerformanceMonitor;
 import frc.robot.util.SwervePeformanceMonitor;
 import frc.robot.util.TalonFXPerformanceMonitor;
 
@@ -37,7 +38,7 @@ public class TelemetryManager {
 
   public synchronized static TelemetryManager getInstance() {
     if (instance == null) {
-      instance = new TelemetryManager(10, TimeUnit.MILLISECONDS);
+      instance = new TelemetryManager(20, TimeUnit.MILLISECONDS);
     }
     return instance;
   }
@@ -91,19 +92,25 @@ public class TelemetryManager {
 
   public void addTalonFX(TalonFXPerformanceMonitor tfxpm) {
     addTask(() -> {
-      tfxpm.telemeterize();
+      tfxpm.push();
     });
   }
 
   public void addCANCoder(CANCoderPerformanceMonitor ccpm) {
     addTask(() -> {
-      ccpm.telemeterize();
+      ccpm.push();
     });
   }
 
   public void addSwerveModule(SwervePeformanceMonitor spm, Supplier<SwerveDriveState> sds, Supplier<Command> c) {
     addTask(() -> {
       spm.telemeterize(sds, c);
+    });
+  }
+
+  public void addPigeonIMU(PigeonIMUPerformanceMonitor ppm) {
+    addTask(() -> {
+      ppm.push();
     });
   }
 

@@ -65,7 +65,7 @@ public class Shoulder extends SubsystemBase {
     cancoder = new CANcoder(CANCODER_CAN_ID, "rio");
     cancoder.getConfigurator().apply(configuration);
     positionSupplier = cancoder.getPosition().asSupplier();
-    TelemetryManager.getInstance().addCANCoder(new CANCoderPerformanceMonitor(cancoder, getSubsystem(), "Sensor"));
+    TelemetryManager.getInstance().addCANCoder(new CANCoderPerformanceMonitor(cancoder, getSubsystem()));
     BaseStatusSignal.setUpdateFrequencyForAll(200, cancoder.getPosition(), cancoder.getVelocity());
 
     TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration();

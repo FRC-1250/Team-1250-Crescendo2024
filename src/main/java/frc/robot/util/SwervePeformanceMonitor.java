@@ -36,15 +36,15 @@ public class SwervePeformanceMonitor {
     steeringMotors = new ArrayList<>();
 
     for (int i = 0; i < swerveModules.length; i++) {
-      cancoders.add(new CANCoderPerformanceMonitor(swerveModules[i].getCANcoder(), subsystemName,
-          String.format("Module%d/Sensor", i)));
+      cancoders.add(new CANCoderPerformanceMonitor(swerveModules[i].getCANcoder(),
+       String.format("%s/Module%d", subsystemName, i)));
       driveMotors.add(new TalonFXPerformanceMonitor(swerveModules[i].getDriveMotor(), subsystemName,
           String.format("Module%d/Drive", i)));
       steeringMotors.add(new TalonFXPerformanceMonitor(swerveModules[i].getDriveMotor(), subsystemName,
           String.format("Module%d/Steer", i)));
     }
 
-    SmartDashboard.putString("Swerve/ModuleOrder", "FL, FR, BL, BR");
+    SmartDashboard.putString(String.format("%s/ModuleOrder", subsystemName), "FL, FR, BL, BR");
 
     currentStateSupplier = () -> {
       SwerveModuleState[] states = new SwerveModuleState[4];
@@ -94,9 +94,9 @@ public class SwervePeformanceMonitor {
     SmartDashboard.putNumber("Swerve/OdomFreq", 1.0 / state.OdometryPeriod);
 
     for (int i = 0; i < cancoders.size(); i++) {
-      cancoders.get(i).telemeterize();
-      driveMotors.get(i).telemeterize();
-      steeringMotors.get(i).telemeterize();
+      cancoders.get(i).push();
+      driveMotors.get(i).push();
+      steeringMotors.get(i).push();
     }
   }
 }
