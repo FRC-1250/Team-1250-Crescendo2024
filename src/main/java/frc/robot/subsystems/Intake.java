@@ -9,7 +9,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.TalonFXPerformanceMonitor;
+import frc.robot.telemetry.TalonFXMonitor;
+import frc.robot.telemetry.TelemetryManager;
 
 public class Intake extends SubsystemBase {
 
@@ -28,8 +29,8 @@ public class Intake extends SubsystemBase {
     frontRoller.getConfigurator().apply(talonFXConfiguration);
     rearRoller = new TalonFX(REAR_ROLLER_CAN_ID, "rio");
     rearRoller.getConfigurator().apply(talonFXConfiguration);
-    TelemetryManager.getInstance().addTalonFX(new TalonFXPerformanceMonitor(frontRoller, getSubsystem(), "FrontRoller"));
-    TelemetryManager.getInstance().addTalonFX(new TalonFXPerformanceMonitor(rearRoller, getSubsystem(), "RearRoller"));
+    TelemetryManager.getInstance().addTalonFX(new TalonFXMonitor(frontRoller, getSubsystem(), "FrontRoller"));
+    TelemetryManager.getInstance().addTalonFX(new TalonFXMonitor(rearRoller, getSubsystem(), "RearRoller"));
   }
 
   public void setDutyCycleFrontRoller(double percentOut) {

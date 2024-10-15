@@ -24,8 +24,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.CANCoderPerformanceMonitor;
-import frc.robot.util.TalonFXPerformanceMonitor;
+import frc.robot.telemetry.CANCoderMonitor;
+import frc.robot.telemetry.TalonFXMonitor;
+import frc.robot.telemetry.TelemetryManager;
 
 public class Shoulder extends SubsystemBase {
 
@@ -65,7 +66,7 @@ public class Shoulder extends SubsystemBase {
     cancoder = new CANcoder(CANCODER_CAN_ID, "rio");
     cancoder.getConfigurator().apply(configuration);
     positionSupplier = cancoder.getPosition().asSupplier();
-    TelemetryManager.getInstance().addCANCoder(new CANCoderPerformanceMonitor(cancoder, getSubsystem()));
+    TelemetryManager.getInstance().addCANCoder(new CANCoderMonitor(cancoder, getSubsystem()));
     BaseStatusSignal.setUpdateFrequencyForAll(200, cancoder.getPosition(), cancoder.getVelocity());
 
     TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration();
@@ -90,12 +91,12 @@ public class Shoulder extends SubsystemBase {
 
     rightRotator = new TalonFX(RIGHT_ROTATOR_CAN_ID, "rio");
     rightRotator.getConfigurator().apply(talonFXConfiguration);
-    TelemetryManager.getInstance().addTalonFX(new TalonFXPerformanceMonitor(rightRotator, getSubsystem(), "RightRotator"));
+    TelemetryManager.getInstance().addTalonFX(new TalonFXMonitor(rightRotator, getSubsystem(), "RightRotator"));
 
     leftRotator = new TalonFX(LEFT_ROTATOR_CAN_ID, "rio");
     leftRotator.getConfigurator().apply(talonFXConfiguration);
     leftRotator.setControl(new Follower(rightRotator.getDeviceID(), true));
-    TelemetryManager.getInstance().addTalonFX(new TalonFXPerformanceMonitor(leftRotator, getSubsystem(), "LeftRotator"));
+    TelemetryManager.getInstance().addTalonFX(new TalonFXMonitor(leftRotator, getSubsystem(), "LeftRotator"));
 
     dutyCycleOut = new DutyCycleOut(0);
     positionDutyCycle = new PositionDutyCycle(0);

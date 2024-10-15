@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import java.util.concurrent.TimeUnit;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -22,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.SetShoulderDutyCycle;
 import frc.robot.commands.SetShoulderPosition;
-import frc.robot.commands.SetShoulderPositionShuffleBoard;
 import frc.robot.commands.FieldCentricAutoAim;
 import frc.robot.commands.FireNote;
 import frc.robot.commands.IntakeCenterNote;
@@ -30,16 +28,15 @@ import frc.robot.commands.LimeLightLED;
 import frc.robot.commands.SetIndexDutyCycle;
 import frc.robot.commands.SetIntakeDutyCycle;
 import frc.robot.commands.SetLauncherDutyCycle;
-import frc.robot.commands.SetLauncherVelocityShuffleBoard;
 import frc.robot.commands.SetPositionAndShooterSpeed;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shoulder;
-import frc.robot.subsystems.TelemetryManager;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Shoulder.Position;
+import frc.robot.telemetry.TelemetryManager;
 
 public class RobotContainer {
   private final Intake intake = new Intake();

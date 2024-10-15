@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.telemetry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,19 +16,19 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class SwervePeformanceMonitor {
+public class SwerveMonitor {
   private Pose2d lastPose;
   private double lastTimestamp;
-  private final List<CANCoderPerformanceMonitor> cancoders;
-  private final List<TalonFXPerformanceMonitor> driveMotors;
-  private final List<TalonFXPerformanceMonitor> steeringMotors;
+  private final List<CANCoderMonitor> cancoders;
+  private final List<TalonFXMonitor> driveMotors;
+  private final List<TalonFXMonitor> steeringMotors;
 
   private final Supplier<SwerveModuleState[]> currentStateSupplier;
   private final Supplier<SwerveModuleState[]> targetStateSupplier;
   private final StructArrayPublisher<SwerveModuleState> currentStatesPublisher;
   private final StructArrayPublisher<SwerveModuleState> targetStatesPublisher;
 
-  public SwervePeformanceMonitor(String subsystemName, SwerveModule[] swerveModules) {
+  public SwerveMonitor(String subsystemName, SwerveModule[] swerveModules) {
     lastPose = new Pose2d();
     lastTimestamp = Utils.getCurrentTimeSeconds();
     cancoders = new ArrayList<>();
@@ -36,11 +36,11 @@ public class SwervePeformanceMonitor {
     steeringMotors = new ArrayList<>();
 
     for (int i = 0; i < swerveModules.length; i++) {
-      cancoders.add(new CANCoderPerformanceMonitor(swerveModules[i].getCANcoder(),
+      cancoders.add(new CANCoderMonitor(swerveModules[i].getCANcoder(),
        String.format("%s/Module%d", subsystemName, i)));
-      driveMotors.add(new TalonFXPerformanceMonitor(swerveModules[i].getDriveMotor(), subsystemName,
+      driveMotors.add(new TalonFXMonitor(swerveModules[i].getDriveMotor(), subsystemName,
           String.format("Module%d/Drive", i)));
-      steeringMotors.add(new TalonFXPerformanceMonitor(swerveModules[i].getDriveMotor(), subsystemName,
+      steeringMotors.add(new TalonFXMonitor(swerveModules[i].getDriveMotor(), subsystemName,
           String.format("Module%d/Steer", i)));
     }
 

@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.telemetry;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 
@@ -10,13 +10,13 @@ import java.util.List;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 
-public class CANCoderPerformanceMonitor {
+public class CANCoderMonitor {
   private final List<StatusSignal<?>> signals;
   private final BaseStatusSignal[] baseStatusSignals;
   private final String subsystemName;
   private final String deviceName;
 
-  public CANCoderPerformanceMonitor(
+  public CANCoderMonitor(
       CANcoder cc,
       String subsystemName) {
     signals = new ArrayList<>();

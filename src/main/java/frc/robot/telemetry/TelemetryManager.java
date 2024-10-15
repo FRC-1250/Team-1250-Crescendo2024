@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.telemetry;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,10 +14,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.util.CANCoderPerformanceMonitor;
-import frc.robot.util.PigeonIMUPerformanceMonitor;
-import frc.robot.util.SwervePeformanceMonitor;
-import frc.robot.util.TalonFXPerformanceMonitor;
 
 public class TelemetryManager {
   private ScheduledExecutorService scheduler;
@@ -90,25 +86,25 @@ public class TelemetryManager {
     }
   }
 
-  public void addTalonFX(TalonFXPerformanceMonitor tfxpm) {
+  public void addTalonFX(TalonFXMonitor tfxpm) {
     addTask(() -> {
       tfxpm.push();
     });
   }
 
-  public void addCANCoder(CANCoderPerformanceMonitor ccpm) {
+  public void addCANCoder(CANCoderMonitor ccpm) {
     addTask(() -> {
       ccpm.push();
     });
   }
 
-  public void addSwerveModule(SwervePeformanceMonitor spm, Supplier<SwerveDriveState> sds, Supplier<Command> c) {
+  public void addSwerveModule(SwerveMonitor spm, Supplier<SwerveDriveState> sds, Supplier<Command> c) {
     addTask(() -> {
       spm.telemeterize(sds, c);
     });
   }
 
-  public void addPigeonIMU(PigeonIMUPerformanceMonitor ppm) {
+  public void addPigeonIMU(PigeonIMUMonitor ppm) {
     addTask(() -> {
       ppm.push();
     });

@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.telemetry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +9,13 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class TalonFXPerformanceMonitor {
+public class TalonFXMonitor {
   private final List<StatusSignal<?>> signals;
   private final BaseStatusSignal[] baseStatusSignals;
   private final String subsystemName;
   private final String deviceName;
 
-  public TalonFXPerformanceMonitor(
+  public TalonFXMonitor(
       TalonFX talonfx,
       String subsystemName,
       String deviceName) {

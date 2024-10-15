@@ -27,8 +27,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.LimelightHelpers;
 import frc.robot.TunerConstants;
-import frc.robot.util.PigeonIMUPerformanceMonitor;
-import frc.robot.util.SwervePeformanceMonitor;
+import frc.robot.telemetry.PigeonIMUMonitor;
+import frc.robot.telemetry.SwerveMonitor;
+import frc.robot.telemetry.TelemetryManager;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements
@@ -67,8 +68,8 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        TelemetryManager.getInstance().addSwerveModule(new SwervePeformanceMonitor("Swerve", Modules), () -> this.getState(), () -> this.getCurrentCommand());
-        TelemetryManager.getInstance().addPigeonIMU(new PigeonIMUPerformanceMonitor(m_pigeon2, "Swerve"));
+        TelemetryManager.getInstance().addSwerveModule(new SwerveMonitor("Swerve", Modules), () -> this.getState(), () -> this.getCurrentCommand());
+        TelemetryManager.getInstance().addPigeonIMU(new PigeonIMUMonitor(m_pigeon2, "Swerve"));
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {

@@ -12,7 +12,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.TalonFXPerformanceMonitor;
+import frc.robot.telemetry.TalonFXMonitor;
+import frc.robot.telemetry.TelemetryManager;
 
 public class Launcher extends SubsystemBase {
   private final int LEFT_LAUNCHER_CAN_ID = 20;
@@ -53,12 +54,12 @@ public class Launcher extends SubsystemBase {
 
     rightLauncher = new TalonFX(RIGHT_LAUNCHER_CAN_ID, "rio");
     rightLauncher.getConfigurator().apply(configs);
-    TelemetryManager.getInstance().addTalonFX(new TalonFXPerformanceMonitor(rightLauncher, getSubsystem(), "RightLauncher"));
+    TelemetryManager.getInstance().addTalonFX(new TalonFXMonitor(rightLauncher, getSubsystem(), "RightLauncher"));
     rightVelocityControl = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
 
     leftLauncher = new TalonFX(LEFT_LAUNCHER_CAN_ID, "rio");
     leftLauncher.getConfigurator().apply(configs);
-    TelemetryManager.getInstance().addTalonFX(new TalonFXPerformanceMonitor(leftLauncher, getSubsystem(), "LeftLauncher"));
+    TelemetryManager.getInstance().addTalonFX(new TalonFXMonitor(leftLauncher, getSubsystem(), "LeftLauncher"));
     leftVelocityControl = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
     SmartDashboard.putNumber("Launcher/tuning RPM", 0);
   }

@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.telemetry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +9,13 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class PigeonIMUPerformanceMonitor {
+public class PigeonIMUMonitor {
    private final List<StatusSignal<?>> signals;
   private final BaseStatusSignal[] baseStatusSignals;
   private final String subsystemName;
   private final String deviceName;
 
-  public PigeonIMUPerformanceMonitor(
+  public PigeonIMUMonitor(
       Pigeon2 pigeon,
       String subsystemName) {
         signals = new ArrayList<>();

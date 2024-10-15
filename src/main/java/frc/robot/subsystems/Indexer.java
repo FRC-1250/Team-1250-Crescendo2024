@@ -12,7 +12,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.TalonFXPerformanceMonitor;
+import frc.robot.telemetry.TalonFXMonitor;
+import frc.robot.telemetry.TelemetryManager;
 
 public class Indexer extends SubsystemBase {
   private int LINDEX = 22;
@@ -34,7 +35,7 @@ public class Indexer extends SubsystemBase {
 
     leftindexer = new TalonFX(LINDEX, "rio");
     leftindexer.getConfigurator().apply(configs);
-    TelemetryManager.getInstance().addTalonFX(new TalonFXPerformanceMonitor(leftindexer, getSubsystem(), "LeftIndexer"));
+    TelemetryManager.getInstance().addTalonFX(new TalonFXMonitor(leftindexer, getSubsystem(), "LeftIndexer"));
   }
 
   public void setDutyoutIndex(double percent) {
