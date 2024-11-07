@@ -3,7 +3,6 @@ package frc.robot.telemetry;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
@@ -11,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PigeonIMUMonitor {
    private final List<StatusSignal<?>> signals;
-  private final BaseStatusSignal[] baseStatusSignals;
   private final String subsystemName;
   private final String deviceName;
 
@@ -29,12 +27,10 @@ public class PigeonIMUMonitor {
     
         this.subsystemName = subsystemName;
         this.deviceName = "PigeonIMU";
-        this.baseStatusSignals = signals.toArray(BaseStatusSignal[]::new);
   }
 
   public void push() {
     if (signals.size() > 0) {
-      StatusSignal.refreshAll(baseStatusSignals);
       for (StatusSignal<?> statusSignal : signals) {
         statusSignal.refresh(false);
         SmartDashboard.putNumber(String.format("%s/%s/%s", subsystemName, deviceName, statusSignal.getName()),

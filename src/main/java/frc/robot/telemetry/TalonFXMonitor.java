@@ -3,7 +3,6 @@ package frc.robot.telemetry;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -11,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TalonFXMonitor {
   private final List<StatusSignal<?>> signals;
-  private final BaseStatusSignal[] baseStatusSignals;
   private final String subsystemName;
   private final String deviceName;
 
@@ -22,7 +20,6 @@ public class TalonFXMonitor {
     signals = new ArrayList<>();
     signals.add(talonfx.getVelocity());
     signals.add(talonfx.getSupplyVoltage());
-    signals.add(talonfx.getAcceleration());
     signals.add(talonfx.getStatorCurrent());
     signals.add(talonfx.getSupplyCurrent());
     signals.add(talonfx.getTorqueCurrent());
@@ -37,12 +34,10 @@ public class TalonFXMonitor {
 
     this.subsystemName = subsystemName;
     this.deviceName = deviceName;
-    this.baseStatusSignals = signals.toArray(BaseStatusSignal[]::new);
   }
 
   public void push() {
     if (signals.size() > 0) {
-      StatusSignal.refreshAll(baseStatusSignals);
       for (StatusSignal<?> statusSignal : signals) {
         statusSignal.refresh(false);
         SmartDashboard.putNumber(String.format("%s/%s/%s", subsystemName, deviceName, statusSignal.getName()),
