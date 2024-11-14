@@ -24,6 +24,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.IntakeCenterNote;
 import frc.robot.util.CANCoderPerformanceMonitor;
 import frc.robot.util.TalonFXPerformanceMonitor;
 
@@ -151,28 +153,29 @@ public class Shoulder extends SubsystemBase {
     return MathUtil.isNear(Position.HOME.value, getPosition(), CLOSED_LOOP_TOLERANCE);
   }
 
-  public Command positionCycleTest() {
+  public Command AmpCycleTest() {
     return Commands.sequence(
-      // Cycle positions
-      setPositionAndWait(Position.SPEAKER),
-      setPositionAndWait(Position.SPEAKER_PODIUM),
-      setPositionAndWait(Position.HORIZONTAL),
-      setPositionAndWait(Position.AMP),
-      setPositionAndWait(Position.HOME),
-      // Attempt to reproduce ossilcation # 1
-      Commands.run(() -> setPosition(Position.AMP.value), this).withTimeout(0.5),
-      Commands.run(() -> setPosition(Position.SPEAKER.value), this).until(() -> isAtSetPoint(Position.SPEAKER.value)),
-      // Attempt to reproduce ossilcation # 2
-      Commands.run(() -> setPosition(Position.AMP.value), this).withTimeout(0.5),
-      Commands.run(() -> setPosition(Position.HOME.value), this).until(() -> isAtSetPoint(Position.HOME.value))
-    ).withName("PositionCycleTest");
+      //This is gonna go to the amp position for Prove OUT 
+      setPositionAndWait(Position.AMP, 1)
+    ).withName("Amp Cylce Test");
   }
 
-  public Command setPositionAndWait(Position position) {
+  public Command SpeakerCycleTest() {
+    return Commands.sequence(
+      setPositionAndWait(Position.SPEAKER, 1)
+    );
+  }
+
+  public Command PodiumCycleTest() {
+    return Commands.sequence(
+      setPositionAndWait(Position.SPEAKER_PODIUM, 1)
+    );
+  }
+
+  public Command setPositionAndWait(Position position, double waitTimeSeconds) {
     return Commands.sequence(
           Commands.run(() -> setPosition(position.value), this).until(() -> isAtSetPoint(position.value)),
-          Commands.waitSeconds(0.75)
-    );
+          Commands.waitSeconds(waitTimeSeconds));
   }
 
   public Command positionStop() {

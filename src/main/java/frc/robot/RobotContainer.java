@@ -37,6 +37,7 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Shoulder.Position;
+import frc.robot.commands.speedChasis;
 
 public class RobotContainer {
   private final Intake intake = new Intake();
@@ -80,13 +81,58 @@ public class RobotContainer {
     return false;
   }
 
+  public Command ampShotTest() { 
+    return Commands.sequence(
+      new IntakeCenterNote(intake, shoulder, indexer, 1.0),
+       shoulder.AmpCycleTest(),
+       new FireNote(indexer, launcher, shoulder).withTimeout(.5),
+       new SetShoulderPosition(shoulder, Position.HOME)
+       
+      ).withName("Amp Shot Test");
+  }
+
+  public Command speakerShotTest() {
+    return Commands.sequence(
+      new IntakeCenterNote(intake, shoulder, indexer, 1.0),
+      shoulder.SpeakerCycleTest(),
+      new FireNote(indexer, launcher, shoulder).withTimeout(.5),
+      new SetShoulderPosition(shoulder, Position.HOME)
+    ).withName("Speaker Shot Test");
+  }
+
+  public Command podiumShotTest() {
+    return Commands.sequence(
+      new IntakeCenterNote(intake, shoulder, indexer, 1.0),
+      shoulder.PodiumCycleTest(),
+      new FireNote(indexer, launcher, shoulder).withTimeout(.5),
+      new SetShoulderPosition(shoulder, Position.HOME)
+    ).withName("Podium Shot Test");
+  }
+
+  public Command DriveTrainTest() {
+    return Commands.sequence(
+      new speedChasis(1, 0, 0).withTimeout(2),
+      new speedChasis(1, .5, 0).withTimeout(2),
+      new speedChasis(1, 1, 0).withTimeout(2),
+      new speedChasis(1, 0, Math.PI/2).withTimeout(2),
+      new speedChasis(1, 0, Math.PI)
+    );
+  }
+
+  public Command driveProveOut() {
+    return Commands.sequence(
+    ).withName("Drive Train Proveout");
+  }
+
   private void configureBindings() {
     SmartDashboard.putData(new SetShoulderPositionShuffleBoard(shoulder));
     SmartDashboard.putData(new SetLauncherVelocityShuffleBoard(launcher));
-    SmartDashboard.putData(shoulder.positionCycleTest());
+    SmartDashboard.putData(ampShotTest());
     SmartDashboard.putData(shoulder.positionStop());
     SmartDashboard.putData("Start indexer", new SetIndexDutyCycle(indexer, 1));
     SmartDashboard.putData("Stop indexer", new SetIndexDutyCycle(indexer, 0));
+    SmartDashboard.putData("SpeedTestTest", new speedChasis(1, 1, 0));
+    SmartDashboard.putData("VectorTest", DriveTrainTest());
     // Drive forward with -y, left with -x, rotate counter clockwise with -
   
     limelight.setDefaultCommand(new LimeLightLED(limelight, indexer::iscentered, shoulder::isAtHome));
@@ -200,5 +246,11 @@ public class RobotContainer {
     return Commands.sequence(
         new SetPositionAndShooterSpeed(shoulder, launcher, position),
         new FireNote(indexer, launcher, shoulder).withTimeout(0.7));
+  }
+
+  private Command driveForward() {
+    return Commands.sequence(
+      
+    );
   }
 }
